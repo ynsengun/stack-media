@@ -2,12 +2,9 @@ import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import {
   Card,
-  CardText,
-  CardBody,
-  CardTitle,
   Container,
   Button,
-} from "reactstrap";
+} from "semantic-ui-react";
 
 export default function Home() {
   const [text, setText] = useState("Error");
@@ -30,17 +27,14 @@ export default function Home() {
 
   return (
     <Container>
-      <Card color="primary" className="text-center shadow">
-        <CardBody>
-          <CardTitle>Test Server - Client</CardTitle>
-          <CardText>
-            <h1>{text}</h1>
-          </CardText>
-        </CardBody>
+      <Card className="text-center w-100" raised>
+          Test Server - Client
+          <h1>{text}</h1>
+          This page is used to present movies/episodes
       </Card>
       <Button
-        color="danger"
-        className="mt-5 text-center w-100 shadow"
+        primary
+        className="mt-5 text-center w-100"
         onClick={sendToast}
       >
         Send Me Toast!
