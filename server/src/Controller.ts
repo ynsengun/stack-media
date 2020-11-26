@@ -28,7 +28,7 @@ export class Controller{
 
     }
 
-    /*public async register(request: Request, response: Response): Promise<void> {
+    public async register(request: Request, response: Response): Promise<void> {
         try{
             console.log(request.body);
             this.validation.registerValidation(request);
@@ -36,10 +36,10 @@ export class Controller{
             response.status(result.status).send(result);
         } catch(error){
             const errorResponse = new ErrorResponse(error);
-            response.setHeader('Content-Type', 'application/json').status(errorResponse.status).send(new ErrorResponse(error));
+            response.status(errorResponse.status).send(new ErrorResponse(error));
         }
     }
-    
+    /*
     public async changePassword(request: Request, response: Response): Promise<void> {
         try{
             this.validation.changePasswordValidation(request);

@@ -22,7 +22,7 @@ export class UserBusiness {
             return new ErrorResponse(error);
         }
     }
-    /*
+    
     public async register(user: User): Promise<ResponseModel> {
         try {
             let result = await this.userDBService.register(user);
@@ -30,5 +30,5 @@ export class UserBusiness {
         } catch (error) {
             return new ErrorResponse(error);
         }
-    }*/
+    }
 }
