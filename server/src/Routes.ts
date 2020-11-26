@@ -15,13 +15,13 @@ export class Routes{
     public routes(app){
         app.route('/api/user/login')
             .post((req: Request, res: Response) => {
-                //this.userController.login(req, res)
+                this.controller.login(req, res);
             });
-        /*app.route('/api/user/register')
+        app.route('/api/user/register')
             .post((req: Request, res: Response) => {
                 this.controller.register(req, res)
             });
-
+        /*
         app.route('/api/user/changePassword')
             .post(this.tokenService.checkToken, (req: Request, res: Response) => {
                 this.userController.changePassword(req, res);

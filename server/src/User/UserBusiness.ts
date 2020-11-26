@@ -14,9 +14,9 @@ export class UserBusiness {
     
     public async login(user: User): Promise<ResponseModel> {
         try {
-            const userId = user.userId;
+            const email = user.email;
             const password = user.password;
-            let result = await this.userDBService.login(userId, password);
+            let result = await this.userDBService.login(email, password);
             return new SuccessResponse(result);
         } catch(error) {
             return new ErrorResponse(error);

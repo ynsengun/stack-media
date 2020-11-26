@@ -30,7 +30,7 @@ export class Controller{
 
     public async register(request: Request, response: Response): Promise<void> {
         try{
-            console.log(request.body);
+            //console.log(request.body);
             this.validation.registerValidation(request);
             let result = await this.userBusiness.register(userMapping.map(request.body));
             response.status(result.status).send(result);
