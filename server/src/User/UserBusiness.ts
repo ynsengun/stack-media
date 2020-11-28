@@ -31,4 +31,49 @@ export class UserBusiness {
             return new ErrorResponse(error);
         }
     }
+
+    public async getParties(user: User): Promise<ResponseModel> {
+        try {
+            let result = await this.userDBService.getParties(user);
+            return new SuccessResponse(result);
+        } catch (error) {
+            return new ErrorResponse(error);
+        }
+    }
+
+    public async getChannels(user: User): Promise<ResponseModel> {
+        try {
+            let result = await this.userDBService.getChannels(user);
+            return new SuccessResponse(result);
+        } catch (error) {
+            return new ErrorResponse(error);
+        }
+    }
+
+    public async getFriendActivities(user: User): Promise<ResponseModel> {
+        try {
+            let result = await this.userDBService.getFriendActivities(user);
+            return new SuccessResponse(result);
+        } catch (error) {
+            return new ErrorResponse(error);
+        }
+    }
+
+    public async addFriend(user: User): Promise<ResponseModel> {
+        try {
+            let result = await this.userDBService.addFriend(user);
+            return new SuccessResponse(result);
+        } catch (error) {
+            return new ErrorResponse(error);
+        }
+    }
+
+    public async deleteFriend(user: User): Promise<ResponseModel> {
+        try {
+            let result = await this.userDBService.deleteFriend(user);
+            return new SuccessResponse(result);
+        } catch (error) {
+            return new ErrorResponse(error);
+        }
+    }
 }
