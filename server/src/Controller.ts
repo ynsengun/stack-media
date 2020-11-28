@@ -5,6 +5,7 @@ import {ChannelBusiness} from "./Channel/ChannelBusiness";
 import {Validation} from "./Service/Validation";
 import {ErrorResponse} from "./Model/Response/ErrorResponse";
 import userMapping from "./Service/UserMapping";
+import mediaMapping from "./Service/MediaMapping";
 
 export class Controller{
 
@@ -93,7 +94,7 @@ export class Controller{
     public async addFriend(request: Request, response: Response): Promise<void> {
         try{
             this.validation.addFriendValidation(request);
-            let result = await this.userBusiness.addFriend(userMapping.map(request.body));
+            let result = await this.userBusiness.addFriend(userMapping.map(request.body), request.body.invitedUsername);
             response.status(result.status).send(result);
         } catch(error){
             const errorResponse = new ErrorResponse(error);
@@ -104,7 +105,7 @@ export class Controller{
     public async deleteFriend(request: Request, response: Response): Promise<void> {
         try{
             this.validation.deleteFriendValidation(request);
-            let result = await this.userBusiness.deleteFriend(userMapping.map(request.body));
+            let result = await this.userBusiness.deleteFriend(userMapping.map(request.body), request.body.deletedUsername);
             response.status(result.status).send(result);
         } catch(error){
             const errorResponse = new ErrorResponse(error);
@@ -112,11 +113,10 @@ export class Controller{
         }
     }
 
-    /*
-    public async rateMovie(request: Request, response: Response): Promise<void> {
+    public async rateMedia(request: Request, response: Response): Promise<void> {
         try{
-            this.validation.rateMovieValidation(request);
-            let result = await this.userBusiness.rateMovie(userMapping.map(request.body));
+            this.validation.rateMediaValidation(request);
+            let result = await this.userBusiness.rateMedia(userMapping.map(request.body));
             response.status(result.status).send(result);
         } catch(error){
             const errorResponse = new ErrorResponse(error);
@@ -146,6 +146,7 @@ export class Controller{
         }
     }
 
+    /*
     public async addGenre(request: Request, response: Response): Promise<void> {
         try{
             this.validation.addGenreValidation(request);
@@ -195,7 +196,7 @@ export class Controller{
 
     public async getMedia(request: Request, response: Response): Promise<void> {
         try{
-            this.validation.getMediValidation(request);
+            this.validation.getMediaValidation(request);
             let result = await this.mediaBusiness.getMedia(mediaMapping.map(request.body));
             response.status(result.status).send(result);
         } catch(error){

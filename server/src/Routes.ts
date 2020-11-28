@@ -53,10 +53,9 @@ export class Routes{
                 this.controller.deleteFriend(req, res)
             });
 
-        /*
         app.route('/api/user/rate')
             .post(this.tokenService.checkToken, (req: Request, res: Response) => {
-                this.controller.rateMovie(req, res)
+                this.controller.rateMedia(req, res)
             });
 
         app.route('/api/user/addComment')
@@ -69,6 +68,7 @@ export class Routes{
                 this.controller.deleteComment(req, res)
             });
 
+            /*
         app.route('/api/user/addGenre')
             .post(this.tokenService.checkToken, (req: Request, res: Response) => {
                 this.controller.addGenre(req, res)

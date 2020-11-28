@@ -3,6 +3,8 @@ import {SuccessResponse} from "../Model/Response/SuccessResponse";
 import {ErrorResponse} from "../Model/Response/ErrorResponse";
 import {ResponseModel} from "../Model/Response/ResponseModel";
 import { User } from "../Model/User/User";
+import { Media } from "../Model/Media/Media";
+import { Comment } from "../Model/Comment/Comment";
 
 export class UserBusiness {
 
@@ -59,18 +61,45 @@ export class UserBusiness {
         }
     }
 
-    public async addFriend(user: User): Promise<ResponseModel> {
+    public async addFriend(mainUser: User, invitedUser: string): Promise<ResponseModel> {
         try {
-            let result = await this.userDBService.addFriend(user);
+            let result = await this.userDBService.addFriend(mainUser, invitedUser);
             return new SuccessResponse(result);
         } catch (error) {
             return new ErrorResponse(error);
         }
     }
 
-    public async deleteFriend(user: User): Promise<ResponseModel> {
+    public async deleteFriend(mainUser: User, deletedUser: string): Promise<ResponseModel> {
         try {
-            let result = await this.userDBService.deleteFriend(user);
+            let result = await this.userDBService.deleteFriend(mainUser, deletedUser);
+            return new SuccessResponse(result);
+        } catch (error) {
+            return new ErrorResponse(error);
+        }
+    }
+
+    public async rateMedia(user: User, media: Media, rate: number): Promise<ResponseModel> {
+        try {
+            let result = await this.userDBService.rateMedia(user, media, rate);
+            return new SuccessResponse(result);
+        } catch (error) {
+            return new ErrorResponse(error);
+        }
+    }
+
+    public async addComment(user: User, media: Media, comment: Comment): Promise<ResponseModel> {
+        try {
+            let result = await this.userDBService.addComment(user, media, comment);
+            return new SuccessResponse(result);
+        } catch (error) {
+            return new ErrorResponse(error);
+        }
+    }
+
+    public async deleteComment(mainUser: User): Promise<ResponseModel> {
+        try {
+            let result = await this.userDBService.deleteFriend(mainUser, deletedUser);
             return new SuccessResponse(result);
         } catch (error) {
             return new ErrorResponse(error);

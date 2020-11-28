@@ -1,4 +1,6 @@
 import { User } from "Model/User/User";
+import { Media } from "Model/Media/Media";
+import { Comment } from "Model/Comment/Comment";
 import { connected } from "process";
 import { compileFunction } from "vm";
 import {Database} from "../Database";
@@ -34,7 +36,6 @@ export class UserDBService {
 
         try {
             result = await this.db.sendQuery(sqlQuery);
-            console.log(result);
             // TODO
         } 
         catch(err){
@@ -43,7 +44,7 @@ export class UserDBService {
             }
             throw err;
         }
-        return (result.length == 1);
+        return result;
     }
 
     public async getParties(user: User): Promise<any> {
@@ -53,7 +54,6 @@ export class UserDBService {
 
         try {
             result = await this.db.sendQuery(sqlQuery);
-            console.log(result);
             // TODO
         } 
         catch(err){
@@ -69,7 +69,6 @@ export class UserDBService {
 
         try {
             result = await this.db.sendQuery(sqlQuery);
-            console.log(result);
             // TODO
         } 
         catch(err){
@@ -79,13 +78,36 @@ export class UserDBService {
     }
 
     public async getFriendActivities(user: User): Promise<any> {
+        let resultFriends = null;
+        let resultActivities = null;
+
+        let sqlQuery = "SELECT F.friend2Username, WHERE F.friend1Username = '" + user.username + "';";
+
+        try {
+            resultFriends = await this.db.sendQuery(sqlQuery);
+            sqlQuery = "SELECT F.friend1Username, WHERE F.friend2Username = '" + user.username + "';";
+            resultFriends.concat(await this.db.sendQuery(sqlQuery));
+            if (resultFriends.length > 0)
+            {
+                sqlQuery = "SELECT W.username, M.name FROM , Watch W, Media M WHERE FIND_IN_SET(W.username, " + resultFriends + ") AND W.mediaId = M.mediaId;";
+                resultActivities = await this.db.sendQuery(sqlQuery);
+            }
+            // TODO
+        } 
+        catch(err){
+            throw err;
+        }
+        return resultActivities;
+    }
+
+    public async addFriend(mainUser: User, invitedUser: string): Promise<any> {
         let result = null;
 
-        let sqlQuery = "SELECT F.friend2Username, M.name FROM Friendship F, Watch W, Media M WHERE F.friend1Username = '" + user.username + "' AND W.username = F.friend2Username AND W.mediaId = M.mediaId;";
+        let sqlQuery = "DELETE FROM FriendshipInvitation WHERE inviterUsername = '" + mainUser.username + "' and invitedUsername = '" + invitedUser + "';"+
+                    "\n INSERT INTO Friendship VALUES('" + mainUser.username + "', '" + invitedUser + "');";
 
         try {
             result = await this.db.sendQuery(sqlQuery);
-            console.log(result);
             // TODO
         } 
         catch(err){
@@ -94,15 +116,13 @@ export class UserDBService {
         return result;
     }
 
-    public async addFriend(mainUser: User, invitedUser: User): Promise<any> {
+    public async deleteFriend(mainUser: User, deletedUser: string): Promise<any> {
         let result = null;
 
-        let sqlQuery = "DELETE FROM FriendshipInvitation WHERE inviterUsername = '" + mainUser.username + "' and invitedUsername = '" + invitedUser.username + "';"+
-                    "\n INSERT INTO Friendship VALUES('" + mainUser.username + "', accepted-friendUsername);";
+        let sqlQuery = "DELETE FROM Friendship WHERE friend1-id = '" + mainUser.username + "' and friend2-id = '" + deletedUser + "';";
 
         try {
             result = await this.db.sendQuery(sqlQuery);
-            console.log(result);
             // TODO
         } 
         catch(err){
@@ -111,14 +131,52 @@ export class UserDBService {
         return result;
     }
 
-    public async deleteFriend(mainUser: User, deletedUser: User): Promise<any> {
+    public async rateMedia(user: User, media: Media, rate: number): Promise<any> {
         let result = null;
 
-        let sqlQuery = "DELETE FROM Friendship WHERE friend1-id = '" + mainUser.username + "' and friend2-id = '" + deletedUser.username + "';";
+        let sqlQuery = "SELECT * FROM MediaRating WHERE Media-id = '" + media.mediaId + "' AND user-id = '" + user.username + "';"
 
         try {
             result = await this.db.sendQuery(sqlQuery);
-            console.log(result);
+            if (result.length == 0)
+            {
+                sqlQuery = "INSERT INTO MediaRating VALUES('" + user.username + "', '" + media.mediaId + "', " + rate + ");";
+            }
+            else
+            {
+                sqlQuery = "UPDATE MediaRating SET rating = " + rate + " WHERE media-id = '" + media.mediaId + "' AND user-id = '" + user.username + "';";
+            }
+            result = await this.db.sendQuery(sqlQuery);
+            // TODO
+        } 
+        catch(err){
+            throw err;
+        }
+        return result;
+    }
+
+    public async addComment(user: User, media: Media, comment: Comment): Promise<any> {
+        let result = null;
+
+        let sqlQuery = "INSERT INTO Comment VALUES('" + comment.commentId + "', '" + user.username + "', '" + media.mediaId + "', '" + comment.text + "', '" + comment.timeStamp + "');";
+
+        try {
+            result = await this.db.sendQuery(sqlQuery);
+            // TODO
+        } 
+        catch(err){
+            throw err;
+        }
+        return result;
+    }
+
+    public async deleteComment(mainUser: User, deletedUser: string): Promise<any> {
+        let result = null;
+
+        let sqlQuery = "DELETE FROM Friendship WHERE friend1-id = '" + mainUser.username + "' and friend2-id = '" + deletedUser + "';";
+
+        try {
+            result = await this.db.sendQuery(sqlQuery);
             // TODO
         } 
         catch(err){

@@ -5,7 +5,8 @@ import {MediaDBService} from "./MediaDBService";
 //import {SuccessResponse} from "../SuccessResponse";
 //import {ErrorResponse} from "../ErrorResponse";
 //import {ResponseModel} from "../Models/Response/ResponseModel";
-//import { User } from "../Models/User/User";
+import { User } from "../Models/User/User";
+import { Media } from "../Models/Media/Media";
 
 export class MediaBusiness {
 
@@ -55,7 +56,7 @@ export class MediaBusiness {
         }
     }
 
-    public async createSerie(serie: TVSeriesEpisode): Promise<ResponseModel>
+    public async createSerie(serie: Media): Promise<ResponseModel>
     {
         try {
             let result = await this.mediaDBService.createSerie(serie);
@@ -65,7 +66,7 @@ export class MediaBusiness {
         }
     }
 
-    public async createMovie(movie: Movie): Promise<ResponseModel>
+    public async createMovie(movie: Media): Promise<ResponseModel>
     {
         try {
             let result = await this.mediaDBService.createMovie(movie);
@@ -86,7 +87,7 @@ export class MediaBusiness {
        }
    }
 
-   public async deleteSerie(serie: TVSeriesEpisode): Promise<ResponseModel>
+   public async deleteSerie(serie: Media): Promise<ResponseModel>
     {
         try {
             let result = await this.mediaDBService.deleteSerie(serie);
@@ -96,7 +97,7 @@ export class MediaBusiness {
         }
     }
 
-    public async deleteMovie(movie: Movie): Promise<ResponseModel>
+    public async deleteMovie(movie: Media): Promise<ResponseModel>
     {
         try {
             let result = await this.mediaDBService.deleteMovie(movie);
