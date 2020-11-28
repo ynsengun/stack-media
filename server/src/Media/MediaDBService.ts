@@ -1,4 +1,5 @@
 import { User } from "Model/User/User";
+import { Media } from "Model/Media/Media";
 import { connected } from "process";
 import { compileFunction } from "vm";
 import {Database} from "../Database";
@@ -58,10 +59,42 @@ export class MediaDBService {
         return result;
     }
 
+    public async getRating(media: Media): Promise<any> {
+        let result = null;
+
+        let sqlQuery = "SELECT M.mediaId AVG(rate) FROM Media M INNER JOIN MediaRating ON M.media-id = MediaRating.media-id WHERE M.mediaId = '" + media.mediaId + "' GROUP BY M.media-id;";
+
+        try {
+            result = await this.db.sendQuery(sqlQuery);
+            // TODO
+        } 
+        catch(err){
+            throw err;
+        }
+        return result;
+    }
+
+    public async getComments(): Promise<any> {
+        /* Rapordaki SQL de bi problem var anlamadım commentliyorum simdilik
+        let result = null;
+
+        let sqlQuery = "SELECT * FROM Movie;";
+
+        try {
+            result = await this.db.sendQuery(sqlQuery);
+            // TODO
+        } 
+        catch(err){
+            throw err;
+        }
+        return result;
+        */
+    }
+
     public async createMedia(media: Media): Promise<any> {
         let result = null;
 
-        let sqlQuery = "INSERT INTO Media VALUES('" + media.mediaId + "','" + media.publishUserId + "','" + media.name + "','" + media.description + "','" + media.path + "','" + media.uploadTime + "');";
+        let sqlQuery = "INSERT INTO Media VALUES('" + media.mediaId + "','" + media.publishUserId + "','" + media.name + "','" + media.description + "','" + media.path + "','" + media.uploadDate + "');";
 
         try {
             result = await this.db.sendQuery(sqlQuery);
@@ -118,7 +151,7 @@ export class MediaDBService {
         return result;
     }   
 
-    public async deleteSerie(serie: TVSeriesEpisode): Promise<any> {
+    public async deleteSerie(serie: Media): Promise<any> {
         let result = null;
 
         let sqlQuery = "DELETE FROM TV-Series-Episode WHERE mediaId = '" + serie.mediaId + "';";
@@ -133,7 +166,7 @@ export class MediaDBService {
         return result;
     }   
 
-    public async deleteMovie(movie: Movie): Promise<any> {
+    public async deleteMovie(movie: Media): Promise<any> {
         let result = null;
 
         let sqlQuery = "DELETE FROM Movie WHERE mediaId = '" + movie.mediaId + "';";
@@ -168,7 +201,7 @@ export class MediaDBService {
     public async getWatch(media: Media, user: User): Promise<any> {
         let result = null;
 
-        let sqlQuery = "SELECT progress FROM Watch WHERE media-id = '" + media.mediaId + "' AND user-id = '" + user.userId + "';";
+        let sqlQuery = "SELECT progress FROM Watch WHERE media-id = '" + media.mediaId + "' AND username = '" + user.username + "';";
 
         try {
             result = await this.db.sendQuery(sqlQuery);
@@ -183,7 +216,7 @@ export class MediaDBService {
     public async watch(media: Media, user: User): Promise<any> {
         let result = null;
 
-        let sqlQuery = "UPDATE Watch SET progress = cachedProgress + 1, time-stamp = TIMESTAMP() WHERE MediaId = '" + media.mediaId + "' AND userId = '" + user.userId + "';";
+        let sqlQuery = "UPDATE Watch SET progress = cachedProgress + 1, time-stamp = TIMESTAMP() WHERE MediaId = '" + media.mediaId + "' AND userId = '" + user.username + "';";
 
         try {
             result = await this.db.sendQuery(sqlQuery);
@@ -198,7 +231,7 @@ export class MediaDBService {
     public async getSuggestionForMedia(media: Media, user: User): Promise<any> {
         let result = null;
 
-        let sqlQuery = "SELECT M.name FROM GenrePreference GP, HasGenre HG, Media WHERE GP.user-id = '" + user.userId + "' and GP.genre-id = HG.genre-id and  HG.media-id = M.media-id;";
+        let sqlQuery = "SELECT M.name FROM GenrePreference GP, HasGenre HG, Media WHERE GP.username = '" + user.username + "' and GP.genre-id = HG.genre-id and  HG.media-id = M.media-id;";
 
         try {
             result = await this.db.sendQuery(sqlQuery);

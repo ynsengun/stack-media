@@ -97,9 +97,45 @@ export class UserBusiness {
         }
     }
 
-    public async deleteComment(mainUser: User): Promise<ResponseModel> {
+    public async deleteComment(comment: Comment): Promise<ResponseModel> {
         try {
-            let result = await this.userDBService.deleteFriend(mainUser, deletedUser);
+            let result = await this.userDBService.deleteComment(comment);
+            return new SuccessResponse(result);
+        } catch (error) {
+            return new ErrorResponse(error);
+        }
+    }
+
+    public async addGenre(user: User, genre: Genre): Promise<ResponseModel> {
+        try {
+            let result = await this.userDBService.addGenre(user, genre);
+            return new SuccessResponse(result);
+        } catch (error) {
+            return new ErrorResponse(error);
+        }
+    }
+
+    public async deleteGenre(user: User, genre: Genre): Promise<ResponseModel> {
+        try {
+            let result = await this.userDBService.deleteGenre(user, genre);
+            return new SuccessResponse(result);
+        } catch (error) {
+            return new ErrorResponse(error);
+        }
+    }
+
+    public async changePassword(user: User, newPassword: string): Promise<ResponseModel> {
+        try {
+            let result = await this.userDBService.changePassword(user, newPassword);
+            return new SuccessResponse(result);
+        } catch (error) {
+            return new ErrorResponse(error);
+        }
+    }
+
+    public async changeInfo(user: User, newUsername: string, newEmail: string, newUserType: string): Promise<ResponseModel> {
+        try {
+            let result = await this.userDBService.changeInfo(user, newUsername, newEmail, newUserType);
             return new SuccessResponse(result);
         } catch (error) {
             return new ErrorResponse(error);

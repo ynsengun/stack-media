@@ -46,6 +46,26 @@ export class MediaBusiness {
         }
     }
 
+    public async getRating(media: Media): Promise<ResponseModel>
+    {
+        try {
+            let result = await this.mediaDBService.getRating(media);
+            return new SuccessResponse(result);
+        } catch (error) {
+            return new ErrorResponse(error);
+        }
+    }
+
+    public async getComments(): Promise<ResponseModel>
+    {
+        try {
+            let result = await this.mediaDBService.getComments();
+            return new SuccessResponse(result);
+        } catch (error) {
+            return new ErrorResponse(error);
+        }
+    }
+
     public async createMedia(media: Media): Promise<ResponseModel>
     {
         try {

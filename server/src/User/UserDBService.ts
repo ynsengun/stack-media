@@ -170,13 +170,79 @@ export class UserDBService {
         return result;
     }
 
-    public async deleteComment(mainUser: User, deletedUser: string): Promise<any> {
+    public async deleteComment(comment: Comment): Promise<any> {
         let result = null;
 
-        let sqlQuery = "DELETE FROM Friendship WHERE friend1-id = '" + mainUser.username + "' and friend2-id = '" + deletedUser + "';";
+        let sqlQuery = "DELETE FROM Comment WHERE commentId = '" + comment.commentId + "';";
 
         try {
             result = await this.db.sendQuery(sqlQuery);
+            // TODO
+        } 
+        catch(err){
+            throw err;
+        }
+        return result;
+    }
+
+    public async addGenre(user: User, genre: Genre): Promise<any> {
+        let result = null;
+
+        let sqlQuery = "INSERT INTO GenrePreference VALUES ('" + user.username + "', '" + genre.genreId + "');";
+
+        try {
+            result = await this.db.sendQuery(sqlQuery);
+            // TODO
+        } 
+        catch(err){
+            throw err;
+        }
+        return result;
+    }
+
+    public async deleteGenre(user: User, genre: Genre): Promise<any> {
+        let result = null;
+
+        let sqlQuery = "DELETE FROM GenrePreference WHERE commentId = '" + user.username + "' and genreId = '" + genre.genreId + "');";
+
+        try {
+            result = await this.db.sendQuery(sqlQuery);
+            // TODO
+        } 
+        catch(err){
+            throw err;
+        }
+        return result;
+    }
+
+    public async changePassword(user: User, newPassword: string): Promise<any> {
+        let result = null;
+
+        let sqlQuery = "UPDATE User SET password = '" + newPassword + "' WHERE username = '" + user.username + "' AND password = '" + user.password + "';";
+
+        try {
+            result = await this.db.sendQuery(sqlQuery);
+            // TODO
+        } 
+        catch(err){
+            throw err;
+        }
+        return result;
+    }
+
+    public async changeInfo(user: User, newUsername: string, newEmail: string, newUserType: string): Promise<any> {
+        let result = null;
+
+        let sqlQuery = "SELECT * FROM User WHERE username = '" + user.username; + "' AND ('" + newUsername + "', '" + newEmail + "') NOT IN (SELECT U.username, U.email FROM User U);";
+        sqlQuery = "UPDATE User SET email = '" +  "' WHERE username = '" + user.username + "';";
+
+        try {
+            result = await this.db.sendQuery(sqlQuery);
+            if (result.length > 0)
+            {
+                sqlQuery = "UPDATE User SET username = '" + user.username + "', email = '" +  newEmail +"', userType = '" + newUserType + "' WHERE username = '" + user.username + "';";
+                result = await this.db.sendQuery(sqlQuery);
+            }
             // TODO
         } 
         catch(err){

@@ -6,6 +6,7 @@ import {Validation} from "./Service/Validation";
 import {ErrorResponse} from "./Model/Response/ErrorResponse";
 import userMapping from "./Service/UserMapping";
 import mediaMapping from "./Service/MediaMapping";
+import commentMapping from "./Service/CommentMapping";
 
 export class Controller{
 
@@ -116,7 +117,7 @@ export class Controller{
     public async rateMedia(request: Request, response: Response): Promise<void> {
         try{
             this.validation.rateMediaValidation(request);
-            let result = await this.userBusiness.rateMedia(userMapping.map(request.body));
+            let result = await this.userBusiness.rateMedia(userMapping.map(request.body), mediaMapping.map(request.body), request.body.rate);
             response.status(result.status).send(result);
         } catch(error){
             const errorResponse = new ErrorResponse(error);
@@ -127,7 +128,7 @@ export class Controller{
     public async addComment(request: Request, response: Response): Promise<void> {
         try{
             this.validation.addCommentValidation(request);
-            let result = await this.userBusiness.addComment(userMapping.map(request.body));
+            let result = await this.userBusiness.addComment(userMapping.map(request.body), mediaMapping.map(request.body), commentMapping.map(request.body));
             response.status(result.status).send(result);
         } catch(error){
             const errorResponse = new ErrorResponse(error);
@@ -138,7 +139,7 @@ export class Controller{
     public async deleteComment(request: Request, response: Response): Promise<void> {
         try{
             this.validation.deleteCommentValidation(request);
-            let result = await this.userBusiness.deleteComment(userMapping.map(request.body));
+            let result = await this.userBusiness.deleteComment(commentMapping.map(request.body));
             response.status(result.status).send(result);
         } catch(error){
             const errorResponse = new ErrorResponse(error);
@@ -146,11 +147,10 @@ export class Controller{
         }
     }
 
-    /*
     public async addGenre(request: Request, response: Response): Promise<void> {
         try{
             this.validation.addGenreValidation(request);
-            let result = await this.userBusiness.addGenre(userMapping.map(request.body));
+            let result = await this.userBusiness.addGenre(userMapping.map(request.body), genreMapping.map(request.body));
             response.status(result.status).send(result);
         } catch(error){
             const errorResponse = new ErrorResponse(error);
@@ -161,7 +161,7 @@ export class Controller{
     public async deleteGenre(request: Request, response: Response): Promise<void> {
         try{
             this.validation.deleteGenreValidation(request);
-            let result = await this.userBusiness.deleteGenre(userMapping.map(request.body));
+            let result = await this.userBusiness.addGenre(userMapping.map(request.body), genreMapping.map(request.body));
             response.status(result.status).send(result);
         } catch(error){
             const errorResponse = new ErrorResponse(error);
@@ -172,7 +172,7 @@ export class Controller{
     public async changePassword(request: Request, response: Response): Promise<void> {
         try{
             this.validation.changePasswordValidation(request);
-            let result = await this.userBusiness.changePassword(userMapping.map(request.body));
+            let result = await this.userBusiness.changePassword(userMapping.map(request.body), request.body.newPassword);
             response.status(result.status).send(result);
         } catch(error){
             const errorResponse = new ErrorResponse(error);
@@ -183,14 +183,14 @@ export class Controller{
     public async changeInfo(request: Request, response: Response): Promise<void> {
         try{
             this.validation.changeInfoValidation(request);
-            let result = await this.userBusiness.changeInfo(userMapping.map(request.body));
+            let result = await this.userBusiness.changeInfo(userMapping.map(request.body), request.body.newUsername, request.body.newEmail, request.body.newUserType);
             response.status(result.status).send(result);
         } catch(error){
             const errorResponse = new ErrorResponse(error);
             response.status(errorResponse.status).send(new ErrorResponse(error));
         }
     }
-    */
+
     // media functions
 
 
@@ -218,6 +218,27 @@ export class Controller{
     public async getSeries(request: Request, response: Response): Promise<void> {
         try{
             let result = await this.mediaBusiness.getSeries();
+            response.status(result.status).send(result);
+        } catch(error){
+            const errorResponse = new ErrorResponse(error);
+            response.status(errorResponse.status).send(new ErrorResponse(error));
+        }
+    }
+
+    public async getRating(request: Request, response: Response): Promise<void> {
+        try{
+            this.validation.getRatingValidation(request);
+            let result = await this.mediaBusiness.getRating(mediaMapping.map(request.body));
+            response.status(result.status).send(result);
+        } catch(error){
+            const errorResponse = new ErrorResponse(error);
+            response.status(errorResponse.status).send(new ErrorResponse(error));
+        }
+    }
+
+    public async getComments(request: Request, response: Response): Promise<void> {
+        try{
+            let result = await this.mediaBusiness.getComments();
             response.status(result.status).send(result);
         } catch(error){
             const errorResponse = new ErrorResponse(error);

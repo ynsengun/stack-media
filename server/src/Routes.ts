@@ -68,7 +68,6 @@ export class Routes{
                 this.controller.deleteComment(req, res)
             });
 
-            /*
         app.route('/api/user/addGenre')
             .post(this.tokenService.checkToken, (req: Request, res: Response) => {
                 this.controller.addGenre(req, res)
@@ -88,13 +87,12 @@ export class Routes{
             .post(this.tokenService.checkToken, (req: Request, res: Response) => {
                 this.controller.changeInfo(req, res)
             });
-        */
     }
 
     private mediaRoutes(app){
         app.route('/api/media/getMedia')
         .get(this.tokenService.checkToken, (req: Request, res: Response) => {
-            this.controller.getMedias(req, res)
+            this.controller.getMedia(req, res)
         });
 
         app.route('/api/media/getMovies')
@@ -105,6 +103,16 @@ export class Routes{
         app.route('/api/media/getSeries')
             .get(this.tokenService.checkToken, (req: Request, res: Response) => {
                 this.controller.getSeries(req, res)
+            });
+
+        app.route('/api/media/getRating')
+            .get(this.tokenService.checkToken, (req: Request, res: Response) => {
+                this.controller.getRating(req, res)
+            });
+
+        app.route('/api/media/getComments')
+            .get(this.tokenService.checkToken, (req: Request, res: Response) => {
+                this.controller.getComment(req, res)
             });
         
         app.route('/api/media/createMedia')
