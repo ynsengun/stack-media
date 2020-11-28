@@ -1,6 +1,6 @@
 export interface Media{
     mediaId: string
-    publishUserId: string
+    publishUsername: string
     name: string
     description: string
     path: string

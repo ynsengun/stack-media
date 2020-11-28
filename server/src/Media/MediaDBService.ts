@@ -94,7 +94,7 @@ export class MediaDBService {
     public async createMedia(media: Media): Promise<any> {
         let result = null;
 
-        let sqlQuery = "INSERT INTO Media VALUES('" + media.mediaId + "','" + media.publishUserId + "','" + media.name + "','" + media.description + "','" + media.path + "','" + media.uploadDate + "');";
+        let sqlQuery = "INSERT INTO Media VALUES('" + media.mediaId + "','" + media.publishUsername + "','" + media.name + "','" + media.description + "','" + media.path + "','" + media.uploadDate + "');";
 
         try {
             result = await this.db.sendQuery(sqlQuery);
@@ -106,6 +106,7 @@ export class MediaDBService {
         return result;
     }
 
+    /*
     public async createSerie(serie: TVSeriesEpisode): Promise<any> {
         let result = null;
 
@@ -135,7 +136,7 @@ export class MediaDBService {
         }
         return result;
     }
-
+    */
    public async deleteMedia(media: Media): Promise<any> {
         let result = null;
 
@@ -216,7 +217,7 @@ export class MediaDBService {
     public async watch(media: Media, user: User): Promise<any> {
         let result = null;
 
-        let sqlQuery = "UPDATE Watch SET progress = cachedProgress + 1, time-stamp = TIMESTAMP() WHERE MediaId = '" + media.mediaId + "' AND userId = '" + user.username + "';";
+        let sqlQuery = "UPDATE Watch SET progress = cachedProgress + 1, time-stamp = TIMESTAMP() WHERE MediaId = '" + media.mediaId + "' AND username = '" + user.username + "';";
 
         try {
             result = await this.db.sendQuery(sqlQuery);

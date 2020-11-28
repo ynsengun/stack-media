@@ -1,6 +1,6 @@
 export interface Comment{
     commentId: string
-    userId: string
+    username: string
     mediaId: string
     timeStamp: string
     text: string

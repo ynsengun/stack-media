@@ -7,6 +7,7 @@ import {ErrorResponse} from "./Model/Response/ErrorResponse";
 import userMapping from "./Service/UserMapping";
 import mediaMapping from "./Service/MediaMapping";
 import commentMapping from "./Service/CommentMapping";
+import channelMapping from "Service/ChannelMapping";
 
 export class Controller{
 
@@ -350,20 +351,20 @@ export class Controller{
     public async getSuggestionForMedia(request: Request, response: Response): Promise<void> {
         try{
             this.validation.getSuggestionForMediaValidation(request);
-            let result = await this.mediaBusiness.getSuggestionForMedia(mediaMapping.map(request.body));
+            let result = await this.mediaBusiness.getSuggestionForMedia(mediaMapping.map(request.body), userMapping.map(request.body));
             response.status(result.status).send(result);
         } catch(error){
             const errorResponse = new ErrorResponse(error);
             response.status(errorResponse.status).send(new ErrorResponse(error));
         }
     }
-    /*
+
     // channel functions
 
     public async getMoviesFromChannel(request: Request, response: Response): Promise<void> {
         try{
             this.validation.getMoviesFromChannelValidation(request);
-            let result = await this.channelBusiness.getMoviesFromChannel(userMapping.map(request.body));
+            let result = await this.channelBusiness.getMoviesFromChannel(channelMapping.map(request.body));
             response.status(result.status).send(result);
         } catch(error){
             const errorResponse = new ErrorResponse(error);
@@ -374,7 +375,7 @@ export class Controller{
     public async getSeriesFromChannel(request: Request, response: Response): Promise<void> {
         try{
             this.validation.getSeriesFromChannelValidation(request);
-            let result = await this.channelBusiness.getSeriesFromChannel(userMapping.map(request.body));
+            let result = await this.channelBusiness.getSeriesFromChannel(channelMapping.map(request.body));
             response.status(result.status).send(result);
         } catch(error){
             const errorResponse = new ErrorResponse(error);
@@ -385,7 +386,7 @@ export class Controller{
     public async getMovieSuggestionForChannel(request: Request, response: Response): Promise<void> {
         try{
             this.validation.getMovieSuggestionForChannelValidation(request);
-            let result = await this.channelBusiness.getMovieSuggestionForChannel(userMapping.map(request.body));
+            let result = await this.channelBusiness.getMovieSuggestionForChannel(channelMapping.map(request.body));
             response.status(result.status).send(result);
         } catch(error){
             const errorResponse = new ErrorResponse(error);
@@ -396,7 +397,7 @@ export class Controller{
     public async getSeriesSuggestionForChannel(request: Request, response: Response): Promise<void> {
         try{
             this.validation.getSeriesSuggestionForChannelValidation(request);
-            let result = await this.channelBusiness.getSeriesSuggestionForChannel(userMapping.map(request.body));
+            let result = await this.channelBusiness.getSeriesSuggestionForChannel(channelMapping.map(request.body));
             response.status(result.status).send(result);
         } catch(error){
             const errorResponse = new ErrorResponse(error);
@@ -426,10 +427,10 @@ export class Controller{
         }
     }
     
-    public async addMovieToChannel(request: Request, response: Response): Promise<void> {
+    public async addMediaToChannel(request: Request, response: Response): Promise<void> {
         try{
-            this.validation.addMovieToChannelValidation(request);
-            let result = await this.channelBusiness.addMovieToChannel(userMapping.map(request.body));
+            this.validation.addMediaToChannelValidation(request);
+            let result = await this.channelBusiness.addMediaToChannel(userMapping.map(request.body));
             response.status(result.status).send(result);
         } catch(error){
             const errorResponse = new ErrorResponse(error);
@@ -437,10 +438,10 @@ export class Controller{
         }
     }
 
-    public async addSeriesToChannel(request: Request, response: Response): Promise<void> {
+    public async deleteMediaFromChannel(request: Request, response: Response): Promise<void> {
         try{
-            this.validation.addSeriesToChannelValidation(request);
-            let result = await this.channelBusiness.addSeriesToChannel(userMapping.map(request.body));
+            this.validation.deleteMediaFromChannel(request);
+            let result = await this.channelBusiness.deleteMediaFromChannel(userMapping.map(request.body));
             response.status(result.status).send(result);
         } catch(error){
             const errorResponse = new ErrorResponse(error);
@@ -468,6 +469,5 @@ export class Controller{
             const errorResponse = new ErrorResponse(error);
             response.status(errorResponse.status).send(new ErrorResponse(error));
         }
-    }*/
-
+    }
 }

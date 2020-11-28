@@ -2,11 +2,8 @@ import { ResponseModel } from "Model/Response/ResponseModel";
 import {SuccessResponse} from "../Model/Response/SuccessResponse";
 import {ErrorResponse} from "../Model/Response/ErrorResponse";
 import {MediaDBService} from "./MediaDBService";
-//import {SuccessResponse} from "../SuccessResponse";
-//import {ErrorResponse} from "../ErrorResponse";
-//import {ResponseModel} from "../Models/Response/ResponseModel";
-import { User } from "../Models/User/User";
-import { Media } from "../Models/Media/Media";
+import { User } from "../Model/User/User";
+import { Media } from "../Model/Media/Media";
 
 export class MediaBusiness {
 
@@ -76,6 +73,7 @@ export class MediaBusiness {
         }
     }
 
+    /*
     public async createSerie(serie: Media): Promise<ResponseModel>
     {
         try {
@@ -95,6 +93,7 @@ export class MediaBusiness {
             return new ErrorResponse(error);
         }
     }
+    */
     
 
    public async deleteMedia(media: Media): Promise<ResponseModel>
@@ -157,7 +156,7 @@ export class MediaBusiness {
         }
     }
 
-    public async getSuggestionForMedia(media: Media): Promise<ResponseModel>
+    public async getSuggestionForMedia(media: Media, user: User): Promise<ResponseModel>
     {
         try {
             let result = await this.mediaDBService.getSuggestionForMedia(media, user);

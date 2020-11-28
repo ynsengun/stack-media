@@ -112,7 +112,7 @@ export class Routes{
 
         app.route('/api/media/getComments')
             .get(this.tokenService.checkToken, (req: Request, res: Response) => {
-                this.controller.getComment(req, res)
+                this.controller.getComments(req, res)
             });
         
         app.route('/api/media/createMedia')
@@ -158,7 +158,6 @@ export class Routes{
 
     private channelRoutes(app){
         
-        /*
         app.route('/api/channel/getMovies')
             .get(this.tokenService.checkToken, (req: Request, res: Response) => {
                 this.controller.getMoviesFromChannel(req, res)
@@ -191,12 +190,12 @@ export class Routes{
 
         app.route('/api/channel/addMovie')
             .post(this.tokenService.checkToken, (req: Request, res: Response) => {
-                this.controller.addMovieToChannel(req, res)
+                this.controller.addMediaToChannel(req, res)
             });
-        
-        app.route('/api/channel/addSeries')
+
+        app.route('/api/channel/deleteMovie')
             .post(this.tokenService.checkToken, (req: Request, res: Response) => {
-                this.controller.addSeriesToChannel(req, res)
+                this.controller.deleteMediaFromChannel(req, res)
             });
 
         app.route('/api/channel/create')
@@ -208,8 +207,6 @@ export class Routes{
             .delete(this.tokenService.checkToken, (req: Request, res: Response) => {
                 this.controller.deleteChannel(req, res)
             });
-
-        */
     }
     
     public routes(app){

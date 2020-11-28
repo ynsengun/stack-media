@@ -119,7 +119,7 @@ export class UserDBService {
     public async deleteFriend(mainUser: User, deletedUser: string): Promise<any> {
         let result = null;
 
-        let sqlQuery = "DELETE FROM Friendship WHERE friend1-id = '" + mainUser.username + "' and friend2-id = '" + deletedUser + "';";
+        let sqlQuery = "DELETE FROM Friendship WHERE friend1Id = '" + mainUser.username + "' and friend2Id = '" + deletedUser + "';";
 
         try {
             result = await this.db.sendQuery(sqlQuery);
@@ -134,7 +134,7 @@ export class UserDBService {
     public async rateMedia(user: User, media: Media, rate: number): Promise<any> {
         let result = null;
 
-        let sqlQuery = "SELECT * FROM MediaRating WHERE Media-id = '" + media.mediaId + "' AND user-id = '" + user.username + "';"
+        let sqlQuery = "SELECT * FROM MediaRating WHERE MediaId = '" + media.mediaId + "' AND username = '" + user.username + "';"
 
         try {
             result = await this.db.sendQuery(sqlQuery);
@@ -144,7 +144,7 @@ export class UserDBService {
             }
             else
             {
-                sqlQuery = "UPDATE MediaRating SET rating = " + rate + " WHERE media-id = '" + media.mediaId + "' AND user-id = '" + user.username + "';";
+                sqlQuery = "UPDATE MediaRating SET rating = " + rate + " WHERE mediaId = '" + media.mediaId + "' AND username = '" + user.username + "';";
             }
             result = await this.db.sendQuery(sqlQuery);
             // TODO
@@ -233,8 +233,7 @@ export class UserDBService {
     public async changeInfo(user: User, newUsername: string, newEmail: string, newUserType: string): Promise<any> {
         let result = null;
 
-        let sqlQuery = "SELECT * FROM User WHERE username = '" + user.username; + "' AND ('" + newUsername + "', '" + newEmail + "') NOT IN (SELECT U.username, U.email FROM User U);";
-        sqlQuery = "UPDATE User SET email = '" +  "' WHERE username = '" + user.username + "';";
+        let sqlQuery = "SELECT * FROM User WHERE username = '" + user.username + "' AND ('" + newUsername + "', '" + newEmail + "') NOT IN (SELECT U.username, U.email FROM User U);";
 
         try {
             result = await this.db.sendQuery(sqlQuery);
