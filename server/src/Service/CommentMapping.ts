@@ -5,7 +5,7 @@ class CommentMapping{
         if(!commentModel) return null;
         return {
             commentId: commentModel.commentId || null,
-            userId: commentModel.userId || null,
+            username: commentModel.username || null,
             mediaId: commentModel.mediaId || null,
             timeStamp: commentModel.timeStamp || null,
             text: commentModel.text || null

@@ -6,7 +6,7 @@ class ChannelMapping{
         return {
             channelId: channelModel.channelId || null,
             title: channelModel.title || null,
-            userId: channelModel.userId || null
+            username: channelModel.username || null
         };
     }
 }

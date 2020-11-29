@@ -22,17 +22,11 @@ export class Routes{
                 this.controller.register(req, res)
             });
         
-        /*
-        app.route('/api/user/logout')
-            .post(this.tokenService.checkToken, (req: Request, res: Response) => {
-                this.controller.logout(req, res);
-            });
-        */
         app.route('/api/user/getParties')
             .get(this.tokenService.checkToken, (req: Request, res: Response) => {
                 this.controller.getParties(req, res)
             });
-
+        
         app.route('/api/user/getChannels')
             .get(this.tokenService.checkToken, (req: Request, res: Response) => {
                 this.controller.getChannels(req, res)
@@ -42,17 +36,7 @@ export class Routes{
             .get(this.tokenService.checkToken, (req: Request, res: Response) => {
                 this.controller.getFriendActivities(req, res)
             });
-
-        app.route('/api/user/addFriend')
-            .post(this.tokenService.checkToken, (req: Request, res: Response) => {
-                this.controller.addFriend(req, res)
-            });
         
-        app.route('/api/user/deleteFriend')
-            .delete(this.tokenService.checkToken, (req: Request, res: Response) => {
-                this.controller.deleteFriend(req, res)
-            });
-
         app.route('/api/user/rate')
             .post(this.tokenService.checkToken, (req: Request, res: Response) => {
                 this.controller.rateMedia(req, res)
@@ -63,7 +47,7 @@ export class Routes{
                 this.controller.addComment(req, res)
             });
 
-        app.route('/api/user/deleteComment')
+            app.route('/api/user/deleteComment')
             .delete(this.tokenService.checkToken, (req: Request, res: Response) => {
                 this.controller.deleteComment(req, res)
             });
@@ -82,16 +66,33 @@ export class Routes{
             .post(this.tokenService.checkToken, (req: Request, res: Response) => {
                 this.controller.changePassword(req, res)
             });
-
+        
         app.route('/api/user/changeInfo')
             .post(this.tokenService.checkToken, (req: Request, res: Response) => {
                 this.controller.changeInfo(req, res)
             });
+        /*
+        app.route('/api/user/logout')
+            .post(this.tokenService.checkToken, (req: Request, res: Response) => {
+                this.controller.logout(req, res);
+            });
+        */
+       /*
+
+        app.route('/api/user/addFriend')
+            .post(this.tokenService.checkToken, (req: Request, res: Response) => {
+                this.controller.addFriend(req, res)
+            });
+        
+        app.route('/api/user/deleteFriend')
+            .delete(this.tokenService.checkToken, (req: Request, res: Response) => {
+                this.controller.deleteFriend(req, res)
+            });*/
     }
 
     private mediaRoutes(app){
         app.route('/api/media/getMedia')
-        .get(this.tokenService.checkToken, (req: Request, res: Response) => {
+            .get(this.tokenService.checkToken, (req: Request, res: Response) => {
             this.controller.getMedia(req, res)
         });
 
@@ -110,26 +111,12 @@ export class Routes{
                 this.controller.getRating(req, res)
             });
 
-        app.route('/api/media/getComments')
-            .get(this.tokenService.checkToken, (req: Request, res: Response) => {
-                this.controller.getComments(req, res)
-            });
         
         app.route('/api/media/createMedia')
             .post(this.tokenService.checkToken, (req: Request, res: Response) => {
                 this.controller.createMedia(req, res)
             });
 
-        app.route('/api/media/createSerie')
-            .post(this.tokenService.checkToken, (req: Request, res: Response) => {
-                this.controller.createSerie(req, res)
-            });
-
-        app.route('/api/media/createMovie')
-            .post(this.tokenService.checkToken, (req: Request, res: Response) => {
-                this.controller.createMovie(req, res)
-            });
-            
         app.route('/api/media/delete')
             .delete(this.tokenService.checkToken, (req: Request, res: Response) => {
                 this.controller.deleteMedia(req, res)
@@ -154,6 +141,24 @@ export class Routes{
             .get(this.tokenService.checkToken, (req: Request, res: Response) => {
                 this.controller.getSuggestionForMedia(req, res)
             });
+        /*
+
+        app.route('/api/media/getComments')
+            .get(this.tokenService.checkToken, (req: Request, res: Response) => {
+                this.controller.getComments(req, res)
+            });
+
+        app.route('/api/media/createSerie')
+            .post(this.tokenService.checkToken, (req: Request, res: Response) => {
+                this.controller.createSerie(req, res)
+            });
+
+        app.route('/api/media/createMovie')
+            .post(this.tokenService.checkToken, (req: Request, res: Response) => {
+                this.controller.createMovie(req, res)
+            });
+
+        */
     }
 
     private channelRoutes(app){

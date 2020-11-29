@@ -3,4 +3,5 @@ export interface User{
     userType: string // ?
     email: string
     username: string
+    token: string
 }

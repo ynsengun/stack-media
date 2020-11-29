@@ -1,163 +1,157 @@
-import {InvalidUserInformation} from "../Model/Error/InvalidUserInformation";
+import {InvalidRequest} from "../Model/Error/InvalidRequest";
 import {Request} from "express";
 
 export class Validation{
 
     public loginValidation(req: Request): void {
         if(!req.body.email || !req.body.password)
-            throw new InvalidUserInformation();
+            throw new InvalidRequest();
     }
     
     public registerValidation(req: Request): void {
         if(!req.body.email || !req.body.password || !req.body.userType || !req.body.username)
-            throw new InvalidUserInformation();
+            throw new InvalidRequest();
     }
 
     /*
     public logoutValidation(req: Request): void {
         if(!req.body.email || !req.body.password || !req.body.userType || !req.body.username)
-            throw new InvalidUserInformation();
+            throw new InvalidRequest();
     }*/
-
-    public getPartiesValidation(req: Request): void {
-        if(!req.body.username)
-            throw new InvalidUserInformation();
-    }
-
-    public getChannelsValidation(req: Request): void {
-        if(!req.body.username)
-            throw new InvalidUserInformation();
-    }
-
-    public getFriendActivitiesValidation(req: Request): void {
-        if(!req.body.username)
-            throw new InvalidUserInformation();
-    }
 
     public addFriendValidation(req: Request): void {
         if(!req.body.username || !req.body.invitedUsername)
-            throw new InvalidUserInformation();
+            throw new InvalidRequest();
     }
 
     public deleteFriendValidation(req: Request): void {
         if(!req.body.username || !req.body.deletedUsername)
-            throw new InvalidUserInformation();
+            throw new InvalidRequest();
     }
 
     public createMediaValidation(req: Request): void {
-        if(!req.body.publishUserId || !req.body.name || !req.body.description || !req.body.path)
-            throw new InvalidUserInformation();
+        if(!req.body.publishUsername || !req.body.name || !req.body.description || !req.body.path || !req.body.updateDate)
+            throw new InvalidRequest();
     }
 
     public deleteMediaValidation(req: Request): void {
         if(!req.body.mediaId)
-            throw new InvalidUserInformation();
+            throw new InvalidRequest();
     }
 
     public searchValidation(req: Request): void {
         if(!req.body.name || !req.body.title)
-            throw new InvalidUserInformation();
+            throw new InvalidRequest();
     }
 
     public getMediaValidation(req: Request): void {
         if(!req.body.mediaId)
-            throw new InvalidUserInformation();
+            throw new InvalidRequest();
     }
 
     public getWatchValidation(req: Request): void {
         if(!req.body.username || !req.body.mediaId)
-            throw new InvalidUserInformation();
+            throw new InvalidRequest();
     }
 
     public watchValidation(req: Request): void {
         if(!req.body.username || !req.body.mediaId)
-            throw new InvalidUserInformation();
+            throw new InvalidRequest();
     }
 
     public getSuggestionForMediaValidation(req: Request): void {
-        if(!req.body.username)
-            throw new InvalidUserInformation();
+        if(!req.body.username || !req.body.mediaId)
+            throw new InvalidRequest();
     }
-    /*
-    public rateMovieValidation(req: Request): void {
-        if(!req.body.email || !req.body.password || !req.body.userType || !req.body.username)
-            throw new InvalidUserInformation();
-    }
+
     public addCommentValidation(req: Request): void {
-        if(!req.body.email || !req.body.password || !req.body.userType || !req.body.username)
-            throw new InvalidUserInformation();
+        if(!req.body.username || !req.body.mediaId || !req.body.text || !req.body.timeStamp)
+            throw new InvalidRequest();
     }
+
+    public rateMediaValidation(req: Request): void {
+        if(!req.body.username || !req.body.rate || !req.body.mediaId)
+            throw new InvalidRequest();
+    }
+
+    public getRatingValidation(req: Request): void {
+        if(!req.body.username || !req.body.mediaId)
+            throw new InvalidRequest();
+    }
+
     public deleteCommentValidation(req: Request): void {
-        if(!req.body.email || !req.body.password || !req.body.userType || !req.body.username)
-            throw new InvalidUserInformation();
+        if(!req.body.username || !req.body.commentId)
+            throw new InvalidRequest();
     }
+
     public addGenreValidation(req: Request): void {
-        if(!req.body.email || !req.body.password || !req.body.userType || !req.body.username)
-            throw new InvalidUserInformation();
+        if(!req.body.username || !req.body.genreId)
+            throw new InvalidRequest();
     }
     public deleteGenreValidation(req: Request): void {
-        if(!req.body.email || !req.body.password || !req.body.userType || !req.body.username)
-            throw new InvalidUserInformation();
+        if(!req.body.username || !req.body.genreId)
+            throw new InvalidRequest();
     }
+
     public changePasswordValidation(req: Request): void {
-        if(!req.body.email || !req.body.password || !req.body.userType || !req.body.username)
-            throw new InvalidUserInformation();
+        if(!req.body.username || !req.body.password || !req.body.newPassword)
+            throw new InvalidRequest();
     }
+
     public changeInfoValidation(req: Request): void {
-        if(!req.body.email || !req.body.password || !req.body.userType || !req.body.username)
-            throw new InvalidUserInformation();
+        if(!req.body.username || !req.body.newUsername || !req.body.newUserType || !req.body.newEmail)
+            throw new InvalidRequest();
     }
 
     // channel functions
 
     public getMoviesFromChannelValidation(req: Request): void {
-        if(!req.body.email || !req.body.password || !req.body.userType || !req.body.username)
-            throw new InvalidUserInformation();
+        if(!req.body.username || !req.body.channelId)
+            throw new InvalidRequest();
     }
 
     public getSeriesFromChannelValidation(req: Request): void {
-        if(!req.body.email || !req.body.password || !req.body.userType || !req.body.username)
-            throw new InvalidUserInformation();
+        if(!req.body.username || !req.body.channelId)
+            throw new InvalidRequest();
     }
 
     public getMovieSuggestionForChannelValidation(req: Request): void {
-        if(!req.body.email || !req.body.password || !req.body.userType || !req.body.username)
-            throw new InvalidUserInformation();
+        if(!req.body.username || !req.body.channelId)
+            throw new InvalidRequest();
     }
         
     public getSeriesSuggestionForChannelValidation(req: Request): void {
-        if(!req.body.email || !req.body.password || !req.body.userType || !req.body.username)
-            throw new InvalidUserInformation();
+        if(!req.body.username || !req.body.channelId)
+            throw new InvalidRequest();
     }
 
     public addGenreToChannelValidation(req: Request): void {
-        if(!req.body.email || !req.body.password || !req.body.userType || !req.body.username)
-            throw new InvalidUserInformation();
+        if(!req.body.username || !req.body.channelId || !req.body.genreId)
+            throw new InvalidRequest();
     }
 
     public deleteGenreFromChannelValidation(req: Request): void {
-        if(!req.body.email || !req.body.password || !req.body.userType || !req.body.username)
-            throw new InvalidUserInformation();
+        if(!req.body.username || !req.body.channelId || !req.body.genreId)
+            throw new InvalidRequest();
     }
     
-    public addMovieToChannelValidation(req: Request): void {
-        if(!req.body.email || !req.body.password || !req.body.userType || !req.body.username)
-            throw new InvalidUserInformation();
+    public addMediaToChannelValidation(req: Request): void {
+        if(!req.body.username || !req.body.mediaId || !req.body.channelId)
+            throw new InvalidRequest();
     }
 
-    public addSeriesToChannelValidation(req: Request): void {
-        if(!req.body.email || !req.body.password || !req.body.userType || !req.body.username)
-            throw new InvalidUserInformation();
+    public deleteMediaFromChannelValidation(req: Request): void {
+        if(!req.body.username || !req.body.mediaId || !req.body.channelId)
+            throw new InvalidRequest();
     }
 
     public createChannelValidation(req: Request): void {
-        if(!req.body.email || !req.body.password || !req.body.userType || !req.body.username)
-            throw new InvalidUserInformation();
+        if(!req.body.username || !req.body.title || !req.body.channelId)
+            throw new InvalidRequest();
     }
 
     public deleteChannelValidation(req: Request): void {
-        if(!req.body.email || !req.body.password || !req.body.userType || !req.body.username)
-            throw new InvalidUserInformation();
+        if(!req.body.username || !req.body.channelId)
+            throw new InvalidRequest();
     }
-    */
 }

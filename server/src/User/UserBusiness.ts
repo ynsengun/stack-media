@@ -5,6 +5,7 @@ import {ResponseModel} from "../Model/Response/ResponseModel";
 import { User } from "../Model/User/User";
 import { Media } from "../Model/Media/Media";
 import { Comment } from "../Model/Comment/Comment";
+import { Genre } from "../Model/Genre/Genre";
 
 export class UserBusiness {
 
@@ -16,9 +17,9 @@ export class UserBusiness {
     
     public async login(user: User): Promise<ResponseModel> {
         try {
-            const email = user.email;
+            const username = user.username;
             const password = user.password;
-            let result = await this.userDBService.login(email, password);
+            let result: User = await this.userDBService.login(username, password);
             return new SuccessResponse(result);
         } catch(error) {
             return new ErrorResponse(error);
@@ -43,6 +44,15 @@ export class UserBusiness {
         }
     }
 
+    public async addComment(user: User, media: Media, comment: Comment): Promise<ResponseModel> {
+        try {
+            let result = await this.userDBService.addComment(user, media, comment);
+            return new SuccessResponse(result);
+        } catch (error) {
+            return new ErrorResponse(error);
+        }
+    }
+
     public async getChannels(user: User): Promise<ResponseModel> {
         try {
             let result = await this.userDBService.getChannels(user);
@@ -61,36 +71,9 @@ export class UserBusiness {
         }
     }
 
-    public async addFriend(mainUser: User, invitedUser: string): Promise<ResponseModel> {
-        try {
-            let result = await this.userDBService.addFriend(mainUser, invitedUser);
-            return new SuccessResponse(result);
-        } catch (error) {
-            return new ErrorResponse(error);
-        }
-    }
-
-    public async deleteFriend(mainUser: User, deletedUser: string): Promise<ResponseModel> {
-        try {
-            let result = await this.userDBService.deleteFriend(mainUser, deletedUser);
-            return new SuccessResponse(result);
-        } catch (error) {
-            return new ErrorResponse(error);
-        }
-    }
-
     public async rateMedia(user: User, media: Media, rate: number): Promise<ResponseModel> {
         try {
             let result = await this.userDBService.rateMedia(user, media, rate);
-            return new SuccessResponse(result);
-        } catch (error) {
-            return new ErrorResponse(error);
-        }
-    }
-
-    public async addComment(user: User, media: Media, comment: Comment): Promise<ResponseModel> {
-        try {
-            let result = await this.userDBService.addComment(user, media, comment);
             return new SuccessResponse(result);
         } catch (error) {
             return new ErrorResponse(error);
@@ -141,4 +124,28 @@ export class UserBusiness {
             return new ErrorResponse(error);
         }
     }
+    
+    /*
+
+    
+
+    
+
+    public async addFriend(mainUser: User, invitedUser: string): Promise<ResponseModel> {
+        try {
+            let result = await this.userDBService.addFriend(mainUser, invitedUser);
+            return new SuccessResponse(result);
+        } catch (error) {
+            return new ErrorResponse(error);
+        }
+    }
+
+    public async deleteFriend(mainUser: User, deletedUser: string): Promise<ResponseModel> {
+        try {
+            let result = await this.userDBService.deleteFriend(mainUser, deletedUser);
+            return new SuccessResponse(result);
+        } catch (error) {
+            return new ErrorResponse(error);
+        }
+    }*/
 }

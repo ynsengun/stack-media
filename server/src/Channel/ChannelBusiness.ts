@@ -4,6 +4,7 @@ import {ErrorResponse} from "../Model/Response/ErrorResponse";
 import {ChannelDBService} from "./ChannelDBService";
 import { User } from "../Model/User/User";
 import { Media } from "../Model/Media/Media";
+import { Genre } from "../Model/Genre/Genre";
 import { Channel } from "../Model/Channel/Channel";
 
 export class ChannelBusiness {

@@ -1,10 +1,9 @@
-import { User } from "Model/User/User";
-import { Media } from "Model/Media/Media";
-import { Channel } from "Model/Channel/Channel";
-import { connected } from "process";
-import { compileFunction } from "vm";
+import { User } from "../Model/User/User";
+import { Media } from "../Model/Media/Media";
+import { Genre } from "../Model/Genre/Genre";
+import { Channel } from "../Model/Channel/Channel";
 import {Database} from "../Database";
-import * as util from "util";
+import {AlreadyExist} from "../Model/Error/AlreadyExist";
 
 export class ChannelDBService {
     db: Database;
@@ -20,7 +19,6 @@ export class ChannelDBService {
 
         try {
             result = await this.db.sendQuery(sqlQuery);
-            // TODO
         } 
         catch(err){
             throw err;
@@ -35,7 +33,6 @@ export class ChannelDBService {
 
         try {
             result = await this.db.sendQuery(sqlQuery);
-            // TODO
         } 
         catch(err){
             throw err;
@@ -51,7 +48,6 @@ export class ChannelDBService {
 
         try {
             result = await this.db.sendQuery(sqlQuery);
-            // TODO
         } 
         catch(err){
             throw err;
@@ -67,7 +63,6 @@ export class ChannelDBService {
 
         try {
             result = await this.db.sendQuery(sqlQuery);
-            // TODO
         } 
         catch(err){
             throw err;
@@ -81,11 +76,15 @@ export class ChannelDBService {
         let sqlQuery = "INSERT INTO ChannelHasGenre VALUES('" + channel.channelId + "', '" + genre.genreId + "');";
 
         try {
-            result = await this.db.sendQuery(sqlQuery);
-            // TODO
+            await this.db.sendQuery(sqlQuery);
         } 
         catch(err){
-            throw err;
+            if(err.code == "ER_DUP_ENTRY"){
+                throw new AlreadyExist();
+            }
+            else{
+                throw err;
+            }
         }
         return result;
     }
@@ -96,8 +95,7 @@ export class ChannelDBService {
         let sqlQuery = "DELETE FROM ChannelHasGenre WHERE channelId = '" + channel.channelId + "' AND genreId = '" + genre.genreId + "';";
 
         try {
-            result = await this.db.sendQuery(sqlQuery);
-            // TODO
+            await this.db.sendQuery(sqlQuery);
         } 
         catch(err){
             throw err;
@@ -111,11 +109,15 @@ export class ChannelDBService {
         let sqlQuery = "INSERT INTO ChannelMedia VALUES('" + media.mediaId + "', '" + channel.channelId + "');";
 
         try {
-            result = await this.db.sendQuery(sqlQuery);
-            // TODO
+            await this.db.sendQuery(sqlQuery);
         } 
         catch(err){
-            throw err;
+            if(err.code == "ER_DUP_ENTRY"){
+                throw new AlreadyExist();
+            }
+            else{
+                throw err;
+            }
         }
         return result;
     }
@@ -126,8 +128,7 @@ export class ChannelDBService {
         let sqlQuery = "DELETE FROM ChannelMedia WHERE channelId = '" + media.mediaId + "' AND genreId = '" + channel.channelId + "';";
 
         try {
-            result = await this.db.sendQuery(sqlQuery);
-            // TODO
+            await this.db.sendQuery(sqlQuery);
         } 
         catch(err){
             throw err;
@@ -141,11 +142,15 @@ export class ChannelDBService {
         let sqlQuery = "INSERT INTO Channel VALUES('" + channel.channelId + "', '" + channel.username + "', '" + channel.title + "');";
 
         try {
-            result = await this.db.sendQuery(sqlQuery);
-            // TODO
+            await this.db.sendQuery(sqlQuery);
         } 
         catch(err){
-            throw err;
+            if(err.code == "ER_DUP_ENTRY"){
+                throw new AlreadyExist();
+            }
+            else{
+                throw err;
+            }
         }
         return result;
     }
@@ -156,8 +161,7 @@ export class ChannelDBService {
         let sqlQuery = "DELETE FROM Channel WHERE channelId = '" + channel.channelId + "' AND username = '" + channel.username + "';";
 
         try {
-            result = await this.db.sendQuery(sqlQuery);
-            // TODO
+            await this.db.sendQuery(sqlQuery);
         } 
         catch(err){
             throw err;

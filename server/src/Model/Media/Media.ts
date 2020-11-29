@@ -6,4 +6,8 @@ export interface Media{
     path: string
     duration: string
     uploadDate: string
+    episodeNumber: number
+    seasonNumber: number
+    emmyAward: string
+    oscarAward: string
 }
