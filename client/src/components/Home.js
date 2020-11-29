@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import {checkResponse} from "../util/ResponseUtil";
 import {
   Card,
   Container,
@@ -11,6 +12,7 @@ export default function Home() {
 
   useEffect(() => {
     fetch("http://localhost:8000/ping")
+      .then((r) => checkResponse(r))
       .then((r) => r.json())
       .then((response) => {
         setText(response.msg);
