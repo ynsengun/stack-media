@@ -1,6 +1,6 @@
 import {ErrorModel} from "./Error";
 
-export class InvalidUserInformation implements ErrorModel, Error {
+export class InvalidRequest implements ErrorModel, Error {
     code: number;
     message: string;
     name: string;
@@ -8,8 +8,8 @@ export class InvalidUserInformation implements ErrorModel, Error {
 
     constructor(){
         this.code = 1000;
-        this.message = "Invalid user information";
-        this.name = 'Invalid Information';
+        this.message = "Invalid request";
+        this.name = 'Invalid Requet';
         this.status = 400; //?
     }
 }
