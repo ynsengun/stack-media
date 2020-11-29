@@ -1,0 +1,39 @@
+.MediaSection {
+	text-align: center;
+	padding: 5%;
+}
+
+.MediaBar {
+	border: 2px solid black;
+	position: fixed;
+	left: 0;
+	top: 10%;
+	background-color: yellow;
+}
+
+.ChannelScrollBar {
+	max-height: 120px;
+	overflow-y: auto;
+}
+
+.MediaChoiceContainer {
+	margin-top: 7%;
+}
+
+.ClickableHeader3 {
+	cursor: pointer;
+	font-weight: bold;
+}
+
+.ScrollBarLabels {
+	font-size: 15;
+	font-weight: bold;
+}
+
+.ClickableLabel {
+	cursor: pointer;
+}
+
+.Header3 {
+	font-weight: bold;
+}

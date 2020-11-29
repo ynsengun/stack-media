@@ -7,6 +7,9 @@ import {
   Button,
 } from "semantic-ui-react";
 
+import FriendsBar from  "./MainPage/FriendsBar";
+import MediaBar from  "./MainPage/MediaBar";
+
 export default function Home() {
   const [text, setText] = useState("Error");
 
@@ -41,6 +44,10 @@ export default function Home() {
       >
         Send Me Toast!
       </Button>
+      <div>
+        <MediaBar></MediaBar>
+        <FriendsBar></FriendsBar>
+      </div>
     </Container>
   );
 }
