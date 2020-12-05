@@ -3,11 +3,11 @@ import { toast } from "react-toastify";
 import { useHistory } from "react-router-dom";
 import { Container, Card } from "semantic-ui-react";
 
-export default function Login() {
+export default function Notification() {
   return (
     <div style={{display: "flex", justifyContent: "center"}}>
         <Card className="text-center p-5">
-            Notification
+            Hellooo world!
         </Card>
     </div>
   );

@@ -1,0 +1,15 @@
+.FriendsBar {
+	position: fixed;
+	right: 0;
+	border: 2px solid black;
+	top: 10%;
+	background-color: green;
+}
+.FriendsScroolBar {
+	max-height: 450px;
+	overflow-y: auto;
+}
+
+.FriendContainer {
+	margin-top: 7%;
+}

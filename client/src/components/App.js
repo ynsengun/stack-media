@@ -10,6 +10,8 @@ import Footer from "./Footer";
 import Search from "./Search";
 import Upload from "./Upload";
 import Settings from "./Settings";
+import Login from "./Login";
+import MediaPage from "./MediaPage";
 
 export default function App() {
   return (
@@ -23,6 +25,8 @@ export default function App() {
           <Route exact path="/search"><Search /></Route>
           <Route exact path="/upload"><Upload /></Route>
           <Route exact path="/settings"><Settings /></Route>
+          <Route exact path="/login"><Login /></Route>
+          <Route exact path="/media-page"><MediaPage /></Route>
           <Route path="*"><NotFound /></Route>
         </Switch>
 
