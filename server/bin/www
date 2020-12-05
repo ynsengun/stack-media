@@ -1,6 +1,0 @@
-let app = require('../server');
-
-let port = process.env.PORT || 8000;
-app.listen(port, function() {
- console.log('port: ' + port);
-});
