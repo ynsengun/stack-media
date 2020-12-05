@@ -5,10 +5,12 @@ import {Routes} from "./Routes";
 class App{
     app: express.Application;
     server;
+    cors;
 
     constructor(){
         this.app = express();
         this.server = require('http').createServer(this.app);
+        this.cors = require( "cors");
         this.config();
         this.userRoutes();
     }
@@ -16,6 +18,7 @@ class App{
     private config(){
         this.app.use(bodyparser.json());
         this.app.use(bodyparser.urlencoded({extended: false}));
+        this.app.use( this.cors());
     }
 
     private userRoutes(){
