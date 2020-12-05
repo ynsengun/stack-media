@@ -4,15 +4,80 @@ import { useHistory } from "react-router-dom";
 import { Container } from "semantic-ui-react";
 import "../css/Login.css";
 
+import { checkResponse } from "../util/ResponseUtil";
+
 export default function Login() {
-	function handleLoginButtonPress(event) {
+	async function handleLoginButtonPress(event) {
 		//TODO: validation of input
-		//TODO: send login request
+        //TODO: send login request
+        
+        const response = await fetch("http://localhost:4000/api/user/login", 
+        {
+            method: 'POST',
+            body: {
+                username: "aykan",
+                password: "1234567890",
+            }
+        }).then( (r) => checkResponse(r) )
+        .then( (r) => console.log( r.json() ) )
+        .catch( (err) => 
+        {
+                  toast.error("error");
+        })
+
+        // do something with myJson
 	}
 
 	function handleRegisterButtonPress(event) {
 		//TODO: validation of input
-		//TODO: send register request
+        let emailText = document.getElementById( "emailRegisterInputID").value;
+        let usernameText = document.getElementById( "usernameRegisterInputID").value;
+        let passwordText = document.getElementById( "passwordRegisterInputID").value;
+        let passwordCheckText = document.getElementById( "passwordRegisterInput2ID").value;
+        let userTypeBool = document.getElementById( "companyUserInputID").value;
+
+        if ( emailText === "")
+        {
+            toast.error( "Please write down your email");
+        }
+        if ( usernameText === "")
+        {
+            toast.error( "Please write down your username");
+        }
+        if ( passwordText === "" || passwordCheckText === "")
+        {
+            toast.error( "Please fill your password!");
+        }
+        if ( passwordText !== passwordCheckText)
+        {
+            toast.error( "Check your password! Your passwords do not match...");
+        }
+
+        //TODO: send register request
+        fetch("http://localhost:4000/api/user/register", 
+        {
+            method: 'POST',
+            mode: "cors",
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify( 
+                {
+                    username: usernameText,
+                    password: passwordText,
+                    email: emailText,
+                    userType: "admin",
+                }
+            ),
+        }).then( (r) =>
+            checkResponse( r))
+        .then( (r) => r.json() )
+        .then( (r) => console.log( r))
+        .catch( (err) => 
+        {
+            console.log( err);
+            toast.error("error");
+        });
 	}
 
 	return (
@@ -84,7 +149,7 @@ export default function Login() {
 						<input
 							className="TextInput"
 							type="text"
-							id="passwordRegisterInputID"
+							id="passwordRegisterInput2ID"
 						></input>
 					</div>
 					<div>
