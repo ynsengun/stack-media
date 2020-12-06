@@ -6,53 +6,94 @@ import "../css/Login.css";
 
 import { checkResponse } from "../util/ResponseUtil";
 
-export default function Login() {
-	async function handleLoginButtonPress(event) {
-		//TODO: validation of input
-        //TODO: send login request
-        
-        const response = await fetch("http://localhost:4000/api/user/login", 
-        {
-            method: 'POST',
-            body: {
-                username: "aykan",
-                password: "1234567890",
-            }
-        }).then( (r) => checkResponse(r) )
-        .then( (r) => console.log( r.json() ) )
-        .catch( (err) => 
-        {
-                  toast.error("error");
-        })
+export default function Login() 
+{
+    // states for login
+    const [ loginUsername, setLoginUsername] = useState( "");
+    const [ loginPassword, setLoginPassword] = useState( "");
 
-        // do something with myJson
+    //states for register
+    const [ registerEmail, setRegisterEmail] = useState( "");
+    const [ registerUsername, setRegisterUsername] = useState( "");
+    const [ registerPassword, setRegisterPassword] = useState( "");
+    const [ registerPasswordCheck, setRegisterPassswordCheck] = useState( "");
+    const [ registerUserType, setRegisterUserType] = useState( false);
+
+    function handleLoginButtonPress(event) 
+    {
+		//TODO: validation of input
+        if ( loginUsername === "")
+        {
+            toast.error( "Please write your login username");
+            return;
+        }
+        if ( loginPassword === "")
+        {
+            toast.error( "Please write your login password");
+            return;
+        }
+        login( loginUsername, loginPassword);
 	}
 
-	function handleRegisterButtonPress(event) {
+    function handleRegisterButtonPress(event) 
+    {
 		//TODO: validation of input
-        let emailText = document.getElementById( "emailRegisterInputID").value;
-        let usernameText = document.getElementById( "usernameRegisterInputID").value;
-        let passwordText = document.getElementById( "passwordRegisterInputID").value;
-        let passwordCheckText = document.getElementById( "passwordRegisterInput2ID").value;
-        let userTypeBool = document.getElementById( "companyUserInputID").value;
-
-        if ( emailText === "")
+        if ( registerEmail === "")
         {
             toast.error( "Please write down your email");
+            return;
         }
-        if ( usernameText === "")
+        if ( registerUsername === "")
         {
             toast.error( "Please write down your username");
+            return;
         }
-        if ( passwordText === "" || passwordCheckText === "")
+        if ( registerPassword === "" || registerPasswordCheck === "")
         {
             toast.error( "Please fill your password!");
+            return;
         }
-        if ( passwordText !== passwordCheckText)
+        if ( registerPasswordCheck !== registerPassword)
         {
             toast.error( "Check your password! Your passwords do not match...");
+            return;
         }
+        register();
+    }
+    
+    function login( nameArg, passArg) 
+    {
+        console.log( loginUsername + " " + loginPassword);
+        //TODO: send login request
+        fetch("http://localhost:4000/api/user/login", 
+        {
+            method: 'POST',
+            mode: "cors",
+            headers: {
+                'Content-Type': "application/json",
+            },
+            body: JSON.stringify( 
+                {
+                    username: nameArg,
+                    password: passArg,
+                }
+            ),
+        }).then( (r) => checkResponse( r) )
+        .then( (r) => r.json() )
+        .then( (r) => 
+        {
+            console.log( r);
+            console.log( "Hello!");
+        })
+        .catch( (err) => 
+        {
+            console.log( err);
+            toast.error("error");
+        });
+    }
 
+    function register()
+    {
         //TODO: send register request
         fetch("http://localhost:4000/api/user/register", 
         {
@@ -63,22 +104,24 @@ export default function Login() {
             },
             body: JSON.stringify( 
                 {
-                    username: usernameText,
-                    password: passwordText,
-                    email: emailText,
-                    userType: "admin",
+                    username: registerUsername,
+                    password: registerPassword,
+                    email: registerEmail,
+                    userType: registerUserType ? "ROLE_ADMIN" : "ROLE_USER",
                 }
             ),
         }).then( (r) =>
             checkResponse( r))
         .then( (r) => r.json() )
-        .then( (r) => console.log( r))
+        .then( (r) => {
+            login( registerUsername, registerPassword);
+        })
         .catch( (err) => 
         {
             console.log( err);
             toast.error("error");
         });
-	}
+    }
 
 	return (
 		<Container>
@@ -92,7 +135,9 @@ export default function Login() {
 						<input
 							className="TextInput"
 							type="text"
-							id="usernameLoginInputID"
+                            id="usernameLoginInputID"
+                            onInput={ (e) => setLoginUsername( e.target.value)}
+                            required
 						></input>
 					</div>
 					<div>
@@ -101,8 +146,10 @@ export default function Login() {
 					<div>
 						<input
 							className="TextInput"
-							type="text"
-							id="passwordLoginInputID"
+							type="password"
+                            id="passwordLoginInputID"
+                            onInput={ (e) => setLoginPassword( e.target.value)}
+                            required
 						></input>
 					</div>
 					<div className="CenterButton">
@@ -119,7 +166,9 @@ export default function Login() {
 						<input
 							className="TextInput"
 							type="text"
-							id="emailRegisterInputID"
+                            id="emailRegisterInputID"
+                            onInput={ (e) => setRegisterEmail( e.target.value)}
+                            required
 						></input>
 					</div>
 					<div>
@@ -129,7 +178,9 @@ export default function Login() {
 						<input
 							className="TextInput"
 							type="text"
-							id="usernameRegisterInputID"
+                            id="usernameRegisterInputID"
+                            onInput={ (e) => setRegisterUsername( e.target.value)}
+                            required
 						></input>
 					</div>
 					<div>
@@ -138,8 +189,10 @@ export default function Login() {
 					<div>
 						<input
 							className="TextInput"
-							type="text"
-							id="passwordRegisterInputID"
+							type="password"
+                            id="passwordRegisterInputID"
+                            onInput={ (e) => setRegisterPassword( e.target.value)}
+                            required
 						></input>
 					</div>
 					<div>
@@ -148,12 +201,14 @@ export default function Login() {
 					<div>
 						<input
 							className="TextInput"
-							type="text"
-							id="passwordRegisterInput2ID"
+							type="password"
+                            id="passwordRegisterInput2ID"
+                            onInput={ (e) => setRegisterPassswordCheck( e.target.value)}
+                            required
 						></input>
 					</div>
 					<div>
-						<input type="checkbox" id="companyUserInputID"></input>
+						<input type="checkbox" id="companyUserInputID" onInput={ (e) => setRegisterUserType( e.target.value)}></input>
 						<label>I am a company user</label>
 					</div>
 					<div className="CenterButton">

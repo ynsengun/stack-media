@@ -3,7 +3,7 @@ import { toast } from "react-toastify";
 import { expireAuth } from "../util/AuthenticationUtil";
 
 export function checkResponse(response) {
-  if (response.ok) {
+    if (response.ok) {
     return response;
   } else if (response.status === 401) {
     toast.warning(

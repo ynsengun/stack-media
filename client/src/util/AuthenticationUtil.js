@@ -33,34 +33,29 @@ export function isExpired() {
 }
 
 export function isAuthenticated() {
-  return true; // TODO delete this line
   let auth = localStorage.getItem("authInfo");
   return auth != null;
 }
 
 export function getAuthId() {
-  return true; // TODO delete this line
   let auth = localStorage.getItem("authInfo");
   let authJson = JSON.parse(auth);
   return authJson.id;
 }
 
 export function getAuthName() {
-  return true; // TODO delete this line
   let auth = localStorage.getItem("authInfo");
   let authJson = JSON.parse(auth);
   return authJson.username;
 }
 
 export function isAdmin() {
-  return true; // TODO delete this line
   let auth = localStorage.getItem("authInfo");
   let authJson = JSON.parse(auth);
   return authJson.isAdmin;
 }
 
 export function isUser() {
-  return true; // TODO delete this line
   let auth = localStorage.getItem("authInfo");
   let authJson = JSON.parse(auth);
   return authJson.isUser;
