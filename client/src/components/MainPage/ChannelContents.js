@@ -66,7 +66,7 @@ export default function ChannelContents(props) {
       <hr></hr>
       <div>
         {medias.map((movie, index) => (
-          <Media key={index} mediaName={movie} mediaType={1}></Media>
+          <Media key={index} mediaName={movie} mediaType={1} pageType={1} />
         ))}
       </div>
 
@@ -74,7 +74,7 @@ export default function ChannelContents(props) {
       <hr></hr>
       <div>
         {suggestedMedias.map((movie, index) => (
-          <Media key={index} mediaName={movie} mediaType={1}></Media>
+          <Media key={index} mediaName={movie} mediaType={1} />
         ))}
       </div>
     </Container>
