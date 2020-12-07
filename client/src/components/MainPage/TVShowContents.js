@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { useHistory } from "react-router-dom";
-import { Container } from "semantic-ui-react";
+import { Container, Divider } from "semantic-ui-react";
 
-import Home from "../Home.js";
 import Media from "../Media/Media";
 
 export default function TVShowContents() {
@@ -16,11 +15,13 @@ export default function TVShowContents() {
 
   return (
     <Container>
-      <h1>TV Shows</h1>
-      <hr></hr>
+      <h1 className="text-center">TV Shows</h1>
       <div className="MovieGrid">
         {tvShowInformation.map((tvShowArg, index) => (
-          <Media key={index} mediaType={1} mediaName={tvShowArg}></Media>
+          <React.Fragment>
+            <Divider />
+            <Media key={index} mediaType={1} mediaName={tvShowArg}></Media>
+          </React.Fragment>
         ))}
       </div>
     </Container>

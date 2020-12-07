@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { useHistory } from "react-router-dom";
-import { Container } from "semantic-ui-react";
+import { Container, Divider } from "semantic-ui-react";
 
 import "../../css/MainPage/MovieContents.css";
 
-import Home from "../Home.js";
 import Media from "../Media/Media";
 
 export default function MovieContents() {
@@ -18,11 +17,13 @@ export default function MovieContents() {
 
   return (
     <Container>
-      <h1>Movies</h1>
-      <hr></hr>
+      <h1 className="text-center">Movies</h1>
       <div className="MovieGrid">
         {movieInformation.map((movieArg, index) => (
-          <Media key={index} mediaType={0} mediaName={movieArg}></Media>
+          <React.Fragment>
+            <Divider />
+            <Media key={index} mediaType={0} mediaName={movieArg}></Media>
+          </React.Fragment>
         ))}
       </div>
     </Container>
