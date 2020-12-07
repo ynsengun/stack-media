@@ -3,6 +3,7 @@ import { Media } from "Model/Media/Media";
 import { Genre } from "Model/Genre/Genre";
 import {Database} from "../Database";
 import {AlreadyExist} from "../Model/Error/AlreadyExist";
+import {v1 as id} from "uuid";
 
 export class MediaDBService {
 
@@ -88,16 +89,16 @@ export class MediaDBService {
 
     public async createMedia(media: Media): Promise<any> {
         let result = null;
-
-        let sqlQuery = "INSERT INTO Media VALUES('" + media.mediaId + "','" + media.publishUsername + "','" + media.name + "','" + media.description + "','" + media.path + "','" + media.uploadDate + "');";
+        let mediaId = id();
+        let sqlQuery = "INSERT INTO Media VALUES('" + mediaId + "','" + media.publishUsername + "','" + media.name + "','" + media.description + "','" + media.path + "','" + media.duration + "','" + media.uploadDate + "');";
 
         try {
-            await this.db.sendQuery(sqlQuery);
+            await this.db.sendQuery(sqlQuery);  
             if(media.episodeNumber == null){ // it means it is a movie, then add to movie table
-                sqlQuery = "INSERT INTO Movie VALUES('" + media.mediaId + "','" + media.oscarAward + "';";
+                sqlQuery = "INSERT INTO Movie VALUES('" + mediaId + "','" + media.oscarAward + "');";
             }
             else{ // it means it is a series, then add to series table
-                sqlQuery = "INSERT INTO TVSeriesEpisode VALUES('" + media.mediaId + "','" + media.episodeNumber + "','" + media.episodeNumber + "','" + media.emmyAward + "';";
+                sqlQuery = "INSERT INTO TVSeriesEpisode VALUES('" + mediaId + "','" + media.episodeNumber + "','" + media.episodeNumber + "','" + media.emmyAward + "');";
             }
             await this.db.sendQuery(sqlQuery);
         } 
@@ -112,37 +113,6 @@ export class MediaDBService {
         return result;
     }
 
-    /*
-    public async createSerie(serie: TVSeriesEpisode): Promise<any> {
-        let result = null;
-
-        let sqlQuery = "INSERT INTO TV-Series-Episode VALUES('" + serie.mediaId + "','" + serie.episodeNo + "','" + serie.seasonNo + "','" + serie.emmy + "');";
-
-        try {
-            result = await this.db.sendQuery(sqlQuery);
-            // TODO
-        } 
-        catch(err){
-            throw err;
-        }
-        return result;
-    }
-
-    public async createMovie(movie: Movie): Promise<any> {
-        let result = null;
-
-        let sqlQuery = "INSERT INTO Movie VALUES('" + movie.mediaId + "','" + movie.oscar + "');";
-
-        try {
-            result = await this.db.sendQuery(sqlQuery);
-            // TODO
-        } 
-        catch(err){
-            throw err;
-        }
-        return result;
-    }
-    */
    public async deleteMedia(media: Media): Promise<any> {
         let result = null;
 
@@ -160,8 +130,8 @@ export class MediaDBService {
     public async search(media: Media, genre: Genre): Promise<any> {
         let result = null;
 
-        let sqlQuery = "SELECT * FROM Media M WHERE DIFFERENCE(M.name, '" + media.name + "') = 4 AND '" + genre.title + "' in " 
-        + "(SELECT Genre.title FROM HasGenre INNER JOIN Genre ON HasGenre.genreId = Genre.genreId WHERE M.mediaId = HasGenre.mediaId) ORDER BY M.name DESC;";
+        let sqlQuery = "SELECT * FROM Media M WHERE LEVENSHTEIN(M.name, '" + media.name + "') <= 5 AND '" + genre.title + "' IN " 
+        + "(SELECT Genre.title FROM MediaHasGenre INNER JOIN Genre ON MediaHasGenre.genreId = Genre.genreId WHERE M.mediaId = MediaHasGenre.mediaId);";
 
         try {
             result = await this.db.sendQuery(sqlQuery);
