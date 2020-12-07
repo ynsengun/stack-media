@@ -14,30 +14,24 @@ import ChannelContents from "./MainPage/ChannelContents";
 import TVShowContents from "./MainPage/TVShowContents";
 
 export default function Home() {
-  const [content, setContent] = useState({ type: ContentType.MOVIE, index: 0 });
-  const [channelInformation, setChannelInformation] = useState({
-    name: "Cevo!",
-    genres: ["Action", "Drama"],
-    movieContents: ["CS353", "DB", "Project"],
-    suggestedMedia: ["CS491"],
-  });
+  const [content, setContent] = useState({ type: ContentType.MOVIE, name: "" });
 
-  const changeContent = (type, index) => {
-    setContent({ type, index });
-    console.log(type, index);
+  const changeContent = (type, name) => {
+    setContent({ type, name });
+    console.log(type, name);
   };
 
   return (
     <Grid>
       <Grid.Row>
         <Grid.Column width={3} style={{ padding: "0px", marginTop: "-29px" }}>
-          <MediaBar changeContent={changeContent}></MediaBar>
+          <MediaBar changeContent={changeContent} />
         </Grid.Column>
         <Grid.Column width={10}>
           {content.type === ContentType.MOVIE && <MovieContents />}
           {content.type === ContentType.TVSHOW && <TVShowContents />}
           {content.type === ContentType.CHANNEL && (
-            <ChannelContents contentArgs={channelInformation}></ChannelContents>
+            <ChannelContents channelName={content.name}></ChannelContents>
           )}
         </Grid.Column>
         <Grid.Column width={3} style={{ padding: "0px", marginTop: "-29px" }}>

@@ -5,7 +5,7 @@ import { Container } from "semantic-ui-react";
 import "../../css/MainPage/MediaBar.css";
 
 export default function RedirectLabel(props) {
-  const { onClickEvent, labelName, type, index } = props;
+  const { onClickEvent, labelName, type, subName } = props;
 
   return (
     <Container>
@@ -13,7 +13,7 @@ export default function RedirectLabel(props) {
         <label
           className="ClickableLabel"
           onClick={() => {
-            onClickEvent(type, index);
+            onClickEvent(type, subName);
           }}
         >
           {labelName}

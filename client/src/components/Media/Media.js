@@ -10,7 +10,7 @@ export default function Media(props) {
 
   const loadMediaPage = () => {
     // TODO redirect to media page, use useHistory hook
-    console.log("Loading media page...");
+    console.log("Loading media page...", mediaName);
   };
 
   return (

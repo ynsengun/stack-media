@@ -16,8 +16,8 @@ export default function MediaBar(props) {
 
   useEffect(() => {
     // TODO fetch channels and parties
-    setChannels(["Hello", "Hello", "Hello", "Hello", "Hello"]);
-    setParties(["SLM", "SLM", "SLM", "SLM", "SLM"]);
+    setChannels(["Hello1", "Hello2", "Hello3", "Hello4", "Hello"]);
+    setParties(["S3L4M", "S52L4M", "SL4M", "SLM2", "SLM1"]);
   }, []);
 
   const handleChange = (e) => {
@@ -75,7 +75,7 @@ export default function MediaBar(props) {
               labelName={channel}
               onClickEvent={changeContent}
               type={ContentType.CHANNEL}
-              index={index}
+              subName={channel}
             ></RedirectLabel>
           ))}
         </div>
@@ -103,7 +103,7 @@ export default function MediaBar(props) {
               labelName={party}
               onClickEvent={changeContent}
               type={ContentType.PARTY}
-              index={index}
+              subName={party}
             ></RedirectLabel>
           ))}
         </div>

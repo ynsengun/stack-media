@@ -18,9 +18,9 @@ export default function TVShowContents() {
       <h1 className="text-center">TV Shows</h1>
       <div className="MovieGrid">
         {tvShowInformation.map((tvShowArg, index) => (
-          <React.Fragment>
+          <React.Fragment key={index}>
             <Divider />
-            <Media key={index} mediaType={1} mediaName={tvShowArg}></Media>
+            <Media mediaType={1} mediaName={tvShowArg}></Media>
           </React.Fragment>
         ))}
       </div>
