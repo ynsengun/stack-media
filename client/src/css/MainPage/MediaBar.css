@@ -1,39 +1,38 @@
 .MediaSection {
-	text-align: center;
-	padding: 5%;
+  text-align: center;
+  padding: 5%;
 }
 
 .MediaBar {
-	border: 2px solid black;
-	position: fixed;
-	left: 0;
-	top: 10%;
-	background-color: yellow;
+  /* border: 2px solid black; */
+  width: 100%;
+  height: calc(100% + 144px);
+  background-color: #c3c3c3;
 }
 
 .ChannelScrollBar {
-	max-height: 120px;
-	overflow-y: auto;
+  max-height: 120px;
+  overflow-y: auto;
 }
 
 .MediaChoiceContainer {
-	margin-top: 7%;
+  margin-top: 7%;
 }
 
 .ClickableHeader3 {
-	cursor: pointer;
-	font-weight: bold;
+  cursor: pointer;
+  font-weight: bold;
 }
 
 .ScrollBarLabels {
-	font-size: 15;
-	font-weight: bold;
+  font-size: 15;
+  font-weight: bold;
 }
 
 .ClickableLabel {
-	cursor: pointer;
+  cursor: pointer;
 }
 
 .Header3 {
-	font-weight: bold;
+  font-weight: bold;
 }

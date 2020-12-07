@@ -1,11 +1,11 @@
 export function saveAuth(info) {
   const { id, username } = info;
 
-  let isUser = false, isAdmin = false;
-  if (info.roles[0].name === "ROLE_USER"){
+  let isUser = false,
+    isAdmin = false;
+  if (info.roles[0].name === "ROLE_USER") {
     isUser = true;
-  }
-  else{
+  } else {
     isAdmin = true;
   }
 
@@ -33,29 +33,34 @@ export function isExpired() {
 }
 
 export function isAuthenticated() {
+  return true;
   let auth = localStorage.getItem("authInfo");
   return auth != null;
 }
 
 export function getAuthId() {
+  return true;
   let auth = localStorage.getItem("authInfo");
   let authJson = JSON.parse(auth);
   return authJson.id;
 }
 
 export function getAuthName() {
+  return true;
   let auth = localStorage.getItem("authInfo");
   let authJson = JSON.parse(auth);
   return authJson.username;
 }
 
 export function isAdmin() {
+  return true;
   let auth = localStorage.getItem("authInfo");
   let authJson = JSON.parse(auth);
   return authJson.isAdmin;
 }
 
 export function isUser() {
+  return true;
   let auth = localStorage.getItem("authInfo");
   let authJson = JSON.parse(auth);
   return authJson.isUser;
