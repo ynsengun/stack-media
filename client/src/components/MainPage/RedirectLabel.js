@@ -5,12 +5,20 @@ import { Container } from "semantic-ui-react";
 import "../../css/MainPage/MediaBar.css";
 
 export default function RedirectLabel(props) {
-  
-    return (
+  const { onClickEvent, labelName, type, index } = props;
+
+  return (
     <Container>
-        <div className="ScrollBarLabels">
-             <label className="ClickableLabel" onClick={ () => { props.onClickEvent() } }>{ props.labelName}</label>
-        </div>
+      <div className="ScrollBarLabels">
+        <label
+          className="ClickableLabel"
+          onClick={() => {
+            onClickEvent(type, index);
+          }}
+        >
+          {labelName}
+        </label>
+      </div>
     </Container>
   );
 }

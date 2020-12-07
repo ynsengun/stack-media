@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { checkResponse } from "../util/ResponseUtil";
-import { Card, Container, Button, Grid } from "semantic-ui-react";
+import { Grid } from "semantic-ui-react";
+import { ContentType } from "../util/ContentTypes";
 
 // Sides
 import FriendsBar from "./MainPage/FriendsBar";
@@ -12,25 +13,8 @@ import MovieContents from "./MainPage/MovieContents";
 import ChannelContents from "./MainPage/ChannelContents";
 import TVShowContents from "./MainPage/TVShowContents";
 
-// Footer
-import Footer from "./Footer";
-
-const ContentType = {
-  TVSHOW: 0,
-  MOVIE: 1,
-  CHANNEL: 2,
-};
-
 export default function Home() {
-  const [text, setText] = useState("Error");
-  const [contentFlag, setMainContent] = useState(ContentType.MOVIE);
-  const [movieInformation, setMovieInformation] = useState([
-    "CS353",
-    "CS342",
-    "CS465",
-    "CS491",
-  ]);
-  const [tvShowInformation, setTVShowInformation] = useState([]);
+  const [content, setContent] = useState({ type: ContentType.MOVIE, index: 0 });
   const [channelInformation, setChannelInformation] = useState({
     name: "Cevo!",
     genres: ["Action", "Drama"],
@@ -38,79 +22,21 @@ export default function Home() {
     suggestedMedia: ["CS491"],
   });
 
-  function loadPartyPage() {
-    console.log("Loading clicked party page...");
-  }
-
-  function loadChannelContent() {
-    setMainContent(ContentType.CHANNEL);
-  }
-
-  function loadMediaContent(mediaFlag) {
-    // MOVIE
-    if (mediaFlag) {
-      setMainContent(ContentType.MOVIE);
-    } // TV show
-    else {
-      setMainContent(ContentType.TVSHOW);
-    }
-  }
-
-  useEffect(() => {
-    fetch("http://localhost:8000/ping")
-      .then((r) => checkResponse(r))
-      .then((r) => r.json())
-      .then((response) => {
-        setText(response.msg);
-        toast.success("Request Successful");
-      })
-      .catch((err) => {
-        toast.error("error");
-      });
-  }, []);
-
-  useEffect(() => {
-    // Make ajax calls
-    if (contentFlag === ContentType.MOVIE) {
-      // Get movie data by ajax call
-
-      //TODO: maybe put this logic directly into MovieContents.js?
-
-      // Set the new state!
-      setMovieInformation(["CS353", "CS342", "CS465", "CS491"]);
-    } else if (contentFlag === ContentType.TVSHOW) {
-      // Get TV SHOW data by ajax call
-
-      //TODO: maybe put this logic directly into TVShowContents.js?
-
-      // Set the new state!
-      setTVShowInformation(["Talha", "Hakan", "Cevat", "Yusuf"]);
-    } else if (contentFlag === ContentType.CHANNEL) {
-      // Get Channel data by ajax call
-      // Set the new state!
-      // setChannelInformation( {
-      // });
-    }
-  }, [contentFlag]);
+  const changeContent = (type, index) => {
+    setContent({ type, index });
+    console.log(type, index);
+  };
 
   return (
-    <Grid celled="internally">
+    <Grid>
       <Grid.Row>
         <Grid.Column width={3} style={{ padding: "0px", marginTop: "-29px" }}>
-          <MediaBar
-            onMediaClickEvent={loadMediaContent}
-            onChannelClickEvent={loadChannelContent}
-            onPartyClickEvent={loadPartyPage}
-          ></MediaBar>
+          <MediaBar changeContent={changeContent}></MediaBar>
         </Grid.Column>
         <Grid.Column width={10}>
-          {contentFlag === ContentType.MOVIE && (
-            <MovieContents contentArgs={movieInformation}></MovieContents>
-          )}
-          {contentFlag === ContentType.TVSHOW && (
-            <TVShowContents contentArgs={tvShowInformation}></TVShowContents>
-          )}
-          {contentFlag === ContentType.CHANNEL && (
+          {content.type === ContentType.MOVIE && <MovieContents />}
+          {content.type === ContentType.TVSHOW && <TVShowContents />}
+          {content.type === ContentType.CHANNEL && (
             <ChannelContents contentArgs={channelInformation}></ChannelContents>
           )}
         </Grid.Column>
@@ -120,15 +46,4 @@ export default function Home() {
       </Grid.Row>
     </Grid>
   );
-
-  /*
-    			<Card className="text-center w-100" raised>
-				Test Server - Client
-				<h1>{text}</h1>
-				This page is used to present movies/episodes
-			</Card>
-			<Button primary className="mt-5 text-center w-100" onClick={sendToast}>
-				Send Me Toast!
-			</Button>
-    */
 }
