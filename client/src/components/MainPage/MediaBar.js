@@ -3,102 +3,124 @@ import { toast } from "react-toastify";
 import { useHistory } from "react-router-dom";
 import { Container } from "semantic-ui-react";
 import "../../css/MainPage/MediaBar.css";
+import { ContentType } from "../../util/ContentTypes";
 
 import RedirectLabel from "./RedirectLabel";
 
 export default function MediaBar(props) {
-	function handleMoviesClick(event) {
-		props.onMediaClickEvent(true);
-	}
+  const { changeContent } = props;
 
-	function handleTVSeriesClick(event) {
-		props.onMediaClickEvent(false);
-	}
+  const [channels, setChannels] = useState([]);
+  const [parties, setParties] = useState([]);
+  const [textInput, setTextInput] = useState({ channel: "", party: "" });
 
-	return (
-		<Container>
-			<div className="MediaBar">
-				<div style={{ width: 300, height: 600 }} className="MediaSection">
-					<div className="MediaChoiceContainer">
-						<h3 className="ClickableHeader3" onClick={handleMoviesClick}>
-							Movies
-						</h3>
-					</div>
-					<div className="MediaChoiceContainer">
-						<h3
-							className="ClickableHeader3"
-							onClick={handleTVSeriesClick}
-						>
-							TV-Series
-						</h3>
-					</div>
-					<div className="MediaChoiceContainer">
-						<h3>My Channels</h3>
-					</div>
-					<div className="ChannelScrollBar">
-						<RedirectLabel
-							labelName={"Hello"}
-							onClickEvent={props.onChannelClickEvent}
-						></RedirectLabel>
-						<RedirectLabel
-							labelName={"Hello"}
-							onClickEvent={props.onChannelClickEvent}
-						></RedirectLabel>
-						<RedirectLabel
-							labelName={"Hello"}
-							onClickEvent={props.onChannelClickEvent}
-						></RedirectLabel>
-						<RedirectLabel
-							labelName={"Hello"}
-							onClickEvent={props.onChannelClickEvent}
-						></RedirectLabel>
-						<RedirectLabel
-							labelName={"Hello"}
-							onClickEvent={props.onChannelClickEvent}
-						></RedirectLabel>
-						<RedirectLabel
-							labelName={"Hello"}
-							onClickEvent={props.onChannelClickEvent}
-						></RedirectLabel>
-					</div>
+  useEffect(() => {
+    // TODO fetch channels and parties
+    setChannels(["Hello1", "Hello2", "Hello3", "Hello4", "Hello"]);
+    setParties(["S3L4M", "S52L4M", "SL4M", "SLM2", "SLM1"]);
+  }, []);
 
-					<div className="MediaChoiceContainer">
-						<input type="text" style={{ width: 150 }}></input>
-						<button>Add Channel</button>
-					</div>
+  const handleChange = (e) => {
+    const { value, name } = e.currentTarget;
+    setTextInput({
+      ...textInput,
+      [name]: value,
+    });
+  };
 
-					<div className="MediaChoiceContainer">
-						<h3>My Parties</h3>
-					</div>
-					<div className="ChannelScrollBar">
-						<RedirectLabel
-							labelName={"SLM"}
-							onClickEvent={props.onPartyClickEvent}
-						></RedirectLabel>
-						<RedirectLabel
-							labelName={"SLM"}
-							onClickEvent={props.onPartyClickEvent}
-						></RedirectLabel>
-						<RedirectLabel
-							labelName={"SLM"}
-							onClickEvent={props.onPartyClickEvent}
-						></RedirectLabel>
-						<RedirectLabel
-							labelName={"SLM"}
-							onClickEvent={props.onPartyClickEvent}
-						></RedirectLabel>
-						<RedirectLabel
-							labelName={"SLM"}
-							onClickEvent={props.onPartyClickEvent}
-						></RedirectLabel>
-					</div>
+  const handleNewChannel = () => {
+    // TODO fetch, post request to add textInput.channel
+    setChannels([...channels, textInput.channel]);
+    setTextInput({ ...textInput, channel: "" });
+  };
 
-					<div className="MediaChoiceContainer">
-						<input type="text" style={{ width: 150 }}></input>
-						<button>Add Party</button>
-					</div>
-				</div>
-			</div>
-		</Container>
-	);
+  const handleNewParty = () => {
+    // TODO fetch, post request to add textInput.party
+    setParties([...parties, textInput.party]);
+    setTextInput({ ...textInput, party: "" });
+  };
+
+  return (
+    <div className="MediaBar">
+      <div className="MediaSection">
+        <div className="MediaChoiceContainer">
+          <h3
+            className="ClickableHeader3"
+            onClick={() => {
+              changeContent(ContentType.MOVIE);
+            }}
+          >
+            Movies
+          </h3>
+        </div>
+
+        <div className="MediaChoiceContainer">
+          <h3
+            className="ClickableHeader3"
+            onClick={() => {
+              changeContent(ContentType.TVSHOW);
+            }}
+          >
+            TV-Series
+          </h3>
+        </div>
+
+        <div className="MediaChoiceContainer">
+          <h3>My Channels</h3>
+        </div>
+        <div className="ChannelScrollBar">
+          {channels.map((channel, index) => (
+            <RedirectLabel
+              key={index}
+              labelName={channel}
+              onClickEvent={changeContent}
+              type={ContentType.CHANNEL}
+              subName={channel}
+            ></RedirectLabel>
+          ))}
+        </div>
+
+        <div className="MediaChoiceContainer">
+          <input
+            className="w-75 mx-auto"
+            type="text"
+            name="channel"
+            value={textInput.channel}
+            onChange={handleChange}
+          />
+          <button onClick={handleNewChannel} className="w-75 mx-auto mt-1">
+            Add Channel
+          </button>
+        </div>
+
+        <div className="MediaChoiceContainer">
+          <h3>My Parties</h3>
+        </div>
+        <div className="ChannelScrollBar">
+          {parties.map((party, index) => (
+            <RedirectLabel
+              key={index}
+              labelName={party}
+              onClickEvent={changeContent}
+              type={ContentType.PARTY}
+              subName={party}
+            ></RedirectLabel>
+          ))}
+        </div>
+
+        <div className="MediaChoiceContainer">
+          <input
+            className="w-75 mx-auto"
+            type="text"
+            name="party"
+            value={textInput.party}
+            onChange={handleChange}
+          />
+          <button onClick={handleNewParty} className="w-75 mx-auto mt-1">
+            Add Party
+          </button>
+        </div>
+      </div>
+    </div>
+  );
 }

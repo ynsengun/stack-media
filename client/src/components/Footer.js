@@ -6,7 +6,7 @@ export default function Footer() {
     <Container className="py-5">
       <Divider />
       <Header size="tiny" textAlign="center">
-        &copy; 2020, Stack Media
+        &copy; 2020, Stack Media, Penta Core
       </Header>
     </Container>
   );
