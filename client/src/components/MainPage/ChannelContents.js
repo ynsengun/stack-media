@@ -18,7 +18,7 @@ export default function ChannelContents(props) {
     setMyGenres(["Action", "Drama"]);
     setMedias(["cevat", "cevat", "cevat"]);
     setSuggestedMedias(["yusuf"]);
-  }, []);
+  }, [channelName]);
 
   const getButtonClass = (genre) => {
     return myGenres.includes(genre)
@@ -74,7 +74,7 @@ export default function ChannelContents(props) {
       <hr></hr>
       <div>
         {suggestedMedias.map((movie, index) => (
-          <Media key={index} mediaName={movie} mediaType={1} />
+          <Media key={index} mediaName={movie} mediaType={1} pageType={1} />
         ))}
       </div>
     </Container>
