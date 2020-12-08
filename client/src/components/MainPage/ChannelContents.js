@@ -12,6 +12,8 @@ export default function ChannelContents(props) {
   const [medias, setMedias] = useState([]);
   const [suggestedMedias, setSuggestedMedias] = useState([]);
 
+  const history = useHistory();
+
   useEffect(() => {
     // TODO fetch all-genres, my-genres, suggested-medias, medias
     setAllGenres(["Action", "Adventure", "Comedy", "Drama", "Horror"]);
@@ -58,7 +60,12 @@ export default function ChannelContents(props) {
         ))}
       </div>
 
-      <a className="btn btn-primary w-100" href="/search">
+      <a
+        className="btn btn-primary w-100"
+        onClick={() => {
+          history.push("/search");
+        }}
+      >
         Add to channel
       </a>
 

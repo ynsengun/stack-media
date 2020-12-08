@@ -4,6 +4,7 @@ import MovieLogo from "../../images/MovieIcon.png";
 import TVShowLogo from "../../images/TVShowIcon.png";
 
 import "../../css/Media.css";
+import { useHistory } from "react-router-dom";
 
 export default function Media(props) {
   // pageType 0 = search page, 1 = only watch button, 2 = edit button
@@ -11,10 +12,7 @@ export default function Media(props) {
 
   const [channels, setChannels] = useState([]);
 
-  const loadMediaPage = () => {
-    // TODO redirect to media page, use an anchor insted of button
-    console.log("Loading media page...", mediaName);
-  };
+  const history = useHistory();
 
   useEffect(() => {
     if (pageType === 0) {
@@ -53,7 +51,9 @@ export default function Media(props) {
         {(pageType === 0 || pageType === 1) && (
           <button
             className="btn btn-primary btn-lg mt-4"
-            onClick={loadMediaPage}
+            onClick={() => {
+              history.push(`/media/${mediaName}`);
+            }}
           >
             Watch
           </button>

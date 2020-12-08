@@ -6,13 +6,48 @@ import { Container } from "semantic-ui-react";
 import WatchedMediaImage from "../images/mediaToWatch.png";
 
 import Comment from "./Media/Comment";
+import MediaBox from "./MediaBox";
 
-export default function MediaPage(props) {
+export default function MediaPage() {
   const [progress, setProgress] = useState(0);
   const [buttonActive, setButtonActive] = useState({
     watch: true,
     finish: false,
   });
+  const [mediaName, setMediaName] = useState();
+  const [nextMedia, setNextMedia] = useState(null);
+  const [suggestedMedias, setSuggestedMedias] = useState([{}]);
+
+  const history = useHistory();
+
+  useEffect(() => {
+    let path = history.location.pathname.substring(7);
+    setMediaName(path);
+
+    const unListen = history.listen(() => {
+      let path = history.location.pathname.substring(7);
+      setMediaName(path);
+
+      window.scrollTo(0, 0);
+    });
+
+    return () => {
+      unListen();
+    };
+  }, []);
+
+  useEffect(() => {
+    // TODO fetch progress and set button actives accordingly
+    // TODO fetch suggested and next(if series) media
+
+    setProgress(0);
+    setButtonActive({ watch: true, finish: false });
+    setSuggestedMedias([
+      { name: "aaa", type: 0 },
+      { name: "bbb", type: 1 },
+    ]);
+    setNextMedia({ name: "sss", type: 0 });
+  }, [mediaName]);
 
   useEffect(() => {
     if (progress === 3) {
@@ -49,9 +84,10 @@ export default function MediaPage(props) {
 
   return (
     <div className="row">
-      <div className="col-8" style={{ borderRight: "2px solid black" }}>
+      <div className="col-9" style={{ borderRight: "2px solid black" }}>
         <div style={{ paddingLeft: "50px", paddingRight: "50px" }}>
           <div className="card bg-secondary">
+            <h1 className="h1 text-center mt-5 text-white">{mediaName}</h1>
             <div
               style={{
                 height: "45vh",
@@ -122,11 +158,22 @@ export default function MediaPage(props) {
           </div>
         </div>
       </div>
-      <div className="col-4">
-        <h3>Next Episode</h3>
-        {/* TODO a MediaBox */}
-        <h3>Suggestions</h3>
-        {/* TODO MediaBoxes */}
+      <div className="col-3">
+        {nextMedia && (
+          <React.Fragment>
+            <h3 className="h3" style={{ fontWeight: "700" }}>
+              Next Episode
+            </h3>
+            <MediaBox mediaType={nextMedia.type} mediaName={nextMedia.name} />
+            <div className="mb-5"></div>
+          </React.Fragment>
+        )}
+        <h3 className="h3" style={{ fontWeight: "700" }}>
+          Suggestions
+        </h3>
+        {suggestedMedias.map((media, index) => (
+          <MediaBox key={index} mediaType={media.type} mediaName={media.name} />
+        ))}
       </div>
     </div>
   );
