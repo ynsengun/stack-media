@@ -20,7 +20,7 @@ export default function TVShowContents() {
         {tvShowInformation.map((tvShowArg, index) => (
           <React.Fragment key={index}>
             <Divider />
-            <Media mediaType={1} mediaName={tvShowArg}></Media>
+            <Media mediaType={1} mediaName={tvShowArg} pageType={1}></Media>
           </React.Fragment>
         ))}
       </div>

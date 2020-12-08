@@ -22,7 +22,12 @@ export default function MovieContents() {
         {movieInformation.map((movieArg, index) => (
           <React.Fragment>
             <Divider />
-            <Media key={index} mediaType={0} mediaName={movieArg}></Media>
+            <Media
+              key={index}
+              mediaType={0}
+              mediaName={movieArg}
+              pageType={1}
+            ></Media>
           </React.Fragment>
         ))}
       </div>

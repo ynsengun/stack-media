@@ -26,7 +26,7 @@ export default function App() {
           <Route exact path="/upload"><Upload /></Route>
           <Route exact path="/settings"><Settings /></Route>
           <Route exact path="/login"><Login /></Route>
-          <Route exact path="/media-page"><MediaPage /></Route>
+          <Route exact path="/media/:name"><MediaPage /></Route>
           <Route path="*"><NotFound /></Route>
         </Switch>
 

@@ -12,13 +12,15 @@ export default function ChannelContents(props) {
   const [medias, setMedias] = useState([]);
   const [suggestedMedias, setSuggestedMedias] = useState([]);
 
+  const history = useHistory();
+
   useEffect(() => {
     // TODO fetch all-genres, my-genres, suggested-medias, medias
     setAllGenres(["Action", "Adventure", "Comedy", "Drama", "Horror"]);
     setMyGenres(["Action", "Drama"]);
     setMedias(["cevat", "cevat", "cevat"]);
     setSuggestedMedias(["yusuf"]);
-  }, []);
+  }, [channelName]);
 
   const getButtonClass = (genre) => {
     return myGenres.includes(genre)
@@ -58,7 +60,12 @@ export default function ChannelContents(props) {
         ))}
       </div>
 
-      <a className="btn btn-primary w-100" href="/search">
+      <a
+        className="btn btn-primary w-100"
+        onClick={() => {
+          history.push("/search");
+        }}
+      >
         Add to channel
       </a>
 
@@ -66,7 +73,7 @@ export default function ChannelContents(props) {
       <hr></hr>
       <div>
         {medias.map((movie, index) => (
-          <Media key={index} mediaName={movie} mediaType={1}></Media>
+          <Media key={index} mediaName={movie} mediaType={1} pageType={1} />
         ))}
       </div>
 
@@ -74,7 +81,7 @@ export default function ChannelContents(props) {
       <hr></hr>
       <div>
         {suggestedMedias.map((movie, index) => (
-          <Media key={index} mediaName={movie} mediaType={1}></Media>
+          <Media key={index} mediaName={movie} mediaType={1} pageType={1} />
         ))}
       </div>
     </Container>
