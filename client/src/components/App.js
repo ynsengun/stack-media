@@ -21,13 +21,12 @@ export default function App() {
 
         {/* prettier-ignore */}
         <Switch>
-          <Route exact path="/"><Home /></Route>
           <Route exact path="/search"><Search /></Route>
           <Route exact path="/upload"><Upload /></Route>
           <Route exact path="/settings"><Settings /></Route>
           <Route exact path="/login"><Login /></Route>
           <Route exact path="/media/:name"><MediaPage /></Route>
-          <Route path="*"><NotFound /></Route>
+          <Route path="/"><Home /></Route>
         </Switch>
 
         <Footer />

@@ -4,8 +4,8 @@ import { useHistory } from "react-router-dom";
 import { Container } from "semantic-ui-react";
 import Media from "../Media/Media";
 
-export default function ChannelContents(props) {
-  const { channelName } = props;
+export default function ChannelContents() {
+  const [channelName, setChannelName] = useState("");
 
   const [allGenres, setAllGenres] = useState([]);
   const [myGenres, setMyGenres] = useState([]);
@@ -13,6 +13,19 @@ export default function ChannelContents(props) {
   const [suggestedMedias, setSuggestedMedias] = useState([]);
 
   const history = useHistory();
+
+  useEffect(() => {
+    setChannelName(history.location.pathname.substring(10));
+
+    const unListen = history.listen(() => {
+      setChannelName(history.location.pathname.substring(10));
+      window.scrollTo(0, 0);
+    });
+
+    return () => {
+      unListen();
+    };
+  }, []);
 
   useEffect(() => {
     // TODO fetch all-genres, my-genres, suggested-medias, medias
@@ -73,11 +86,13 @@ export default function ChannelContents(props) {
       <hr></hr>
       <div>
         {medias.map((movie, index) => (
-          <Media key={index} mediaName={movie} mediaType={1} pageType={1} />
+          <div key={index} className="mt-4">
+            <Media mediaName={movie} mediaType={1} pageType={1} />
+          </div>
         ))}
       </div>
 
-      <h1 className="mt-2">Suggestion</h1>
+      <h1 className="mt-4">Suggestion</h1>
       <hr></hr>
       <div>
         {suggestedMedias.map((movie, index) => (

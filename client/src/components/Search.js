@@ -84,10 +84,12 @@ export default function Search(props) {
       </div>
 
       {mediaList.map((media, index) => (
-        <React.Fragment key={index}>
-          <Divider />
-          <Media mediaName={media.name} mediaType={media.type} pageType={0} />
-        </React.Fragment>
+        <Media
+          key={index}
+          mediaName={media.name}
+          mediaType={media.type}
+          pageType={0}
+        />
       ))}
     </Container>
   );

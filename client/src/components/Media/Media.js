@@ -52,58 +52,60 @@ export default function Media(props) {
   };
 
   return (
-    <div className="row">
-      <div className={pageType === 1 ? "col-1" : "col-2"} />
-      <div className={pageType === 1 ? "col-4" : "col-3"}>
-        <img
-          src={mediaType == 0 ? MovieLogo : TVShowLogo}
-          className="w-100"
-        ></img>
-      </div>
-      <div className="col-2" />
-      <div className="col-5">
-        <h3 className="h3" style={{ marginTop: "30px", fontWeight: "600" }}>
-          {mediaName}
-        </h3>
-        {pageType === 0 && ( // add to channel button
-          <React.Fragment>
-            <div
-              className="mt-4 btn btn-primary"
-              style={{ width: "60%" }}
-              onClick={handleChannelButton}
-            >
-              <label className="mr-1 m-0">Add to Channel: </label>
-              <select
-                name="channelsForAddingTo"
-                onClick={(e) => {
-                  e.stopPropagation();
-                }}
-                onChange={handleChange}
+    <div className="card mt-4">
+      <div className="row">
+        <div className={pageType === 1 ? "col-1" : "col-2"} />
+        <div className={pageType === 1 ? "col-4" : "col-3"}>
+          <img
+            src={mediaType == 0 ? MovieLogo : TVShowLogo}
+            className="w-100"
+          ></img>
+        </div>
+        <div className="col-2" />
+        <div className="col-5">
+          <h3 className="h3" style={{ marginTop: "30px", fontWeight: "600" }}>
+            {mediaName}
+          </h3>
+          {pageType === 0 && ( // add to channel button
+            <React.Fragment>
+              <div
+                className="mt-4 btn btn-primary"
+                style={{ width: "60%" }}
+                onClick={handleChannelButton}
               >
-                {channels.map((channel, index) => option(channel, index))}
-              </select>
+                <label className="mr-1 m-0">Add to Channel: </label>
+                <select
+                  name="channelsForAddingTo"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                  }}
+                  onChange={handleChange}
+                >
+                  {channels.map((channel, index) => option(channel, index))}
+                </select>
+                <br style={{ height: "0px" }} />
+              </div>
               <br style={{ height: "0px" }} />
-            </div>
-            <br style={{ height: "0px" }} />
-          </React.Fragment>
-        )}
-        {(pageType === 0 || pageType === 1) && ( // watch button
-          <button
-            className="btn btn-primary mt-4"
-            style={{ width: "60%" }}
-            onClick={() => {
-              history.push(`/media/${mediaName}`);
-            }}
-          >
-            Watch
-          </button>
-        )}
-        {pageType === 2 && ( // eddit button
-          // TODO button onClick
-          <button className="btn btn-warning mt-5" style={{ width: "60%" }}>
-            Edit
-          </button>
-        )}
+            </React.Fragment>
+          )}
+          {(pageType === 0 || pageType === 1) && ( // watch button
+            <button
+              className="btn btn-primary mt-4"
+              style={{ width: "60%" }}
+              onClick={() => {
+                history.push(`/media/${mediaName}`);
+              }}
+            >
+              Watch
+            </button>
+          )}
+          {pageType === 2 && ( // eddit button
+            // TODO button onClick
+            <button className="btn btn-warning mt-5" style={{ width: "60%" }}>
+              Edit
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );
