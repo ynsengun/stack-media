@@ -17,6 +17,7 @@ export default function MediaPage() {
   const [mediaName, setMediaName] = useState();
   const [nextMedia, setNextMedia] = useState(null);
   const [suggestedMedias, setSuggestedMedias] = useState([{}]);
+  const [rating, setRating] = useState(0);
 
   const history = useHistory();
 
@@ -38,10 +39,11 @@ export default function MediaPage() {
 
   useEffect(() => {
     // TODO fetch progress and set button actives accordingly
-    // TODO fetch suggested and next(if series) media
+    // TODO fetch suggested and next(if series) media, rating
 
     setProgress(0);
     setButtonActive({ watch: true, finish: false });
+    setRating(3);
     setSuggestedMedias([
       { name: "aaa", type: 0 },
       { name: "bbb", type: 1 },
@@ -74,10 +76,21 @@ export default function MediaPage() {
     );
   };
 
+  const option = (index) => {
+    if (rating === index)
+      return (
+        <option value={"" + index} selected="selected">
+          {index}
+        </option>
+      );
+    return <option value={"" + index}>{index}</option>;
+  };
+
   const handleChange = (e) => {
     const { value, name } = e.currentTarget;
     if (name === "mediaRating") {
       // TODO fetch, value for rating
+      setRating(value);
       console.log(value);
     }
   };
@@ -90,14 +103,15 @@ export default function MediaPage() {
             <h1 className="h1 text-center mt-5 text-white">{mediaName}</h1>
             <div
               style={{
-                height: "45vh",
+                height: "40vh",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "space-evenly",
+                marginTop: "-50px",
               }}
             >
               <button
-                className={`btn btn-success btn-lg p-5 ${
+                className={`btn btn-success btn-lg p-5 w-25 ${
                   !buttonActive.watch && "disabled"
                 }`}
                 onClick={() => {
@@ -107,7 +121,7 @@ export default function MediaPage() {
                 Watch
               </button>
               <button
-                className={`btn btn-danger btn-lg p-5 ${
+                className={`btn btn-danger btn-lg p-5 w-25 ${
                   !buttonActive.finish && "disabled"
                 }`}
                 onClick={() => {
@@ -132,16 +146,16 @@ export default function MediaPage() {
           >
             <label className="mr-1">Rating:</label>
             <select name="mediaRating" onChange={handleChange}>
-              <option value="1">1</option>
-              <option value="2">2</option>
-              <option value="3">3</option>
-              <option value="4">4</option>
-              <option value="5">5</option>
-              <option value="6">6</option>
-              <option value="7">7</option>
-              <option value="8">8</option>
-              <option value="9">9</option>
-              <option value="10">10</option>
+              {option(1)}
+              {option(2)}
+              {option(3)}
+              {option(4)}
+              {option(5)}
+              {option(6)}
+              {option(7)}
+              {option(8)}
+              {option(9)}
+              {option(10)}
             </select>
           </div>
 
