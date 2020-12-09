@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Menu, Container, Segment, Card } from "semantic-ui-react";
 import { useHistory } from "react-router-dom";
 import { toast } from "react-toastify";
-import Notification from "./Notification"
+import Notification from "./Notification";
 
 import {
   cleanAuth,
@@ -46,7 +46,7 @@ export default function Navbar() {
 
   const handleItemClick = (e, { name }) => {
     if (name === "home") {
-      history.push("/");
+      history.push("/movies");
     } else {
       history.push(`/${name.replace(" ", "-")}`);
     }
@@ -69,7 +69,7 @@ export default function Navbar() {
           cleanAuth();
           toast.success("Logout is successful... Redirecting to home page...");
           setTimeout(() => {
-            history.push("/");
+            history.push("/movies");
           }, 1500);
           return r;
         } else {
