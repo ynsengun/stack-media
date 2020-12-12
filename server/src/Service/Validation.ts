@@ -4,7 +4,8 @@ import {Request} from "express";
 export class Validation{
 
     public loginValidation(req: Request): void {
-        if(!req.body.email || !req.body.password)
+        console.log( "in login validation: email is => " + req.body.username + " password is => " + req.body.password);
+        if(!req.body.username || !req.body.password)
             throw new InvalidRequest();
     }
     
