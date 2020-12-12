@@ -12,15 +12,13 @@ export default function MovieContents() {
   const [movieInformation, setMovieInformation] = useState([]);
 
   useEffect(() => {
-    // TODO fetch movies, then set setMovieInformation accordingly
+    // TODO fetch movies, then set setMovieInformation accordingly, PROGRESS: fetching is done, server must return genre-preferred media!
     console.log( "REquesting movies");
     fetch("http://localhost:4000/api/media/getMovies", {
         method: "POST",
         mode: "cors",
         headers: {
             "Content-Type": "application/json",
-            // token: getAuthToken(),
-            // username: getAuthName(),
         },
         body: JSON.stringify(
         {
@@ -31,7 +29,8 @@ export default function MovieContents() {
     .then((r) => checkResponse(r))
     .then((r) => r.json())
     .then((r) => {
-        console.log( r);
+        let resArray = r.data;
+        setMovieInformation( resArray);
     })
     .catch((err) => {
         console.log(err);
@@ -46,11 +45,11 @@ export default function MovieContents() {
     <Container>
       <h1 className="text-center">Movies</h1>
       <div className="MovieGrid">
-        {movieInformation.map((movieArg, index) => (
+        {movieInformation.map((movieArgs, index) => (
           <Media
             key={index}
             mediaType={0}
-            mediaName={movieArg}
+            mediaName={movieArgs.name}
             pageType={1}
           ></Media>
         ))}

@@ -27,7 +27,6 @@ export class MediaDBService {
         return result;
     }
 
-
     public async getSeries(): Promise<any> {
         let result = null;
 
@@ -45,7 +44,7 @@ export class MediaDBService {
     public async getMovies(): Promise<any> {
         let result = null;
 
-        let sqlQuery = "SELECT * FROM Movie;";
+        let sqlQuery = "SELECT * FROM Movie INNER JOIN Media ON Media.mediaId = Movie.mediaId;";
 
         try {
             result = await this.db.sendQuery(sqlQuery);
@@ -59,7 +58,7 @@ export class MediaDBService {
     public async getRating(media: Media): Promise<any> {
         let result = null;
 
-        let sqlQuery = "SELECT M.mediaId AVG(rate) FROM Media M INNER JOIN MediaRating ON M.media-id = MediaRating.media-id WHERE M.mediaId = '" + media.mediaId + "' GROUP BY M.media-id;";
+        let sqlQuery = "SELECT M.mediaId AVG(rate) FROM Media M INNER JOIN MediaRating ON M.mediaId = MediaRating.media-id WHERE M.mediaId = '" + media.mediaId + "' GROUP BY M.mediaId;";
 
         try {
             result = await this.db.sendQuery(sqlQuery);
