@@ -13,7 +13,6 @@ export default function MovieContents() {
 
   useEffect(() => {
     // TODO fetch movies, then set setMovieInformation accordingly, PROGRESS: fetching is done, server must return genre-preferred media!
-    console.log( "REquesting movies");
     fetch("http://localhost:4000/api/media/getMovies", {
         method: "POST",
         mode: "cors",
@@ -36,9 +35,6 @@ export default function MovieContents() {
         console.log(err);
         toast.error("error");
     });
-
-    console.log("moviecontent");
-    setMovieInformation(["CS353", "CS342", "CS465", "CS491"]);
   }, []);
 
   return (

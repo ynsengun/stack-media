@@ -5,11 +5,13 @@ import { Container, Divider } from "semantic-ui-react";
 import Media from "./Media/Media";
 
 import searchLogo from "../images/searchIcon.png";
+import { checkResponse } from "../util/ResponseUtil";
+import {  getAuthName, getAuthToken } from "../util/AuthenticationUtil";
 
 import "../css/Search.css";
 
 export default function Search(props) {
-  const [search, setSearch] = useState({ text: "", genre: "", sortby: "" });
+  const [search, setSearch] = useState({ text: "", genre: "Action", sortby: "" });
   const [mediaList, setMediaList] = useState([{}]);
   const [allGenres, setAllGenres] = useState([]);
 
@@ -20,6 +22,33 @@ export default function Search(props) {
 
   useEffect(() => {
     //TODO fetch medias according to the search state
+
+    fetch("http://localhost:4000/api/media/search", {
+        method: "POST",
+        mode: "cors",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(
+        {
+            token: getAuthToken(),
+            username: getAuthName(),
+            
+            name: search.text,
+            title: search.genre,
+        }),
+    })
+    .then((r) => checkResponse(r))
+    .then((r) => r.json())
+    .then((r) => {
+        let resArray = r.data;
+        console.log( resArray);
+    })
+    .catch((err) => {
+        console.log(err);
+        toast.error("error");
+    });
+
     setMediaList([
       { name: "aaa", type: 0 },
       { name: "bbb", type: 1 },

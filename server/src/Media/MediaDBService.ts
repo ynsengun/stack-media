@@ -146,7 +146,7 @@ export class MediaDBService {
     public async getWatch(media: Media, user: User): Promise<any> {
         let result = null;
 
-        let sqlQuery = "SELECT progress FROM Watch WHERE media-id = '" + media.mediaId + "' AND username = '" + user.username + "';";
+        let sqlQuery = "SELECT progress FROM Watch WHERE mediaId = '" + media.mediaId + "' AND username = '" + user.username + "';";
 
         try {
             result = await this.db.sendQuery(sqlQuery);
@@ -174,7 +174,7 @@ export class MediaDBService {
     public async getSuggestionForMedia(media: Media, user: User): Promise<any> {
         let result = null;
 
-        let sqlQuery = "SELECT M.name FROM GenrePreference GP, HasGenre HG, Media WHERE GP.username = '" + user.username + "' and GP.genre-id = HG.genre-id and  HG.media-id = M.media-id;";
+        let sqlQuery = "SELECT M.name FROM GenrePreference GP, HasGenre HG, Media WHERE GP.username = '" + user.username + "' and GP.genreId = HG.genreId and  HG.mediaId = M.mediaId;";
 
         try {
             result = await this.db.sendQuery(sqlQuery);
