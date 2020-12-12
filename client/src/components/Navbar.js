@@ -57,7 +57,14 @@ export default function Navbar() {
   };
 
   const handleLogout = () => {
-    fetch("http://localhost:8080/logout", {
+    
+    cleanAuth();
+    toast.success("Logout is successful... Redirecting to login page...");
+    setTimeout(() => {
+        history.push("/login");
+      }, 1000);
+
+    /*fetch("http://localhost:8080/logout", {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -78,7 +85,7 @@ export default function Navbar() {
       })
       .catch(() => {
         toast.error("Logout is failed");
-      });
+      });*/
   };
 
   return (

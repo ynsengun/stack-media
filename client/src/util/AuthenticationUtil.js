@@ -1,17 +1,17 @@
 export function saveAuth(info) {
-  const { username } = info.username;
-
-  let isUser = true,
+    const { username, userType, token } = info;
+  
+    let isUser = true,
     isAdmin = true;
-  if (info.userType === "ROLE_ADMIN") {
-    isUser = false;
-  } else {
-    isAdmin = false;
-  }
+    if ( userType === "ROLE_ADMIN") {
+        isUser = false;
+    } else {
+        isAdmin = false;
+    }
 
-  const authJson = { username, isUser, isAdmin };
+    const authJson = { username, isUser, isAdmin, token };
 
-  localStorage.setItem("authInfo", JSON.stringify(authJson));
+    localStorage.setItem("authInfo", JSON.stringify(authJson));
 }
 
 export function cleanAuth() {

@@ -5,13 +5,13 @@ import { Container } from "semantic-ui-react";
 import "../css/Login.css";
 
 import { checkResponse } from "../util/ResponseUtil";
-import { saveAuth } from "../util/AuthenticationUtil";
+import { isAdmin, saveAuth } from "../util/AuthenticationUtil";
 
 export default function Login() {
 
     const history = useHistory();
     const loadMainPage = () => {
-        history.push( "movies");
+        history.push( "/movies");
     };
 
     // states for login
@@ -77,8 +77,14 @@ export default function Login() {
         .then((r) => r.json())
         .then((r) => {
             console.log( r);
-        saveAuth( r.data);
-        loadMainPage();
+
+            let res = {
+                username: r.data.username,
+                userType: r.data.userType,
+                token: r.data.token
+            };
+            saveAuth( res);
+            loadMainPage();
         })
         .catch((err) => {
             console.log(err);
