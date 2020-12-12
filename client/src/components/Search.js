@@ -19,7 +19,7 @@ export default function Search(props) {
   }
 
   useEffect(() => {
-    // fetch medias according to the search state
+    //TODO fetch medias according to the search state
     setMediaList([
       { name: "aaa", type: 0 },
       { name: "bbb", type: 1 },
@@ -28,7 +28,7 @@ export default function Search(props) {
   }, [search]);
 
   useEffect(() => {
-    // TODO fetch all genres
+    //TODO  fetch all genres
     setAllGenres(["Action", "Adventure", "Comedy", "Drama", "Horror"]);
   }, []);
 

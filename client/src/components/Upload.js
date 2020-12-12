@@ -42,7 +42,7 @@ export default function Upload() {
         .then((r) => checkResponse(r))
         .then((r) => r.json())
         .then((r) => {
-            console.log( r);
+            toast.success("Upload complete...");
         })
         .catch((err) => {
             console.log(err);

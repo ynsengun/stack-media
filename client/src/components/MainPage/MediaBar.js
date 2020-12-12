@@ -6,6 +6,8 @@ import "../../css/MainPage/MediaBar.css";
 import { ContentType } from "../../util/ContentTypes";
 
 import RedirectLabel from "./RedirectLabel";
+import { checkResponse } from "../../util/ResponseUtil";
+import { getAuthName, getAuthToken } from "../../util/AuthenticationUtil";
 
 export default function MediaBar(props) {
   const { changeContent } = props;
@@ -28,14 +30,67 @@ export default function MediaBar(props) {
     });
   };
 
-  const handleNewChannel = () => {
+    const handleNewChannel = () => {
     // TODO fetch, post request to add textInput.channel
-    setChannels([...channels, textInput.channel]);
-    setTextInput({ ...textInput, channel: "" });
-  };
+
+        fetch("http://localhost:4000/api/channel/create", {
+            method: "POST",
+            mode: "cors",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(
+            {
+                token: getAuthToken(),
+                username: getAuthName(),
+                
+                title: textInput.channel,
+            
+            }),
+        })
+        .then((r) => checkResponse(r))
+        .then((r) => r.json())
+        .then((r) => {
+            console.log( r);
+        })
+        .catch((err) => {
+            console.log(err);
+            toast.error("error");
+        });
+
+        setChannels([...channels, textInput.channel]);
+        setTextInput({ ...textInput, channel: "" });
+    };
 
   const handleNewParty = () => {
     // TODO fetch, post request to add textInput.party
+
+    /*
+    fetch("http://localhost:4000/api/channel/create", {
+            method: "POST",
+            mode: "cors",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(
+            {
+                token: getAuthToken(),
+                username: getAuthName(),
+                
+                title: textInput.party,
+            
+            }),
+        })
+        .then((r) => checkResponse(r))
+        .then((r) => r.json())
+        .then((r) => {
+            console.log( r);
+        })
+        .catch((err) => {
+            console.log(err);
+            toast.error("error");
+        });*/
+
     setParties([...parties, textInput.party]);
     setTextInput({ ...textInput, party: "" });
   };

@@ -107,10 +107,16 @@ public class TableCreation {
                 "'0', 'Action', 'Action description');");
         done();
         statement.executeUpdate("INSERT INTO Genre VALUES(" +
-                "'1', 'Comedy', 'Comedy description');");
+                "'1', 'Adventure', 'Adventure description');");
         done();
         statement.executeUpdate("INSERT INTO Genre VALUES(" +
-                "'2', 'Horror', 'Horror description');");
+                "'2', 'Comedy', 'Comedy description');");
+        done();
+        statement.executeUpdate("INSERT INTO Genre VALUES(" +
+                "'3', 'Drama', 'Drama description');");
+        done();
+        statement.executeUpdate("INSERT INTO Genre VALUES(" +
+                "'4', 'Horror', 'Horror description');");
         done();
         statement.executeUpdate("CREATE TABLE IF NOT EXISTS Media (" +
                 "mediaId VARCHAR(32) NOT NULL," +

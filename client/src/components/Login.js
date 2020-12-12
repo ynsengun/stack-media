@@ -5,7 +5,7 @@ import { Container } from "semantic-ui-react";
 import "../css/Login.css";
 
 import { checkResponse } from "../util/ResponseUtil";
-import { isAdmin, saveAuth } from "../util/AuthenticationUtil";
+import { saveAuth } from "../util/AuthenticationUtil";
 
 export default function Login() {
 
@@ -61,7 +61,6 @@ export default function Login() {
 
     function login(nameArg, passArg) {
         console.log(loginUsername + " " + loginPassword);
-        //TODO: send login request
         fetch("http://localhost:4000/api/user/login", {
         method: "POST",
         mode: "cors",
@@ -92,7 +91,6 @@ export default function Login() {
     }
 
     function register() {
-        //TODO: send register request
         fetch("http://localhost:4000/api/user/register", {
         method: "POST",
         mode: "cors",

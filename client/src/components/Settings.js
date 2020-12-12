@@ -3,12 +3,40 @@ import { toast } from "react-toastify";
 import { useHistory } from "react-router-dom";
 import { Container } from "semantic-ui-react";
 
+import { checkResponse } from "../util/ResponseUtil";
+import { getAuthName, getAuthToken } from "../util/AuthenticationUtil";
+
 export default function Settings() {
   const [allGenres, setAllGenres] = useState([]);
   const [myGenres, setMyGenres] = useState([]);
 
   useEffect(() => {
     // TODO fetch all-genres, my-genres, suggested-medias, medias
+
+    fetch("http://localhost:4000/api/channel/create", {
+            method: "POST",
+            mode: "cors",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(
+            {
+                token: getAuthToken(),
+                username: getAuthName(),
+            
+            
+            }),
+        })
+        .then((r) => checkResponse(r))
+        .then((r) => r.json())
+        .then((r) => {
+            console.log( r);
+        })
+        .catch((err) => {
+            console.log(err);
+            toast.error("error");
+        });
+
     setAllGenres(["Action", "Adventure", "Comedy", "Drama", "Horror"]);
     setMyGenres(["Action", "Drama"]);
   }, []);
@@ -29,6 +57,31 @@ export default function Settings() {
       setMyGenres(temp);
     } else {
       // TODO fetch, add this genre from user
+
+      fetch("http://localhost:4000/api/channel/create", {
+            method: "POST",
+            mode: "cors",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(
+            {
+                token: getAuthToken(),
+                username: getAuthName(),
+            
+            
+            }),
+        })
+        .then((r) => checkResponse(r))
+        .then((r) => r.json())
+        .then((r) => {
+            console.log( r);
+        })
+        .catch((err) => {
+            console.log(err);
+            toast.error("error");
+        });
+
       setMyGenres([...myGenres, genre]);
     }
   };
