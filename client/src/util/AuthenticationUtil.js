@@ -38,18 +38,26 @@ export function isAuthenticated() {
   return auth != null;
 }
 
+/* DEPRECIATED
 export function getAuthId() {
   //return true;
   let auth = localStorage.getItem("authInfo");
   let authJson = JSON.parse(auth);
   return authJson.id;
-}
+}*/
 
 export function getAuthName() {
+    //return true;
+    let auth = localStorage.getItem("authInfo");
+    let authJson = JSON.parse(auth);
+    return authJson.username;
+  }
+
+export function getAuthToken() {
   //return true;
   let auth = localStorage.getItem("authInfo");
   let authJson = JSON.parse(auth);
-  return authJson.username;
+  return authJson.token;
 }
 
 export function isAdmin() {

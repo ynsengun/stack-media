@@ -26,7 +26,7 @@ export default function Login() {
     const [registerUserType, setRegisterUserType] = useState(false);
 
     function handleLoginButtonPress(event) {
-        //TODO: validation of input
+        
         if (loginUsername === "") {
         toast.error("Please write your login username");
         return;
@@ -39,7 +39,7 @@ export default function Login() {
     }
 
     function handleRegisterButtonPress(event) {
-        //TODO: validation of input
+        
         if (registerEmail === "") {
             toast.error("Please write down your email");
         return;
