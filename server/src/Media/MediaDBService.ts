@@ -95,10 +95,12 @@ export class MediaDBService {
         try {
             await this.db.sendQuery(sqlQuery);  
             if(media.episodeNumber == null){ // it means it is a movie, then add to movie table
+                console.log( "Creating movie...");
                 sqlQuery = "INSERT INTO Movie VALUES('" + mediaId + "','" + media.oscarAward + "');";
             }
             else{ // it means it is a series, then add to series table
-                sqlQuery = "INSERT INTO TVSeriesEpisode VALUES('" + mediaId + "','" + media.episodeNumber + "','" + media.episodeNumber + "','" + media.emmyAward + "');";
+                console.log( "Creating tv show...");
+                sqlQuery = "INSERT INTO TVSeriesEpisode VALUES('" + mediaId + "','" + media.seasonNumber + "','" + media.episodeNumber + "','" + media.emmyAward + "');";
             }
             await this.db.sendQuery(sqlQuery);
         } 

@@ -4,7 +4,6 @@ import {Request} from "express";
 export class Validation{
 
     public loginValidation(req: Request): void {
-        console.log( "in login validation: email is => " + req.body.username + " password is => " + req.body.password);
         if(!req.body.username || !req.body.password)
             throw new InvalidRequest();
     }
@@ -31,6 +30,7 @@ export class Validation{
     }
 
     public createMediaValidation(req: Request): void {
+        console.log( req.body);
         if(!req.body.publishUsername || !req.body.name || !req.body.description || !req.body.path || !req.body.updateDate)
             throw new InvalidRequest();
     }

@@ -24,33 +24,23 @@ export class Controller{
         this.validation = new Validation();
     }
 
-
     // user functions
     public async login(request: Request, response: Response): Promise<void> {
         try{
-            console.log("1");
             this.validation.loginValidation(request);
-            console.log("2");
             let result = await this.userBusiness.login(userMapping.map(request.body));
-            console.log("3");
             response.status(result.status).send(result);
-            console.log("4");
         } catch(error){
             const errorResponse = new ErrorResponse(error);
-            console.log("-1");
             response.status(errorResponse.status).send(new ErrorResponse(error));
         }
     }
 
     public async register(request: Request, response: Response): Promise<void> {
         try{
-            console.log("reg1");
             this.validation.registerValidation(request);
-            console.log("reg2");
             let result = await this.userBusiness.register(userMapping.map(request.body));
-            console.log("reg3");
             response.status(result.status).send(result);
-            console.log("reg4");
         } catch(error){
             const errorResponse = new ErrorResponse(error);
             response.status(errorResponse.status).send(new ErrorResponse(error));

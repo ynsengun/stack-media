@@ -76,14 +76,13 @@ export default function Login() {
         .then((r) => checkResponse(r))
         .then((r) => r.json())
         .then((r) => {
-            console.log( r);
-
             let res = {
                 username: r.data.username,
                 userType: r.data.userType,
-                token: r.data.token
+                token: r.data.token,
             };
             saveAuth( res);
+            console.log( res.token);
             loadMainPage();
         })
         .catch((err) => {
