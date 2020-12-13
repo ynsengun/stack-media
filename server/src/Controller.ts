@@ -226,6 +226,28 @@ export class Controller{
         }
     }
 
+    public async getMoviesWithGenrePreference(request: Request, response: Response): Promise<void> {
+        try{
+            this.validation.getMoviesWithGenrePreferenceValidation(request);
+            let result = await this.mediaBusiness.getMoviesWithGenrePreference(genreMapping.map(request.body.genre));
+            response.status(result.status).send(result);
+        } catch(error){
+            const errorResponse = new ErrorResponse(error);
+            response.status(errorResponse.status).send(new ErrorResponse(error));
+        }
+    }
+
+    public async getSeriesWithGenrePreference(request: Request, response: Response): Promise<void> {
+        try{
+            this.validation.getSeriesWithGenrePreferenceValidation(request);
+            let result = await this.mediaBusiness.getSeriesWithGenrePreference(genreMapping.map(request.body.genre));
+            response.status(result.status).send(result);
+        } catch(error){
+            const errorResponse = new ErrorResponse(error);
+            response.status(errorResponse.status).send(new ErrorResponse(error));
+        }
+    }
+
     public async getRating(request: Request, response: Response): Promise<void> {
         try{
             this.validation.getRatingValidation(request);

@@ -45,6 +45,26 @@ export class MediaBusiness {
         }
     }
 
+    public async getSeriesWithGenrePreference(genre: Genre): Promise<ResponseModel>
+    {
+        try {
+            let result = await this.mediaDBService.getSeriesWithGenrePreference(genre);
+            return new SuccessResponse(result);
+        } catch (error) {
+            return new ErrorResponse(error);
+        }
+    }
+
+    public async getMoviesWithGenrePreference(genre: Genre): Promise<ResponseModel>
+    {
+        try {
+            let result = await this.mediaDBService.getMoviesWithGenrePreference(genre);
+            return new SuccessResponse(result);
+        } catch (error) {
+            return new ErrorResponse(error);
+        }
+    }
+
     public async getRating(media: Media): Promise<ResponseModel>
     {
         try {

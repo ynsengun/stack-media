@@ -30,7 +30,7 @@ export class MediaDBService {
     public async getSeries(): Promise<any> {
         let result = null;
 
-        let sqlQuery = "SELECT * FROM TV-Series-Episode;";
+        let sqlQuery = "SELECT * FROM TVSeriesEpisode;";
 
         try {
             result = await this.db.sendQuery(sqlQuery);
@@ -45,6 +45,34 @@ export class MediaDBService {
         let result = null;
 
         let sqlQuery = "SELECT * FROM Movie INNER JOIN Media ON Media.mediaId = Movie.mediaId;";
+
+        try {
+            result = await this.db.sendQuery(sqlQuery);
+        } 
+        catch(err){
+            throw err;
+        }
+        return result;
+    }
+
+    public async getSeriesWithGenrePreference(genre: Genre): Promise<any> {
+        let result = null;
+
+        let sqlQuery = "SELECT TV.* FROM TVSeriesEpisode TV, MediaHasGenre MHG WHERE MHG.mediaId = TV.mediaId AND MHG.genreId = '" + genre.genreId + "';";
+
+        try {
+            result = await this.db.sendQuery(sqlQuery);
+        } 
+        catch(err){
+            throw err;
+        }
+        return result;
+    }
+
+    public async getMoviesWithGenrePreference(genre: Genre): Promise<any> {
+        let result = null;
+
+        let sqlQuery = "SELECT M.* FROM Movie M, MediaHasGenre MHG WHERE MHG.mediaId = M.mediaId AND MHG.genreId = '" + genre.genreId + "';";
 
         try {
             result = await this.db.sendQuery(sqlQuery);
@@ -193,7 +221,7 @@ export class MediaDBService {
     /*public async deleteSerie(serie: Media): Promise<any> {
         let result = null;
 
-        let sqlQuery = "DELETE FROM TV-Series-Episode WHERE mediaId = '" + serie.mediaId + "';";
+        let sqlQuery = "DELETE FROM TVSeriesEpisode WHERE mediaId = '" + serie.mediaId + "';";
 
         try {
             result = await this.db.sendQuery(sqlQuery);

@@ -50,6 +50,16 @@ export class Validation{
             throw new InvalidRequest();
     }
 
+    public getMoviesWithGenrePreferenceValidation(req: Request): void {
+        if(!req.body.username || !req.body.genre)
+            throw new InvalidRequest();
+    }
+
+    public getSeriesWithGenrePreferenceValidation(req: Request): void {
+        if(!req.body.username || !req.body.genre)
+            throw new InvalidRequest();
+    }
+
     public getWatchValidation(req: Request): void {
         if(!req.body.username || !req.body.mediaId)
             throw new InvalidRequest();
