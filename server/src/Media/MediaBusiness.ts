@@ -187,4 +187,14 @@ export class MediaBusiness {
             return new ErrorResponse(error);
         }
     }*/
+
+    public async getGenres(): Promise<any>
+    {
+        try {
+            let result = await this.mediaDBService.getGenres();
+            return new SuccessResponse(result);
+        } catch (error) {
+            return new ErrorResponse(error);
+        }
+    }
 }

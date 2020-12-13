@@ -251,4 +251,20 @@ export class MediaDBService {
         }
         return result;
     }*/
+
+    public async getGenres(): Promise<any>
+    {
+        let result = null;
+
+        let sqlQuery = "SELECT * FROM Genre;";
+
+        try {
+            result = await this.db.sendQuery(sqlQuery);
+            // TODO
+        } 
+        catch(err){
+            throw err;
+        }
+        return result;
+    }
 }
