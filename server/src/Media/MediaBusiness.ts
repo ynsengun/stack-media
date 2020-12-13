@@ -55,10 +55,10 @@ export class MediaBusiness {
         }
     }
 
-    public async createMedia(media: Media): Promise<ResponseModel>
+    public async createMedia(media: Media, mediaGenres: Genre[]): Promise<ResponseModel>
     {
         try {
-            let result = await this.mediaDBService.createMedia(media);
+            let result = await this.mediaDBService.createMedia(media, mediaGenres);
             return new SuccessResponse(result);
         } catch (error) {
             return new ErrorResponse(error);

@@ -86,7 +86,7 @@ export class MediaDBService {
         
     }*/
 
-    public async createMedia(media: Media): Promise<any> {
+    public async createMedia(media: Media, mediaGenres: Genre[]): Promise<any> {
         let result = null;
         let mediaId = id();
         let sqlQuery = "INSERT INTO Media VALUES('" + mediaId + "','" + media.publishUsername + "','" + media.name + "','" + media.description + "','" + media.path + "','" + media.duration + "','" + media.uploadDate + "');";
@@ -102,6 +102,11 @@ export class MediaDBService {
                 sqlQuery = "INSERT INTO TVSeriesEpisode VALUES('" + mediaId + "','" + media.seasonNumber + "','" + media.episodeNumber + "','" + media.emmyAward + "');";
             }
             await this.db.sendQuery(sqlQuery);
+            for (var i = 0; i < mediaGenres.length; i++)
+            {
+                sqlQuery = "INSERT INTO MediaHasGenre VALUES('" + mediaId + "','" + mediaGenres[i].genreId + "');";
+                await this.db.sendQuery(sqlQuery);  
+            }
         } 
         catch(err){
             if(err.code == "ER_DUP_ENTRY"){
