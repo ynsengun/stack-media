@@ -164,11 +164,15 @@ export class MediaDBService {
     public async search(media: Media, genre: Genre): Promise<any> {
         let result = null;
 
-        let sqlQuery = "SELECT * FROM Media M WHERE LEVENSHTEIN(M.name, '" + media.name + "') <= 5 AND '" + genre.title + "' IN " 
-        + "(SELECT Genre.title FROM MediaHasGenre INNER JOIN Genre ON MediaHasGenre.genreId = Genre.genreId WHERE M.mediaId = MediaHasGenre.mediaId);";
+        let sqlQuery = "SELECT M.*, TV.episodeNumber, TV.seasonNumber, TV.emmyAward FROM Media M, TVSeriesEpisode TV WHERE LEVENSHTEIN(M.name, '" + media.name + "') <= 5 AND M.mediaId = TV.mediaId AND '" + genre.title + "' IN " 
+        + "(SELECT Genre.title FROM MediaHasGenre INNER JOIN Genre ON MediaHasGenre.genreId = Genre.genreId WHERE TV.mediaId = MediaHasGenre.mediaId);";
 
         try {
             result = await this.db.sendQuery(sqlQuery);
+            sqlQuery = "SELECT M.*, MO.oscarAward FROM Media M, Movie MO WHERE LEVENSHTEIN(M.name, '" + media.name + "') <= 5 AND M.mediaId = MO.mediaId AND '" + genre.title + "' IN " 
+            + "(SELECT Genre.title FROM MediaHasGenre INNER JOIN Genre ON MediaHasGenre.genreId = Genre.genreId WHERE MO.mediaId = MediaHasGenre.mediaId);";
+            let movieResult = await this.db.sendQuery(sqlQuery);
+            result.push(movieResult);
         } 
         catch(err){
             throw err;
