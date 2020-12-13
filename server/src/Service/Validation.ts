@@ -147,7 +147,7 @@ export class Validation{
     }
 
     public createChannelValidation(req: Request): void {
-        if(!req.body.username || !req.body.title || !req.body.channelId)
+        if(!req.body.username || !req.body.title)
             throw new InvalidRequest();
     }
 

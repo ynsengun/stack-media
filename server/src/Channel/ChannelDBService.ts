@@ -4,6 +4,7 @@ import { Genre } from "../Model/Genre/Genre";
 import { Channel } from "../Model/Channel/Channel";
 import {Database} from "../Database";
 import {AlreadyExist} from "../Model/Error/AlreadyExist";
+import {v1 as id} from "uuid";
 
 export class ChannelDBService {
     db: Database;
@@ -137,9 +138,8 @@ export class ChannelDBService {
     }
 
     public async createChannel(channel: Channel): Promise<any> {
-        let result = null;
-
-        let sqlQuery = "INSERT INTO Channel VALUES('" + channel.channelId + "', '" + channel.username + "', '" + channel.title + "');";
+        let channelId = id();
+        let sqlQuery = "INSERT INTO Channel VALUES('" + channelId + "', '" + channel.username + "', '" + channel.title + "');";
 
         try {
             await this.db.sendQuery(sqlQuery);
@@ -152,7 +152,7 @@ export class ChannelDBService {
                 throw err;
             }
         }
-        return result;
+        return channelId;
     }
 
     public async deleteChannel(channel: Channel): Promise<any> {
