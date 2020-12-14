@@ -25,7 +25,7 @@ export default function Search() {
   }
 
   useEffect(() => {
-    //TODO fetch medias according to the search state
+    // fetch medias according to the search state
     if (search.text !== "") {
       fetch("http://localhost:4000/api/media/search", {
         method: "POST",
@@ -65,7 +65,6 @@ export default function Search() {
       mode: "cors",
       headers: {
         "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*",
       },
       body: JSON.stringify({
         token: getAuthToken(),

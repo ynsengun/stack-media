@@ -11,33 +11,54 @@ export default function Settings() {
   const [myGenres, setMyGenres] = useState([]);
 
   useEffect(() => {
-    // TODO fetch all-genres, my-genres, suggested-medias, medias
-
-    fetch("http://localhost:4000/api/channel/create", {
-            method: "POST",
-            mode: "cors",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(
-            {
-                token: getAuthToken(),
-                username: getAuthName(),
+    // fetch all-genres, my-genres, suggested-medias, medias
+    fetch("http://localhost:4000/api/media/getGenres", {
+      method: "POST",
+      mode: "cors",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        token: getAuthToken(),
+        username: getAuthName(),
+      }),
+    })
+      .then((r) => checkResponse(r))
+      .then((r) => r.json())
+      .then((r) => {
+        let resArray = r.data;
+        setAllGenres(resArray.map((x) => x.title));
+      })
+      .catch((err) => {
+        console.log(err);
+        toast.error("Error, could not fetch genres!");
+      });
+    
+    // TODO WAIT FOR SERVER to implement getUserGenrePreference => than set my genres in the response
+    // fetch("http://localhost:4000/api/channel/create", {
+    //         method: "POST",
+    //         mode: "cors",
+    //         headers: {
+    //             "Content-Type": "application/json",
+    //         },
+    //         body: JSON.stringify(
+    //         {
+    //             token: getAuthToken(),
+    //             username: getAuthName(),
             
             
-            }),
-        })
-        .then((r) => checkResponse(r))
-        .then((r) => r.json())
-        .then((r) => {
-            console.log( r);
-        })
-        .catch((err) => {
-            console.log(err);
-            toast.error("error");
-        });
+    //         }),
+    //     })
+    //     .then((r) => checkResponse(r))
+    //     .then((r) => r.json())
+    //     .then((r) => {
+    //         console.log( r);
+    //     })
+    //     .catch((err) => {
+    //         console.log(err);
+    //         toast.error("error");
+    //     });
 
-    setAllGenres(["Action", "Adventure", "Comedy", "Drama", "Horror"]);
     setMyGenres(["Action", "Drama"]);
   }, []);
 
@@ -48,42 +69,45 @@ export default function Settings() {
   };
 
   const handleGenreClick = (genre) => {
-    if (myGenres.includes(genre)) {
-      // TODO fetch, delete this genre from user
-      let temp = [];
-      myGenres.forEach((g) => {
-        if (g != genre) temp.push(g);
-      });
-      setMyGenres(temp);
-    } else {
-      // TODO fetch, add this genre from user
+    if (myGenres.includes(genre)) 
+    {
+        // TODO fetch, delete this genre from user
+        
 
-      fetch("http://localhost:4000/api/channel/create", {
-            method: "POST",
-            mode: "cors",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(
-            {
-                token: getAuthToken(),
-                username: getAuthName(),
-            
-            
-            }),
-        })
-        .then((r) => checkResponse(r))
-        .then((r) => r.json())
-        .then((r) => {
-            console.log( r);
-        })
-        .catch((err) => {
-            console.log(err);
-            toast.error("error");
+        let temp = [];
+        myGenres.forEach((g) => {
+            if (g != genre) temp.push(g);
         });
+        setMyGenres(temp);
+    } else {
+        // TODO fetch, add this genre from user
 
-      setMyGenres([...myGenres, genre]);
-    }
+        fetch("http://localhost:4000/api/channel/create", {
+                method: "POST",
+                mode: "cors",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(
+                {
+                    token: getAuthToken(),
+                    username: getAuthName(),
+                
+                
+                }),
+            })
+            .then((r) => checkResponse(r))
+            .then((r) => r.json())
+            .then((r) => {
+                console.log( r);
+            })
+            .catch((err) => {
+                console.log(err);
+                toast.error("error");
+            });
+
+        setMyGenres([...myGenres, genre]);
+        }
   };
 
   return (
