@@ -1,34 +1,99 @@
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { useHistory } from "react-router-dom";
-import { Container } from "semantic-ui-react";
+import { Container, Form, Button } from "semantic-ui-react";
 
 import { checkResponse } from "../util/ResponseUtil";
 import { getAuthName, getAuthToken } from "../util/AuthenticationUtil";
 
 export default function Upload() {
   const [pageType, setPageType] = useState("");
-  const [mediaName, setMediaName] = useState("");
-  const [mediaDescription, setMediaDescription] = useState("");
-  const [mediaGenres, setMediaGenres] = useState([]);
-  const [mediaTVShowName, setMediaTVShowName] = useState(null);
-  const [mediaEpisodeNumber, setMediaEpisodeNumber] = useState(-1);
-  const [mediaSeasonNumber, setMediaSeasonNumber] = useState(-1);
+
+  const [media, setMedia] = useState({
+    name: "",
+    description: "",
+    genres: [],
+    tvShowName: "",
+    episodeNumber: Number,
+    seasonNumber: Number,
+  });
+  const [allGenres, setAllGenres] = useState([]);
+  const [myGenres, setMyGenres] = useState([]);
+  const [pagePath, setPagePath] = useState("");
 
   const history = useHistory();
 
   useEffect(() => {
-    let path = history.location.pathname.substring(1, 5);
+    let path = history.location.pathname;
+    setPagePath(path);
 
-    if (path == "edit") {
+    const unListen = history.listen(() => {
+      let path = history.location.pathname;
+      setPagePath(path);
+
+      window.scrollTo(0, 0);
+    });
+
+    return () => {
+      unListen();
+    };
+  }, []);
+
+  useEffect(() => {
+    let path = pagePath.substring(1, 5);
+
+    if (path === "edit") {
       setPageType("edit");
-      setMediaName(history.location.pathname.substring(6));
+      let mediaName = pagePath.substring(6);
+      setMedia({ ...media, name: mediaName });
 
-      // TODO fetch current info with the mediaName and set attributes
+      // TODO fetch current info with the mediaName and set attributes (description, genres, type etc..)
+      setMyGenres(["Action", "Drama"]);
     } else {
       setPageType("upload");
+      setMyGenres([]);
+      setMedia({
+        type: "movie",
+        name: "",
+        description: "",
+        genres: [],
+        tvShowName: "",
+        episodeNumber: Number,
+        seasonNumber: Number,
+      });
     }
-  }, []);
+
+    // TODO fetch all genres
+    setAllGenres(["Action", "Adventure", "Comedy", "Drama", "Horror"]);
+  }, [pagePath]);
+
+  const getButtonClass = (genre) => {
+    return myGenres.includes(genre)
+      ? "btn btn btn-danger ml-3"
+      : "btn btn btn-success ml-3";
+  };
+
+  const handleGenreClick = (genre) => {
+    if (myGenres.includes(genre)) {
+      // TODO fetch, delete this genre from channel
+      let temp = [];
+      myGenres.forEach((g) => {
+        if (g != genre) temp.push(g);
+      });
+      setMyGenres(temp);
+    } else {
+      // TODO fetch, add this genre from channel
+      setMyGenres([...myGenres, genre]);
+    }
+  };
+
+  const handleChange = (e) => {
+    const { value, name } = e.currentTarget;
+    setMedia({
+      ...media,
+      [name]: value,
+    });
+  };
 
   function handleUploadButtonPress(event) {
     fetch("http://localhost:4000/api/media/createMedia", {
@@ -41,14 +106,14 @@ export default function Upload() {
         token: getAuthToken(),
         username: getAuthName(),
         publishUsername: getAuthName(),
-        name: mediaName,
-        description: mediaDescription,
+        name: media.name,
+        description: media.description,
         path: "https://www.youtube.com/channel/UC-lHJZR3Gqxm24_Vd_AJ5Yw",
         updateDate: Date.now(),
         duration: -1,
         oscarAward: null,
-        seasonNumber: mediaSeasonNumber < 0 ? null : mediaSeasonNumber,
-        episodeNumber: mediaEpisodeNumber < 0 ? null : mediaEpisodeNumber,
+        seasonNumber: media.seasonNumber < 0 ? null : media.seasonNumber,
+        episodeNumber: media.episodeNumber < 0 ? null : media.episodeNumber,
         emmyAward: null,
       }),
     })
@@ -65,76 +130,114 @@ export default function Upload() {
 
   return (
     <Container>
-      <div style={{ textAlign: "center" }}>
-        <h1>Media Information</h1>
-        <div>
+      <h1 className="h1 text-center">Media Information</h1>
+      <button
+        className="btn btn-primary w-100 my-5"
+        onClick={() => {
+          let tmp = "";
+          if (media.type == "series") tmp = "movie";
+          else tmp = "series";
+          setMedia({ ...media, type: tmp });
+        }}
+      >
+        {media.type}
+      </button>
+      <Form>
+        <Form.Field>
           <label>Media Name:</label>
-          <input
+          <Form.Input
             type="text"
-            id="mediaNameInputID"
-            onInput={(e) => setMediaName(e.target.value)}
-          ></input>
-        </div>
-        <div>
-          <label>Channel Genre:</label>
-          <select name="mediaGenre" id="mediaGenreSelectorID" multiple>
-            <option value="action">Action</option>
-            <option value="adventure">Adventure</option>
-            <option value="comedy">Comedy</option>
-            <option value="drama">Drama</option>
-            <option value="horror">Horror</option>
-          </select>
-        </div>
-        <div>
+            name="name"
+            value={media.name}
+            onChange={handleChange}
+          />
+        </Form.Field>
+
+        <Form.Field>
           <label>Description:</label>
-          <textarea
-            id="mediaDescriptionInputID"
-            rows="3"
-            cols="30"
-            onInput={(e) => setMediaDescription(e.target.value)}
-          ></textarea>
-        </div>
-        <div>
-          <label>TV-Serie Name (left blank if not serie):</label>
-          <input
+          <Form.Input
             type="text"
-            id="mediaTVSerieNameInputID"
-            onInput={(e) => setMediaTVShowName(e.target.value)}
-          ></input>
-        </div>
-        <div>
-          <label>Season (left blank if not serie):</label>
-          <input
-            type="number"
-            id="mediaSeasonInputID"
-            onInput={(e) => setMediaSeasonNumber(e.target.value)}
-          ></input>
-        </div>
-        <div>
-          <label>Episode (left blank if not serie):</label>
-          <input
-            type="number"
-            id="mediaEpisodeInputID"
-            onInput={(e) => setMediaEpisodeNumber(e.target.value)}
-          ></input>
-        </div>
-        <div>
-          <button onClick={handleUploadButtonPress}>Upload Media</button>
+            name="description"
+            value={media.description}
+            onChange={handleChange}
+          />
+        </Form.Field>
+
+        {media.type == "series" && (
+          <React.Fragment>
+            <Form.Field>
+              <label>TV-Serie Name:</label>
+              <Form.Input
+                type="text"
+                name="tvShowName"
+                value={media.tvShowName}
+                onChange={handleChange}
+              />
+            </Form.Field>
+
+            <Form.Field>
+              <label>Season:</label>
+              <Form.Input
+                type="text"
+                name="seasonNumber"
+                value={media.seasonNumber}
+                onChange={handleChange}
+              />
+            </Form.Field>
+
+            <Form.Field>
+              <label>Episode:</label>
+              <Form.Input
+                type="text"
+                name="episodeNumber"
+                value={media.episodeNumber}
+                onChange={handleChange}
+              />
+            </Form.Field>
+          </React.Fragment>
+        )}
+
+        <label className="mr-3">Genres:</label>
+        {allGenres.map((genre) => (
           <button
+            className={getButtonClass(genre)}
             onClick={() => {
-              console.log("empty delete");
+              handleGenreClick(genre);
             }}
           >
-            Delete Media
+            {genre}
           </button>
+        ))}
+      </Form>
+
+      <div className="mt-5">
+        {pageType === "upload" ? (
           <button
-            onClick={() => {
-              console.log("empty edit");
-            }}
+            className="btn btn-primary w-100"
+            onClick={handleUploadButtonPress}
           >
-            Edit Media
+            Upload Media
           </button>
-        </div>
+        ) : (
+          <React.Fragment>
+            <button
+              className="btn btn-danger w-50"
+              onClick={() => {
+                console.log("empty delete");
+              }}
+            >
+              Delete Media
+            </button>
+            <button
+              className="btn btn-warning w-50"
+              onClick={() => {
+                console.log("empty edit");
+              }}
+            >
+              Edit Media
+            </button>
+          </React.Fragment>
+        )}
       </div>
     </Container>
   );
