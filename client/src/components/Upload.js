@@ -22,14 +22,6 @@ export default function Upload() {
   const [myGenres, setMyGenres] = useState([]);
   const [pagePath, setPagePath] = useState("");
 
-  // const [mediaName, setMediaName] = useState("");
-  // const [mediaDescription, setMediaDescription] = useState("");
-  // const [mediaGenres, setMediaGenres] = useState([]);
-  // const [selectedGenre, setSelectedGenre] = useState([]);
-  // const [mediaTVShowName, setMediaTVShowName] = useState(null);
-  // const [mediaEpisodeNumber, setMediaEpisodeNumber] = useState(-1);
-  // const [mediaSeasonNumber, setMediaSeasonNumber] = useState(-1);
-
   const history = useHistory();
 
   useEffect(() => {
@@ -72,7 +64,7 @@ export default function Upload() {
       });
     }
 
-    // TODO fetch all genres
+    // fetch all genres
     fetch("http://localhost:4000/api/media/getGenres", {
       method: "POST",
       mode: "cors",
@@ -163,20 +155,6 @@ export default function Upload() {
       });
   }
 
-  // function handleGenreSelection(event) {
-  //   var selectedGenres = [];
-  //   var options = event.target.options;
-  //   var opt;
-
-  //   for (var i = 0, iLen = options.length; i < iLen; i++) {
-  //     opt = options[i];
-  //     if (opt.selected) {
-  //       selectedGenres.push(opt.value);
-  //     }
-  //   }
-  //   setSelectedGenre(selectedGenres);
-  // }
-
   function filterBySelection(genre) {
     for (let i = 0; i < myGenres.length; i++) {
       if (genre.title === myGenres[i]) {
@@ -215,21 +193,6 @@ export default function Upload() {
         </Form.Field>
 
         <Form.Field>
-          {/* id="mediaNameInputID"
-            onInput={(e) => setMediaName(e.target.value)}
-          ></input>
-        </div>
-        <div>
-          <label>Channel Genre:</label>
-          <select name="mediaGenre" id="mediaGenreSelectorID" onChange={handleGenreSelection} multiple>
-                    {
-                        mediaGenres.map( (genre) => (
-                        <option key={genre.id} value={genre.title}>{genre.title}</option>
-                        ))
-                    }
-          </select>
-        </div>
-        <div> */}
           <label>Description:</label>
           <Form.Input
             type="text"

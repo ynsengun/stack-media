@@ -19,11 +19,6 @@ export default function Search() {
   const [mediaList, setMediaList] = useState([]);
   const [allGenres, setAllGenres] = useState([]);
 
-  function handleMediaSearchBar(event) {
-    console.log(event.target.value);
-    setSearch(event.target.value);
-  }
-
   useEffect(() => {
     // fetch medias according to the search state
     if (search.text !== "") {
@@ -44,17 +39,15 @@ export default function Search() {
         .then((r) => checkResponse(r))
         .then((r) => r.json())
         .then((r) => {
-          let resArray = r.data;
-          console.log( resArray);
-          setMediaList( resArray);
+          let resArray = r.data[0];
+          // console.log(resArray, " ---- ", resArray.length);
+          setMediaList(resArray);
         })
         .catch((err) => {
           toast.error("Error, could not fetch media!");
         });
-    }
-    else
-    {
-        setMediaList( []);
+    } else {
+      setMediaList([]);
     }
   }, [search]);
 
@@ -85,7 +78,6 @@ export default function Search() {
 
   const handleChange = (e) => {
     const { value, name } = e.currentTarget;
-    console.log(value, name);
     setSearch({
       ...search,
       [name]: value,
