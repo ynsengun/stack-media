@@ -112,8 +112,11 @@ export class Controller{
 
     public async addGenre(request: Request, response: Response): Promise<void> {
         try{
+            console.log( "a1");
             this.validation.addGenreValidation(request);
+            console.log( "a2");
             let result = await this.userBusiness.addGenre(userMapping.map(request.body), genreMapping.map(request.body));
+            console.log( "a3");
             response.status(result.status).send(result);
         } catch(error){
             const errorResponse = new ErrorResponse(error);
@@ -123,8 +126,11 @@ export class Controller{
 
     public async deleteGenre(request: Request, response: Response): Promise<void> {
         try{
+            console.log( "d1");
             this.validation.deleteGenreValidation(request);
-            let result = await this.userBusiness.addGenre(userMapping.map(request.body), genreMapping.map(request.body));
+            console.log( "d2");
+            let result = await this.userBusiness.deleteGenre(userMapping.map(request.body), genreMapping.map(request.body));
+            console.log( "d3");
             response.status(result.status).send(result);
         } catch(error){
             const errorResponse = new ErrorResponse(error);

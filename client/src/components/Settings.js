@@ -27,7 +27,8 @@ export default function Settings() {
       .then((r) => r.json())
       .then((r) => {
         let resArray = r.data;
-        setAllGenres(resArray.map((x) => x.title));
+        setAllGenres( resArray);
+        setMyGenres( resArray); //TODO: WARNING, this should be below!
       })
       .catch((err) => {
         console.log(err);
@@ -59,20 +60,42 @@ export default function Settings() {
     //         toast.error("error");
     //     });
 
-    setMyGenres(["Action", "Drama"]);
+    //setMyGenres(["Action", "Drama"]);
   }, []);
 
   const getButtonClass = (genre) => {
     return myGenres.includes(genre)
-      ? "btn btn-danger ml-3"
-      : "btn btn-success ml-3";
+      ? "btn btn-success ml-3"
+      : "btn btn-danger ml-3";
   };
 
   const handleGenreClick = (genre) => {
     if (myGenres.includes(genre)) 
     {
-        // TODO fetch, delete this genre from user
-        
+        // fetch, delete this genre from user
+        fetch("http://localhost:4000/api/user/deleteGenre", {
+            method: "DELETE",
+            mode: "cors",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(
+            {
+                token: getAuthToken(),
+                username: getAuthName(),    
+                
+                genreId: genre.genreId
+            }),
+        })
+        .then((r) => checkResponse(r))
+        .then((r) => r.json())
+        .then((r) => {
+            toast.success( "Genre " + genre.title + " is successfully deleted from your preferences.");
+        })
+        .catch((err) => {
+            console.log(err);
+            toast.error("Error, could not delete genre from your preference!");
+        });
 
         let temp = [];
         myGenres.forEach((g) => {
@@ -80,9 +103,8 @@ export default function Settings() {
         });
         setMyGenres(temp);
     } else {
-        // TODO fetch, add this genre from user
-
-        fetch("http://localhost:4000/api/channel/create", {
+        // fetch, add this genre from user
+        fetch("http://localhost:4000/api/user/addGenre", {
                 method: "POST",
                 mode: "cors",
                 headers: {
@@ -92,18 +114,18 @@ export default function Settings() {
                 {
                     token: getAuthToken(),
                     username: getAuthName(),
-                
-                
+
+                    genreId: genre.genreId
                 }),
             })
             .then((r) => checkResponse(r))
             .then((r) => r.json())
             .then((r) => {
-                console.log( r);
+                toast.success( "Genre " + genre.title + " is successfully added to your preferences.");
             })
             .catch((err) => {
                 console.log(err);
-                toast.error("error");
+                toast.error("Error, could not add your new genre preference!");
             });
 
         setMyGenres([...myGenres, genre]);
@@ -129,7 +151,7 @@ export default function Settings() {
                 handleGenreClick(genre);
               }}
             >
-              {genre}
+              {genre.title}
             </button>
           ))}
         </div>

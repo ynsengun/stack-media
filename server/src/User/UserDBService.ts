@@ -200,7 +200,7 @@ export class UserDBService {
     public async deleteGenre(user: User, genre: Genre): Promise<any> {
         let result = null;
 
-        let sqlQuery = "DELETE FROM GenrePreference WHERE commentId = '" + user.username + "' and genreId = '" + genre.genreId + "');";
+        let sqlQuery = "DELETE FROM GenrePreference WHERE username = '" + user.username + "' and genreId = '" + genre.genreId + "';";
 
         try {
             await this.db.sendQuery(sqlQuery);
