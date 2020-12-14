@@ -50,26 +50,36 @@ export function getAuthName() {
     //return true;
     let auth = localStorage.getItem("authInfo");
     let authJson = JSON.parse(auth);
-    return authJson.username;
+    if ( authJson != null)
+    {
+        return authJson.username;
+    }
+    return false;
   }
 
 export function getAuthToken() {
-  //return true;
-  let auth = localStorage.getItem("authInfo");
-  let authJson = JSON.parse(auth);
-  return authJson.token;
+    //return true;
+    let auth = localStorage.getItem("authInfo");
+    let authJson = JSON.parse(auth);
+    if ( authJson != null)
+        return authJson.token;
+    return false;
 }
 
 export function isAdmin() {
-  //return true;
-  let auth = localStorage.getItem("authInfo");
-  let authJson = JSON.parse(auth);
-  return authJson.isAdmin;
+    //return true;
+    let auth = localStorage.getItem("authInfo");
+    let authJson = JSON.parse(auth);
+    if ( authJson != null)
+        return authJson.isAdmin;
+    return false;
 }
 
 export function isUser() {
-  //return true;
-  let auth = localStorage.getItem("authInfo");
-  let authJson = JSON.parse(auth);
-  return authJson.isUser;
+    //return true;
+    let auth = localStorage.getItem("authInfo");
+    let authJson = JSON.parse(auth);
+    if ( authJson != null)
+        return authJson.isUser;
+    return false;
 }
