@@ -16,7 +16,7 @@ export default function Search() {
     genre: "Action",
     sortby: "",
   });
-  const [mediaList, setMediaList] = useState([{}]);
+  const [mediaList, setMediaList] = useState([]);
   const [allGenres, setAllGenres] = useState([]);
 
   function handleMediaSearchBar(event) {
@@ -45,23 +45,21 @@ export default function Search() {
         .then((r) => r.json())
         .then((r) => {
           let resArray = r.data;
-          console.log(resArray);
+          console.log( resArray);
+          setMediaList( resArray);
         })
         .catch((err) => {
-          console.log(err);
-          toast.error("error");
+          toast.error("Error, could not fetch media!");
         });
     }
-
-    // setMediaList([
-    //   { name: "aaa", type: 0 },
-    //   { name: "bbb", type: 1 },
-    //   { name: "ccc", type: 0 },
-    // ]);
+    else
+    {
+        setMediaList( []);
+    }
   }, [search]);
 
   useEffect(() => {
-    //TODO  fetch all genres
+    // fetch genre for display!
     fetch("http://localhost:4000/api/media/getGenres", {
       method: "POST",
       mode: "cors",
@@ -78,12 +76,11 @@ export default function Search() {
       .then((r) => r.json())
       .then((r) => {
         let resArray = r.data;
-        console.log(resArray);
         setAllGenres(resArray.map((x) => x.title));
       })
       .catch((err) => {
         console.log(err);
-        toast.error("error");
+        toast.error("Error, could not fetch genres!");
       });
   }, []);
 

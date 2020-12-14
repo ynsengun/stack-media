@@ -281,11 +281,8 @@ export class Controller{
     
     public async createMedia(request: Request, response: Response): Promise<void> {
         try{
-            console.log( "c1");
             this.validation.createMediaValidation(request);
-            console.log( "c2");
             let genreList = [];
-            console.log( "c3");
             let requestGenres = request.body.genres;
             console.log( requestGenres);
             for (var i = 0; i < requestGenres.length; i++)
@@ -294,7 +291,6 @@ export class Controller{
             }
             console.log( genreList);
             let result = await this.mediaBusiness.createMedia(mediaMapping.map(request.body), genreList);
-            console.log( "c4");
             response.status(result.status).send(result);
         } catch(error){
             const errorResponse = new ErrorResponse(error);
@@ -315,15 +311,10 @@ export class Controller{
 
     public async search(request: Request, response: Response): Promise<void> {
         try{
-            console.log( "s1");
             this.validation.searchValidation(request);
-            console.log( "s2");
             let result = await this.mediaBusiness.search(mediaMapping.map(request.body), genreMapping.map(request.body));
-            console.log( "s3");
             response.status(result.status).send(result);
-            console.log( "s4");
         } catch(error){
-            console.log( "s5");
             const errorResponse = new ErrorResponse(error);
             response.status(errorResponse.status).send(new ErrorResponse(error));
         }
