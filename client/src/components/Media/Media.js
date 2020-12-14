@@ -101,7 +101,13 @@ export default function Media(props) {
           )}
           {pageType === 2 && ( // eddit button
             // TODO button onClick
-            <button className="btn btn-warning mt-5" style={{ width: "60%" }}>
+            <button
+              className="btn btn-warning mt-5"
+              style={{ width: "60%" }}
+              onClick={() => {
+                history.push(`/edit/${mediaName}`);
+              }}
+            >
               Edit
             </button>
           )}

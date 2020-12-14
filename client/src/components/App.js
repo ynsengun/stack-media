@@ -23,6 +23,7 @@ export default function App() {
         <Switch>
           <Route exact path="/search"><Search /></Route>
           <Route exact path="/upload"><Upload /></Route>
+          <Route exact path="/edit/:name"><Upload /></Route>
           <Route exact path="/settings"><Settings /></Route>
           <Route exact path="/login"><Login /></Route>
           <Route exact path="/media/:name"><MediaPage /></Route>
