@@ -14,6 +14,7 @@ export function checkResponse(response) {
   } else if (response.status === 403) {
     return Promise.reject(new Error("403"));
   } else {
+    console.log( response);
     return Promise.reject(new Error("An error occured"));
   }
 }

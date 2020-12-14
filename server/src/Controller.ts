@@ -309,10 +309,15 @@ export class Controller{
 
     public async search(request: Request, response: Response): Promise<void> {
         try{
+            console.log( "s1");
             this.validation.searchValidation(request);
+            console.log( "s2");
             let result = await this.mediaBusiness.search(mediaMapping.map(request.body), genreMapping.map(request.body));
+            console.log( "s3");
             response.status(result.status).send(result);
+            console.log( "s4");
         } catch(error){
+            console.log( "s5");
             const errorResponse = new ErrorResponse(error);
             response.status(errorResponse.status).send(new ErrorResponse(error));
         }

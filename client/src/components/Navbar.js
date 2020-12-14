@@ -5,12 +5,12 @@ import { toast } from "react-toastify";
 import Notification from "./Notification";
 
 import {
-  cleanAuth,
   isAuthenticated,
   isUser,
   isAdmin,
   getAuthName,
   isExpired,
+  expireAuth,
 } from "../util/AuthenticationUtil";
 
 export default function Navbar() {
@@ -58,7 +58,7 @@ export default function Navbar() {
 
   const handleLogout = () => {
     
-    cleanAuth();
+    expireAuth();
     toast.success("Logout is successful... Redirecting to login page...");
     setTimeout(() => {
         history.push("/login");

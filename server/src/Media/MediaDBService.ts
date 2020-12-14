@@ -164,17 +164,21 @@ export class MediaDBService {
     public async search(media: Media, genre: Genre): Promise<any> {
         let result = null;
 
-        let sqlQuery = "SELECT M.*, TV.episodeNumber, TV.seasonNumber, TV.emmyAward FROM Media M, TVSeriesEpisode TV WHERE LEVENSHTEIN(M.name, '" + media.name + "') <= 5 AND M.mediaId = TV.mediaId AND '" + genre.title + "' IN " 
+        console.log( "search 1");
+        let sqlQuery = "SELECT M.*, NULL, TV.episodeNumber, TV.seasonNumber, TV.emmyAward FROM Media M, TVSeriesEpisode TV WHERE LEVENSHTEIN(M.name, '" + media.name + "') <= 5 AND M.mediaId = TV.mediaId AND '" + genre.title + "' IN " 
         + "(SELECT Genre.title FROM MediaHasGenre INNER JOIN Genre ON MediaHasGenre.genreId = Genre.genreId WHERE TV.mediaId = MediaHasGenre.mediaId);";
 
         try {
             result = await this.db.sendQuery(sqlQuery);
-            sqlQuery = "SELECT M.*, MO.oscarAward FROM Media M, Movie MO WHERE LEVENSHTEIN(M.name, '" + media.name + "') <= 5 AND M.mediaId = MO.mediaId AND '" + genre.title + "' IN " 
+            console.log( "search 2");
+            sqlQuery = "SELECT M.*, MO.oscarAward, NULL, NULL, NULL FROM Media M, Movie MO WHERE LEVENSHTEIN(M.name, '" + media.name + "') <= 5 AND M.mediaId = MO.mediaId AND '" + genre.title + "' IN " 
             + "(SELECT Genre.title FROM MediaHasGenre INNER JOIN Genre ON MediaHasGenre.genreId = Genre.genreId WHERE MO.mediaId = MediaHasGenre.mediaId);";
             let movieResult = await this.db.sendQuery(sqlQuery);
+            console.log( "search 3");
             result.push(movieResult);
         } 
         catch(err){
+            console.log( err);
             throw err;
         }
         return result;

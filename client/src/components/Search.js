@@ -22,20 +22,55 @@ export default function Search(props) {
 
   useEffect(() => {
     //TODO fetch medias according to the search state
+    if ( search.text !== "")
+    {
+        fetch("http://localhost:4000/api/media/search", {
+            method: "POST",
+            mode: "cors",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(
+            {
+                token: getAuthToken(),
+                username: getAuthName(),
+                
+                name: search.text,
+                title: search.genre,
+            }),
+        })
+        .then((r) => checkResponse(r))
+        .then((r) => r.json())
+        .then((r) => {
+            let resArray = r.data;
+            console.log( resArray);
+        })
+        .catch((err) => {
+            console.log(err);
+            toast.error("error");
+        });
+    }
 
-    fetch("http://localhost:4000/api/media/search", {
+    // setMediaList([
+    //   { name: "aaa", type: 0 },
+    //   { name: "bbb", type: 1 },
+    //   { name: "ccc", type: 0 },
+    // ]);
+  }, [search]);
+
+  useEffect(() => {
+    //TODO  fetch all genres
+    fetch("http://localhost:4000/api/media/getGenres", {
         method: "POST",
         mode: "cors",
         headers: {
             "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
         },
         body: JSON.stringify(
         {
             token: getAuthToken(),
             username: getAuthName(),
-            
-            name: search.text,
-            title: search.genre,
         }),
     })
     .then((r) => checkResponse(r))
@@ -43,22 +78,12 @@ export default function Search(props) {
     .then((r) => {
         let resArray = r.data;
         console.log( resArray);
+        setAllGenres( resArray.map( x => x.title) );
     })
     .catch((err) => {
         console.log(err);
         toast.error("error");
     });
-
-    setMediaList([
-      { name: "aaa", type: 0 },
-      { name: "bbb", type: 1 },
-      { name: "ccc", type: 0 },
-    ]);
-  }, [search]);
-
-  useEffect(() => {
-    //TODO  fetch all genres
-    setAllGenres(["Action", "Adventure", "Comedy", "Drama", "Horror"]);
   }, []);
 
   const handleChange = (e) => {
