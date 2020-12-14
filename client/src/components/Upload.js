@@ -10,6 +10,7 @@ export default function Upload() {
   const [pageType, setPageType] = useState("");
 
   const [media, setMedia] = useState({
+    type: "",
     name: "",
     description: "",
     genres: [],
@@ -20,6 +21,14 @@ export default function Upload() {
   const [allGenres, setAllGenres] = useState([]);
   const [myGenres, setMyGenres] = useState([]);
   const [pagePath, setPagePath] = useState("");
+
+  // const [mediaName, setMediaName] = useState("");
+  // const [mediaDescription, setMediaDescription] = useState("");
+  // const [mediaGenres, setMediaGenres] = useState([]);
+  // const [selectedGenre, setSelectedGenre] = useState([]);
+  // const [mediaTVShowName, setMediaTVShowName] = useState(null);
+  // const [mediaEpisodeNumber, setMediaEpisodeNumber] = useState(-1);
+  // const [mediaSeasonNumber, setMediaSeasonNumber] = useState(-1);
 
   const history = useHistory();
 
@@ -64,7 +73,26 @@ export default function Upload() {
     }
 
     // TODO fetch all genres
-    setAllGenres(["Action", "Adventure", "Comedy", "Drama", "Horror"]);
+    fetch("http://localhost:4000/api/media/getGenres", {
+      method: "POST",
+      mode: "cors",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        token: getAuthToken(),
+        username: getAuthName(),
+      }),
+    })
+      .then((r) => checkResponse(r))
+      .then((r) => r.json())
+      .then((r) => {
+        let resArray = r.data;
+        setAllGenres(resArray);
+      })
+      .catch((err) => {
+        toast.error("Error on fetching genre for Upload page!");
+      });
   }, [pagePath]);
 
   const getButtonClass = (genre) => {
@@ -96,6 +124,11 @@ export default function Upload() {
   };
 
   function handleUploadButtonPress(event) {
+    if (myGenres.length === 0) {
+      toast.warning("You need to specify at least one genre for the media!");
+      return;
+    }
+
     fetch("http://localhost:4000/api/media/createMedia", {
       method: "POST",
       mode: "cors",
@@ -109,12 +142,14 @@ export default function Upload() {
         name: media.name,
         description: media.description,
         path: "https://www.youtube.com/channel/UC-lHJZR3Gqxm24_Vd_AJ5Yw",
-        updateDate: Date.now(),
+        uploadDate: Date.now(),
         duration: -1,
         oscarAward: null,
-        seasonNumber: media.seasonNumber < 0 ? null : media.seasonNumber,
-        episodeNumber: media.episodeNumber < 0 ? null : media.episodeNumber,
+        seasonNumber: media.type === "movie" ? null : media.seasonNumber,
+        episodeNumber: media.type === "movie" ? null : media.episodeNumber,
         emmyAward: null,
+
+        genres: allGenres.filter(filterBySelection),
       }),
     })
       .then((r) => checkResponse(r))
@@ -126,6 +161,32 @@ export default function Upload() {
         console.log(err);
         toast.error("error");
       });
+  }
+
+  // function handleGenreSelection(event) {
+  //   var selectedGenres = [];
+  //   var options = event.target.options;
+  //   var opt;
+
+  //   for (var i = 0, iLen = options.length; i < iLen; i++) {
+  //     opt = options[i];
+  //     if (opt.selected) {
+  //       selectedGenres.push(opt.value);
+  //     }
+  //   }
+  //   setSelectedGenre(selectedGenres);
+  // }
+
+  function filterBySelection(genre) {
+    for (let i = 0; i < myGenres.length; i++) {
+      if (genre.title === myGenres[i]) {
+        console.log(
+          "Genre title: " + genre.title + " selected genre: " + myGenres[i]
+        );
+        return true;
+      }
+    }
+    return false;
   }
 
   return (
@@ -154,6 +215,21 @@ export default function Upload() {
         </Form.Field>
 
         <Form.Field>
+          {/* id="mediaNameInputID"
+            onInput={(e) => setMediaName(e.target.value)}
+          ></input>
+        </div>
+        <div>
+          <label>Channel Genre:</label>
+          <select name="mediaGenre" id="mediaGenreSelectorID" onChange={handleGenreSelection} multiple>
+                    {
+                        mediaGenres.map( (genre) => (
+                        <option key={genre.id} value={genre.title}>{genre.title}</option>
+                        ))
+                    }
+          </select>
+        </div>
+        <div> */}
           <label>Description:</label>
           <Form.Input
             type="text"
@@ -200,12 +276,12 @@ export default function Upload() {
         <label className="mr-3">Genres:</label>
         {allGenres.map((genre) => (
           <button
-            className={getButtonClass(genre)}
+            className={getButtonClass(genre.title)}
             onClick={() => {
-              handleGenreClick(genre);
+              handleGenreClick(genre.title);
             }}
           >
-            {genre}
+            {genre.title}
           </button>
         ))}
       </Form>

@@ -281,14 +281,20 @@ export class Controller{
     
     public async createMedia(request: Request, response: Response): Promise<void> {
         try{
+            console.log( "c1");
             this.validation.createMediaValidation(request);
+            console.log( "c2");
             let genreList = [];
+            console.log( "c3");
             let requestGenres = request.body.genres;
+            console.log( requestGenres);
             for (var i = 0; i < requestGenres.length; i++)
             {
                 genreList.push(genreMapping.map(requestGenres[i]));
             }
+            console.log( genreList);
             let result = await this.mediaBusiness.createMedia(mediaMapping.map(request.body), genreList);
+            console.log( "c4");
             response.status(result.status).send(result);
         } catch(error){
             const errorResponse = new ErrorResponse(error);
