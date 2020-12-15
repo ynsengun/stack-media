@@ -22,7 +22,9 @@ export class MediaDBService {
             result = await this.db.sendQuery(sqlQuery);
             sqlQuery = "SELECT M.*, MO.oscarAward, NULL, NULL, NULL, 0 as type FROM Media M, Movie MO WHERE M.mediaId = '" + media.mediaId + "' AND M.mediaId = MO.mediaId;";
             let movieResult = await this.db.sendQuery(sqlQuery);
-            result.push(movieResult);
+            for(let i = 0 ; i < movieResult.length ; i++){
+                result.push(movieResult[i]);
+            }
         } 
         catch(err){
             throw err;
@@ -177,7 +179,9 @@ export class MediaDBService {
             sqlQuery = "SELECT M.*, MO.oscarAward, NULL, NULL, NULL, 0 as type FROM Media M, Movie MO WHERE M.name LIKE '" + media.name + "%' AND M.mediaId = MO.mediaId AND '" + genre.title + "' IN " 
             + "(SELECT Genre.title FROM MediaHasGenre INNER JOIN Genre ON MediaHasGenre.genreId = Genre.genreId WHERE MO.mediaId = MediaHasGenre.mediaId);";
             let movieResult = await this.db.sendQuery(sqlQuery);
-            result.push(movieResult);
+            for(let i = 0 ; i < movieResult.length ; i++){
+                result.push(movieResult[i]);
+            }
         } 
         catch(err){
             console.log( err);
