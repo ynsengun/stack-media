@@ -310,12 +310,10 @@ export class Controller{
             this.validation.createMediaValidation(request);
             let genreList = [];
             let requestGenres = request.body.genres;
-            console.log( requestGenres);
             for (var i = 0; i < requestGenres.length; i++)
             {
                 genreList.push(genreMapping.map(requestGenres[i]));
             }
-            console.log( genreList);
             let result = await this.mediaBusiness.createMedia(mediaMapping.map(request.body), genreList);
             response.status(result.status).send(result);
         } catch(error){

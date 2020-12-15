@@ -173,14 +173,9 @@ export default function Upload() {
     const getButtonClass = (genre) => {
 
         let match = false;
-        console.log( "Genre is:");
-        console.log( genre);
-        console.log( "My genres are:");
-        console.log( myGenres);
         myGenres.forEach( x => {
             if ( x.genreId === genre.genreId)
             {
-                console.log( "Match!");
                 match = true;
             }
         });
@@ -188,21 +183,36 @@ export default function Upload() {
     };
 
     const handleGenreClick = (genre) => {
-        if (myGenres.includes(genre)) 
+        
+        let match = false;
+        myGenres.forEach( x => {
+            if ( x.genreId === genre.genreId)
+            {
+                match = true;
+            }
+        });
+        
+        if (match) 
         {
             let temp = [];
             myGenres.forEach((g) => {
                 if (g.genreId !== genre.genreId) temp.push(g);
             });
             
-            // TODO fetch, delete this genre from channel
-            
+            if ( pageType == "edit")
+            {
+                // TODO fetch, delete this genre from channel
+                console.log( "Deleting...");
+            }
             setMyGenres(temp);
         } 
         else 
         {
-            // TODO fetch, add this genre from channel
-
+            if ( pageType == "edit")
+            {
+                // TODO fetch, delete this genre from channel
+                console.log( "Adding...");
+            }
 
             setMyGenres([...myGenres, genre]);
         }
@@ -239,8 +249,9 @@ export default function Upload() {
             uploadDate: Date.now(),
             duration: -1,
             oscarAward: null,
-            seasonNumber: media.type === "movie" ? null : media.seasonNumber,
-            episodeNumber: media.type === "movie" ? null : media.episodeNumber,
+            TVSerieName: media.tvShowName,
+            seasonNumber: media.type === "movie" ? null : parseInt(media.seasonNumber),
+            episodeNumber: media.type === "movie" ? null : parseInt(media.episodeNumber),
             emmyAward: null,
 
             genres: allGenres.filter(filterBySelection),
@@ -259,7 +270,7 @@ export default function Upload() {
 
     function filterBySelection(genre) {
         for (let i = 0; i < myGenres.length; i++) {
-        if (genre.title === myGenres[i]) {
+        if (genre.genreId === myGenres[i].genreId) {
             console.log(
             "Genre title: " + genre.title + " selected genre: " + myGenres[i]
             );
@@ -271,11 +282,8 @@ export default function Upload() {
 
     function handleDeleteButtonPress( event)
     {
-        // TODO: make delete fetch this media! update history
-        console.log( media.mediaId);
         if ( media.mediaId != null && media.mediaId != "")
         {
-            console.log( "Delete button pressed!");
             // delete this media
             fetch("http://localhost:4000/api/media/delete", {
                 method: "DELETE",
@@ -293,6 +301,7 @@ export default function Upload() {
             .then((r) => checkResponse(r))
             .then((r) => r.json())
             .then((r) => {
+                // update history or state
                 setPageType("upload");
                 setMyGenres([]);
                 setMedia({
@@ -392,7 +401,7 @@ export default function Upload() {
           <button
             className={getButtonClass(genre)}
             onClick={() => {
-              handleGenreClick(genre.title);
+              handleGenreClick(genre);
             }}
           >
             {genre.title}
