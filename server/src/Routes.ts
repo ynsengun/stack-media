@@ -36,6 +36,11 @@ export class Routes{
             .post(this.tokenService.checkToken, (req: Request, res: Response) => {
                 this.controller.getFriendActivities(req, res)
             });
+
+        app.route('/api/user/getUserGenres')
+            .post(this.tokenService.checkToken, (req: Request, res: Response) => {
+                this.controller.getUserGenres(req, res);
+            })
         
         app.route('/api/user/rate')
             .post(this.tokenService.checkToken, (req: Request, res: Response) => {

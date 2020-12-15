@@ -98,6 +98,16 @@ export class UserBusiness {
         }
     }
 
+    public async getUserGenres(user: User): Promise<ResponseModel>
+    {
+        try {
+            let result = await this.userDBService.getUserGenres(user);
+            return new SuccessResponse(result);
+        } catch (error) {
+            return new ErrorResponse(error);
+        }
+    }
+
     public async deleteGenre(user: User, genre: Genre): Promise<ResponseModel> {
         try {
             let result = await this.userDBService.deleteGenre(user, genre);

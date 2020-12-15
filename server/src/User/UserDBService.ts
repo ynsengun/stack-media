@@ -197,6 +197,19 @@ export class UserDBService {
         return result;
     }
 
+    public async getUserGenres(user: User): Promise<any> {
+        let result = null;
+
+        let sqlQuery = "SELECT Genre.title AS genreName, Genre.genreId FROM Genre INNER JOIN GenrePreference ON GenrePreference.genreId = Genre.genreId WHERE GenrePreference.username = '" + user.username + "';";
+        try {
+            result = await this.db.sendQuery(sqlQuery);
+        } 
+        catch(err){
+            throw err;
+        }
+        return result;
+    }
+
     public async deleteGenre(user: User, genre: Genre): Promise<any> {
         let result = null;
 
