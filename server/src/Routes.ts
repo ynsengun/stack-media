@@ -181,7 +181,7 @@ export class Routes{
        });
 
        app.route('/api/media/getGenres')
-            .post(this.tokenService.checkToken, (req: Request, res: Response) => {
+            .post((req: Request, res: Response) => {
                 this.controller.getGenres(req, res)
             });
     }

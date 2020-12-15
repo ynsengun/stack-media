@@ -14,6 +14,9 @@ export default function Login() {
     else history.push("/movies");
   };
 
+  const [allGenres, setAllGenres] = useState([]);
+  const [myGenres, setMyGenres] = useState([]);
+
   // states for login
   const [loginUsername, setLoginUsername] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
@@ -24,6 +27,29 @@ export default function Login() {
   const [registerPassword, setRegisterPassword] = useState("");
   const [registerPasswordCheck, setRegisterPassswordCheck] = useState("");
   const [registerUserType, setRegisterUserType] = useState(false);
+
+  useEffect(() => {
+
+    // fetch all genres
+    fetch("http://localhost:4000/api/media/getGenres", {
+      method: "POST",
+      mode: "cors",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+      }),
+    })
+      .then((r) => checkResponse(r))
+      .then((r) => r.json())
+      .then((r) => {
+        let resArray = r.data;
+        setAllGenres(resArray);
+      })
+      .catch((err) => {
+        toast.error("Error on fetching genre for register page!");
+      });
+  }, []);
 
   function handleLoginButtonPress(event) {
     if (loginUsername === "") {
@@ -100,6 +126,8 @@ export default function Login() {
         password: registerPassword,
         email: registerEmail,
         userType: registerUserType ? "ROLE_ADMIN" : "ROLE_USER",
+
+        genres: allGenres.filter(filterBySelection),
       }),
     })
       .then((r) => checkResponse(r))
@@ -112,6 +140,55 @@ export default function Login() {
         toast.error("error");
       });
   }
+
+  const getButtonClass = (genre) => {
+
+    let match = false;
+    myGenres.forEach( x => {
+        if ( x.genreId === genre.genreId)
+        {
+            match = true;
+        }
+    });
+    return match ? "btn btn btn-success ml-3" : "btn btn btn-danger ml-3";
+};
+
+const handleGenreClick = (genre) => {
+        
+    let match = false;
+    myGenres.forEach( x => {
+        if ( x.genreId === genre.genreId)
+        {
+            match = true;
+        }
+    });
+    
+    if (match) 
+    {
+        let temp = [];
+        myGenres.forEach((g) => {
+            if (g.genreId !== genre.genreId) temp.push(g);
+        });
+        
+        setMyGenres(temp);
+    } 
+    else 
+    {
+        setMyGenres([...myGenres, genre]);
+    }
+};
+
+function filterBySelection(genre) {
+    for (let i = 0; i < myGenres.length; i++) {
+    if (genre.genreId === myGenres[i].genreId) {
+        console.log(
+        "Genre title: " + genre.title + " selected genre: " + myGenres[i]
+        );
+        return true;
+    }
+    }
+    return false;
+}
 
   return (
     <Container>
@@ -196,6 +273,19 @@ export default function Login() {
               onInput={(e) => setRegisterPassswordCheck(e.target.value)}
               required
             ></input>
+          </div>
+          <div>
+            <label className="mr-3">Genres:</label>
+            {allGenres.map((genre) => (
+            <button
+                className={getButtonClass(genre)}
+                onClick={() => {
+                handleGenreClick(genre);
+                }}
+            >
+                {genre.title}
+            </button>
+            ))}
           </div>
           <div>
             <input
