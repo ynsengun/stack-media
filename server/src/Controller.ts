@@ -160,6 +160,16 @@ export class Controller{
         }
     }
 
+    public async getUserGenres(request: Request, response: Response): Promise<void> {
+        try{
+            let result = await this.userBusiness.getUserGenres(userMapping.map(request.body));
+            response.status(result.status).send(result);
+        } catch(error){
+            const errorResponse = new ErrorResponse(error);
+            response.status(errorResponse.status).send(new ErrorResponse(error));
+        }
+    }
+
     /* CHANGE THEM
     public async logout(request: Request, response: Response): Promise<void> {
         try{
@@ -268,16 +278,6 @@ export class Controller{
     public async getGenres(request: Request, response: Response): Promise<void> {
         try{
             let result = await this.mediaBusiness.getGenres();
-            response.status(result.status).send(result);
-        } catch(error){
-            const errorResponse = new ErrorResponse(error);
-            response.status(errorResponse.status).send(new ErrorResponse(error));
-        }
-    }
-
-    public async getUserGenres(request: Request, response: Response): Promise<void> {
-        try{
-            let result = await this.userBusiness.getUserGenres(userMapping.map(request.body));
             response.status(result.status).send(result);
         } catch(error){
             const errorResponse = new ErrorResponse(error);

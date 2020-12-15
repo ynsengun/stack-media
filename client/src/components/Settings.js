@@ -28,45 +28,51 @@ export default function Settings() {
       .then((r) => {
         let resArray = r.data;
         setAllGenres( resArray);
-        setMyGenres( resArray); //TODO: WARNING, this should be below!
+        console.log( resArray);
       })
       .catch((err) => {
         console.log(err);
-        toast.error("Error, could not fetch genres!");
+        toast.error("Error, could not fetch all available genres!");
       });
     
-    // TODO WAIT FOR SERVER to implement getUserGenrePreference => than set my genres in the response
-    // fetch("http://localhost:4000/api/channel/create", {
-    //         method: "POST",
-    //         mode: "cors",
-    //         headers: {
-    //             "Content-Type": "application/json",
-    //         },
-    //         body: JSON.stringify(
-    //         {
-    //             token: getAuthToken(),
-    //             username: getAuthName(),
-            
-            
-    //         }),
-    //     })
-    //     .then((r) => checkResponse(r))
-    //     .then((r) => r.json())
-    //     .then((r) => {
-    //         console.log( r);
-    //     })
-    //     .catch((err) => {
-    //         console.log(err);
-    //         toast.error("error");
-    //     });
-
-    //setMyGenres(["Action", "Drama"]);
+    fetch("http://localhost:4000/api/user/getUserGenres", {
+            method: "POST",
+            mode: "cors",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(
+            {
+                token: getAuthToken(),
+                username: getAuthName(),        
+            }),
+        })
+        .then((r) => checkResponse(r))
+        .then((r) => r.json())
+        .then((r) => {
+            let resArray = r.data;
+            setMyGenres( resArray);
+            console.log( resArray);
+        })
+        .catch((err) => {
+            console.log(err);
+            toast.error("Error, could not fetch your previously recorded genre!");
+        });
   }, []);
 
   const getButtonClass = (genre) => {
-    return myGenres.includes(genre)
-      ? "btn btn-success ml-3"
-      : "btn btn-danger ml-3";
+    
+    let match = false;
+    myGenres.forEach( x => {
+        if ( x.genreId === genre.genreId)
+        {
+            match = true;
+        }
+    });
+    return match ? "btn btn-success ml-3" : "btn btn-danger ml-3";
+    // return myGenres.includes(genre)
+    //   ? "btn btn-success ml-3"
+    //   : "btn btn-danger ml-3";
   };
 
   const handleGenreClick = (genre) => {
