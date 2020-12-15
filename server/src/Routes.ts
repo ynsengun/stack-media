@@ -52,7 +52,7 @@ export class Routes{
                 this.controller.addComment(req, res)
             });
 
-            app.route('/api/user/deleteComment')
+        app.route('/api/user/deleteComment')
             .delete(this.tokenService.checkToken, (req: Request, res: Response) => {
                 this.controller.deleteComment(req, res)
             });
@@ -195,7 +195,7 @@ export class Routes{
            this.controller.getMediaGenres(req, res)
        });
 
-       app.route('/api/media/getGenres')
+       app.route('/api/genre/getGenres')
             .post((req: Request, res: Response) => {
                 this.controller.getGenres(req, res)
             });
