@@ -285,6 +285,16 @@ export class Controller{
         }
     }
 
+    public async getMediaGenres(request: Request, response: Response): Promise<void> {
+        try{
+            let result = await this.mediaBusiness.getMediaGenres( mediaMapping.map(request.body) );
+            response.status(result.status).send(result);
+        } catch(error){
+            const errorResponse = new ErrorResponse(error);
+            response.status(errorResponse.status).send(new ErrorResponse(error));
+        }
+    }
+
     /*public async getComments(request: Request, response: Response): Promise<void> {
         try{
             let result = await this.mediaBusiness.getComments();

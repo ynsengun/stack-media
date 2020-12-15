@@ -15,11 +15,14 @@ export class MediaDBService {
 
     public async getMedia(media: Media): Promise<any> {
         let result = null;
-
-        let sqlQuery = "SELECT * FROM Media WHERE mediaId = '" + media.mediaId + "';";
+        let sqlQuery = "SELECT M.*, NULL, TV.episodeNumber, TV.seasonNumber, TV.emmyAward, 1 as type FROM Media M, TVSeriesEpisode TV WHERE M.mediaId = '" + media.mediaId + "' AND M.mediaId = TV.mediaId;";
+        //let sqlQuery = "SELECT * FROM Media WHERE mediaId = '" + media.mediaId + "';";
 
         try {
             result = await this.db.sendQuery(sqlQuery);
+            sqlQuery = "SELECT M.*, MO.oscarAward, NULL, NULL, NULL, 0 as type FROM Media M, Movie MO WHERE M.mediaId = '" + media.mediaId + "' AND M.mediaId = MO.mediaId;";
+            let movieResult = await this.db.sendQuery(sqlQuery);
+            result.push(movieResult);
         } 
         catch(err){
             throw err;
@@ -261,7 +264,21 @@ export class MediaDBService {
 
         try {
             result = await this.db.sendQuery(sqlQuery);
-            // TODO
+        } 
+        catch(err){
+            throw err;
+        }
+        return result;
+    }
+
+    public async getMediaGenres(media: Media): Promise<any>
+    {
+        let result = null;
+
+        let sqlQuery = "SELECT Genre.genreId, Genre.title FROM MediaHasGenre INNER JOIN Genre ON MediaHasGenre.genreId = Genre.genreId WHERE MediaHasGenre.mediaId = '" + media.mediaId + "';";
+
+        try {
+            result = await this.db.sendQuery(sqlQuery);
         } 
         catch(err){
             throw err;

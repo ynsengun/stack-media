@@ -11,7 +11,7 @@ export default function Settings() {
   const [myGenres, setMyGenres] = useState([]);
 
   useEffect(() => {
-    // fetch all-genres, my-genres, suggested-medias, medias
+    // fetch all-genres, my-genres
     fetch("http://localhost:4000/api/media/getGenres", {
       method: "POST",
       mode: "cors",
@@ -28,13 +28,13 @@ export default function Settings() {
       .then((r) => {
         let resArray = r.data;
         setAllGenres( resArray);
-        console.log( resArray);
       })
       .catch((err) => {
         console.log(err);
         toast.error("Error, could not fetch all available genres!");
       });
     
+      // fetch my-genres
     fetch("http://localhost:4000/api/user/getUserGenres", {
             method: "POST",
             mode: "cors",
@@ -52,7 +52,6 @@ export default function Settings() {
         .then((r) => {
             let resArray = r.data;
             setMyGenres( resArray);
-            console.log( resArray);
         })
         .catch((err) => {
             console.log(err);
@@ -70,9 +69,6 @@ export default function Settings() {
         }
     });
     return match ? "btn btn-success ml-3" : "btn btn-danger ml-3";
-    // return myGenres.includes(genre)
-    //   ? "btn btn-success ml-3"
-    //   : "btn btn-danger ml-3";
   };
 
   const handleGenreClick = (genre) => {

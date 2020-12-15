@@ -175,6 +175,11 @@ export class Routes{
 
         */
 
+       app.route('/api/media/getMediaGenres')
+       .post(this.tokenService.checkToken, (req: Request, res: Response) => {
+           this.controller.getMediaGenres(req, res)
+       });
+
        app.route('/api/media/getGenres')
             .post(this.tokenService.checkToken, (req: Request, res: Response) => {
                 this.controller.getGenres(req, res)

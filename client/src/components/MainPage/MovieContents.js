@@ -44,6 +44,7 @@ export default function MovieContents() {
         {movieInformation.map((movieArgs, index) => (
           <Media
             key={index}
+            mediaId={movieArgs.mediaId}
             mediaType={0}
             mediaName={movieArgs.name}
             pageType={1}

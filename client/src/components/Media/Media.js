@@ -8,7 +8,7 @@ import { useHistory } from "react-router-dom";
 
 export default function Media(props) {
   // pageType 0 = search page, 1 = only watch button, 2 = edit button
-  const { mediaType, mediaName, pageType } = props;
+  const { mediaId, mediaType, mediaName, pageType } = props;
 
   const [channels, setChannels] = useState([]);
   const [selectedChannel, setSelectedChannel] = useState("");
@@ -105,7 +105,7 @@ export default function Media(props) {
               className="btn btn-warning mt-5"
               style={{ width: "60%" }}
               onClick={() => {
-                history.push(`/edit/${mediaName}`);
+                history.push(`/edit/${mediaId}`);
               }}
             >
               Edit

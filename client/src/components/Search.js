@@ -129,8 +129,9 @@ export default function Search() {
       {mediaList.map((media, index) => (
         <Media
           key={index}
-          mediaName={media.name}
+          mediaId={media.mediaId}
           mediaType={media.type}
+          mediaName={media.name}
           pageType={isAdmin() ? 2 : 0}
         />
       ))}

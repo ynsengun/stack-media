@@ -188,6 +188,16 @@ export class MediaBusiness {
         }
     }*/
 
+    public async getMediaGenres( media: Media): Promise<any>
+    {
+        try {
+            let result = await this.mediaDBService.getMediaGenres( media);
+            return new SuccessResponse(result);
+        } catch (error) {
+            return new ErrorResponse(error);
+        }
+    }
+
     public async getGenres(): Promise<any>
     {
         try {
