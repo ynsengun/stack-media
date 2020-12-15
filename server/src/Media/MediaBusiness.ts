@@ -65,6 +65,24 @@ export class MediaBusiness {
         }
     }
 
+    public async addGenreToMedia(media: Media, genre: Genre): Promise<ResponseModel>{
+        try {
+            let result = await this.mediaDBService.addGenreToMedia(media, genre);
+            return new SuccessResponse(result);
+        } catch (error) {
+            return new ErrorResponse(error);
+        }
+    }
+
+    public async deleteGenreFromMedia(media: Media, genre: Genre): Promise<ResponseModel>{
+        try {
+            let result = await this.mediaDBService.deleteGenreFromMedia(media, genre);
+            return new SuccessResponse(result);
+        } catch (error) {
+            return new ErrorResponse(error);
+        }
+    }
+
     public async getRating(media: Media): Promise<ResponseModel>
     {
         try {

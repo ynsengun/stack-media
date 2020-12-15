@@ -45,6 +45,16 @@ export class Validation{
             throw new InvalidRequest();
     }
 
+    public addGenreToMediaValidation(req: Request): void {
+        if(!req.body.username || !req.body.mediaId || !req.body.genreId)
+            throw new InvalidRequest();
+    }
+
+    public deleteGenreFromMediaValidation(req: Request): void {
+        if(!req.body.username || !req.body.mediaId || !req.body.genreId)
+            throw new InvalidRequest();
+    }
+
     public getMediaValidation(req: Request): void {
         if(!req.body.mediaId)
             throw new InvalidRequest();

@@ -186,6 +186,30 @@ export class MediaDBService {
         return result;
     }   
 
+    public async addGenreToMedia(media: Media, genre: Genre): Promise<any> {
+        let result = null;
+        let sqlQuery = "INSERT INTO MediaHasGenre VALUES('" + media.mediaId + "','" + genre.genreId + "');";
+        try {
+            await this.db.sendQuery(sqlQuery);
+        } 
+        catch(err){
+            throw err;
+        }
+        return result;
+    }  
+
+    public async deleteGenreFromMedia(media: Media, genre: Genre): Promise<any> {
+        let result = null;
+        let sqlQuery = "DELETE From MediaHasGenre WHERE mediaId='" + media.mediaId + "' AND genreId='" + genre.genreId + ");";
+        try {
+            await this.db.sendQuery(sqlQuery);
+        } 
+        catch(err){
+            throw err;
+        }
+        return result;
+    }  
+
     public async getWatch(media: Media, user: User): Promise<any> {
         let result = null;
 

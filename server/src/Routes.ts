@@ -106,6 +106,11 @@ export class Routes{
                 this.controller.getMovies(req, res)
             });
         
+        app.route('/api/media/addGenre')
+            .post(this.tokenService.checkToken, (req: Request, res: Response) => {
+                this.controller.addGenreToMedia(req, res)
+            });
+        
         app.route('/api/media/getSeries')
             .post(this.tokenService.checkToken, (req: Request, res: Response) => {
                 this.controller.getSeries(req, res)

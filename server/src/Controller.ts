@@ -339,6 +339,29 @@ export class Controller{
         }
     }
 
+    public async addGenreToMedia(request: Request, response: Response): Promise<void> {
+        try{
+            this.validation.addGenreToMediaValidation(request);
+            let result = await this.mediaBusiness.addGenreToMedia(mediaMapping.map(request.body), genreMapping.map(request.body));
+            response.status(result.status).send(result);
+        } catch(error){
+            const errorResponse = new ErrorResponse(error);
+            response.status(errorResponse.status).send(new ErrorResponse(error));
+        }
+    }
+
+    public async deleteGenreFromMedia(request: Request, response: Response): Promise<void> {
+        try{
+            this.validation.deleteGenreFromMediaValidation(request);
+            let result = await this.mediaBusiness.deleteGenreFromMedia(mediaMapping.map(request.body), genreMapping.map(request.body));
+            response.status(result.status).send(result);
+        } catch(error){
+            const errorResponse = new ErrorResponse(error);
+            response.status(errorResponse.status).send(new ErrorResponse(error));
+        }
+    }
+
+
     public async search(request: Request, response: Response): Promise<void> {
         try{
             this.validation.searchValidation(request);
