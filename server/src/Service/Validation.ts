@@ -30,14 +30,17 @@ export class Validation{
     }
 
     public createMediaValidation(req: Request): void {
-        console.log( req.body);
         if(!req.body.publishUsername || !req.body.name || !req.body.description || !req.body.path || !req.body.uploadDate)
             throw new InvalidRequest();
     }
 
     public updateMediaValidation(req: Request): void {
-        console.log( req.body);
         if(!req.body.publishUsername || !req.body.name || !req.body.description || !req.body.path || !req.body.uploadDate)
+            throw new InvalidRequest();
+    }
+
+    public getMediaCommentsValidation(req: Request): void {
+        if(!req.body.mediaId)
             throw new InvalidRequest();
     }
 

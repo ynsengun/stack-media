@@ -339,6 +339,17 @@ export class Controller{
         }
     }
 
+    public async getMediaComments(request: Request, response: Response): Promise<void> {
+        try{
+            this.validation.getMediaCommentsValidation(request);
+            let result = await this.mediaBusiness.getMediaComments(mediaMapping.map(request.body));
+            response.status(result.status).send(result);
+        } catch(error){
+            const errorResponse = new ErrorResponse(error);
+            response.status(errorResponse.status).send(new ErrorResponse(error));
+        }
+    }
+
     public async deleteMedia(request: Request, response: Response): Promise<void> {
         try{
             this.validation.deleteMediaValidation(request);

@@ -137,6 +137,11 @@ export class Routes{
                 this.controller.createMedia(req, res)
             });
 
+        app.route('/api/media/getComments')
+            .post(this.tokenService.checkToken, (req: Request, res: Response) => {
+                this.controller.getMediaComments(req, res)
+            });
+
         app.route('/api/media/updateMedia')
             .post(this.tokenService.checkToken, (req: Request, res: Response) => {
                 this.controller.updateMedia(req, res)

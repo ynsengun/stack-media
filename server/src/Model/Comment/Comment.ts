@@ -4,4 +4,5 @@ export interface Comment{
     mediaId: string
     timeStamp: string
     text: string
+    subComments: Comment[]
 }

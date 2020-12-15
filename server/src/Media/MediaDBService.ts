@@ -1,9 +1,11 @@
-import { User } from "Model/User/User";
-import { Media } from "Model/Media/Media";
-import { Genre } from "Model/Genre/Genre";
+import { User } from "../Model/User/User";
+import { Media } from "../Model/Media/Media";
+import { Genre } from "../Model/Genre/Genre";
 import {Database} from "../Database";
 import {AlreadyExist} from "../Model/Error/AlreadyExist";
 import {v1 as id} from "uuid";
+import {Comment} from "../Model/Comment/Comment";
+import commentMapping from "../Service/CommentMapping";
 
 export class MediaDBService {
 
@@ -168,6 +170,48 @@ export class MediaDBService {
                 sqlQuery = "UPDATE TVSeriesEpisode SET mediaId = '" + media.mediaId + "', TVSerieName = '" +  media.TVSerieName + "', episodeNumber = '" + media.episodeNumber + "', seasonNumber = '" + media.seasonNumber + "', emmyAward = '" + media.emmyAward + "' WHERE mediaId = '" + media.mediaId + "';";
             }
             await this.db.sendQuery(sqlQuery);
+        } 
+        catch(err){
+            if(err.code == "ER_DUP_ENTRY"){
+                throw new AlreadyExist();
+            }
+            else{
+                throw err;
+            }
+        }
+        return result;
+    }
+
+    public async getMediaComments(media: Media): Promise<any> {
+        let result: Comment[] = [];
+        let sqlQuery = "SELECT * FROM (SELECT * FROM Comment WHERE mediaId='" + media.mediaId + "' AND commentId NOT IN ( SELECT childId FROM SubComment) ) temp LEFT OUTER JOIN SubComment ON temp.commentId=SubComment.parentId;";
+        try {
+            let parentComments = await this.db.sendQuery(sqlQuery);
+            sqlQuery = "SELECT * FROM Comment WHERE mediaId='" + media.mediaId + "' AND commentId IN ( SELECT childId FROM SubComment);";
+            let childComments = await this.db.sendQuery(sqlQuery);
+            let childCommentDict = {}
+            for(let i = 0 ; i < childComments.length ; i++){
+                childCommentDict[childComments[i].commentId] = commentMapping.map(childComments[i]);
+            }
+            for(let i = 0 ; i < parentComments.length ; i++){
+                let id = parentComments[i].commentId;
+                let found = false;
+                for(let j = 0 ; j < result.length ; j++){
+                    if(result[j].commentId == id){
+                        found = true;
+                        result[j].subComments.push(childCommentDict[parentComments[i].childId]);
+                    }
+                }
+                if(!found){
+                    let newComment = commentMapping.map(parentComments[i]);
+                    newComment.subComments = [];
+                    if(parentComments[i].childId != null){
+                        newComment.subComments.push(childCommentDict[parentComments[i].childId])
+                    }
+                    result.push(newComment);
+                }
+            }
+            console.log(result);
         } 
         catch(err){
             if(err.code == "ER_DUP_ENTRY"){

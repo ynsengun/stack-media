@@ -113,6 +113,16 @@ export class MediaBusiness {
         }
     }
 
+    public async getMediaComments(media: Media): Promise<ResponseModel>
+    {
+        try {
+            let result = await this.mediaDBService.getMediaComments(media);
+            return new SuccessResponse(result);
+        } catch (error) {
+            return new ErrorResponse(error);
+        }
+    }
+
     public async deleteMedia(media: Media): Promise<ResponseModel>
     {
         try {
