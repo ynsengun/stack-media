@@ -92,6 +92,10 @@ export class UserDBService {
 
         try {
             await this.db.sendQuery(sqlQuery);
+            if(comment.parentId != null){
+                sqlQuery = "INSERT INTO SubComment VALUES('" + comment.parentId + "', '" + commentId + "');";
+                await this.db.sendQuery(sqlQuery);
+            }
             return null;
         } 
         catch(err){

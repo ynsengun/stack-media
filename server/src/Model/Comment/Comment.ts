@@ -5,4 +5,5 @@ export interface Comment{
     timeStamp: string
     text: string
     subComments: Comment[]
+    parentId: string
 }

@@ -9,7 +9,8 @@ class CommentMapping{
             mediaId: commentModel.mediaId || null,
             timeStamp: commentModel.timeStamp || null,
             text: commentModel.text || null,
-            subComments: commentModel.subComments || null
+            subComments: commentModel.subComments || null,
+            parentId: commentModel.parentId || null
         };
     }
 }
