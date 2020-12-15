@@ -49,12 +49,17 @@ export class UserDBService {
         }
     }
 
-    public async register(user: User): Promise<any> {
+    public async register(user: User, genres: Genre[]): Promise<any> {
         let hashedPsw = await this.bcryptService.passwordHash(user.password);
         let sqlQuery = "INSERT INTO User(username, email, userType, password) VALUES('" + user.username + "','" + user.email + "','" + user.userType + "','" + hashedPsw + "');"
 
         try {
             await this.db.sendQuery(sqlQuery);
+            for (var i = 0; i < genres.length; i++)
+            {
+                sqlQuery = "INSERT INTO GenrePreference VALUES ('" + user.username + "', '" + genres[i].genreId + "');";
+                await this.db.sendQuery(sqlQuery);  
+            }
             return null;
         } 
         catch(err){

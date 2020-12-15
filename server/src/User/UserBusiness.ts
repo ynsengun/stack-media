@@ -26,9 +26,9 @@ export class UserBusiness {
         }
     }
     
-    public async register(user: User): Promise<ResponseModel> {
+    public async register(user: User, genres: Genre[]): Promise<ResponseModel> {
         try {
-            let result = await this.userDBService.register(user);
+            let result = await this.userDBService.register(user, genres);
             return new SuccessResponse(result);
         } catch (error) {
             return new ErrorResponse(error);
