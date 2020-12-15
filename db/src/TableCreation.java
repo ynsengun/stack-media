@@ -99,24 +99,23 @@ public class TableCreation {
         statement.executeUpdate("CREATE TABLE IF NOT EXISTS Genre (" +
                 "genreId VARCHAR(32) NOT NULL," +
                 "title VARCHAR(64) NOT NULL," +
-                "description VARCHAR(128)," +
                 "PRIMARY KEY(genreId) )" +
                 "ENGINE=INNODB;");
         done();
         statement.executeUpdate("INSERT INTO Genre VALUES(" +
-                "'0', 'Action', 'Action description');");
+                "'0', 'Action');");
         done();
         statement.executeUpdate("INSERT INTO Genre VALUES(" +
-                "'1', 'Adventure', 'Adventure description');");
+                "'1', 'Adventure');");
         done();
         statement.executeUpdate("INSERT INTO Genre VALUES(" +
-                "'2', 'Comedy', 'Comedy description');");
+                "'2', 'Comedy');");
         done();
         statement.executeUpdate("INSERT INTO Genre VALUES(" +
-                "'3', 'Drama', 'Drama description');");
+                "'3', 'Drama');");
         done();
         statement.executeUpdate("INSERT INTO Genre VALUES(" +
-                "'4', 'Horror', 'Horror description');");
+                "'4', 'Horror');");
         done();
         statement.executeUpdate("CREATE TABLE IF NOT EXISTS Media (" +
                 "mediaId VARCHAR(32) NOT NULL," +
@@ -146,6 +145,7 @@ public class TableCreation {
         done();
         statement.executeUpdate("CREATE TABLE IF NOT EXISTS TVSeriesEpisode (" +
                 "mediaId VARCHAR(32) NOT NULL," +
+                "TVSerieName VARCHAR(64) NOT NULL," +
                 "episodeNumber INT NOT NULL," +
                 "seasonNumber INT NOT NULL," +
                 "emmyAward DATE," +
