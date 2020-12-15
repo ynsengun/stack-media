@@ -103,6 +103,16 @@ export class MediaBusiness {
         }
     }
 
+    public async updateMedia(media: Media): Promise<ResponseModel>
+    {
+        try {
+            let result = await this.mediaDBService.updateMedia(media);
+            return new SuccessResponse(result);
+        } catch (error) {
+            return new ErrorResponse(error);
+        }
+    }
+
     public async deleteMedia(media: Media): Promise<ResponseModel>
     {
         try {

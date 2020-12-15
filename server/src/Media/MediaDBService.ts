@@ -154,6 +154,32 @@ export class MediaDBService {
         return result;
     }
 
+    public async updateMedia(media: Media): Promise<any> {
+        let result = null;
+        let sqlQuery = "UPDATE Media SET mediaId = '" + media.mediaId + "', publishUsername = '" +  media.publishUsername + "', name = '" + media.name + "', description = '" + media.description + "', path = '" + media.path + "', duration = '" + media.duration + "', uploadDate = '" + media.uploadDate + "' WHERE mediaId = '" + media.mediaId + "';";
+        try {
+            await this.db.sendQuery(sqlQuery);  
+            if(media.oscarAward != null){ // it means it is a movie, then add to movie table
+                console.log( "Updating movie...");
+                sqlQuery = "UPDATE Movie SET mediaId = '" + media.mediaId + "', oscarAward = '" +  media.oscarAward + "' WHERE mediaId = '" + media.mediaId + "';";
+            }
+            else if(media.episodeNumber != null){ // it means it is a series, then add to series table
+                console.log( "Updating tv show...");
+                sqlQuery = "UPDATE TVSeriesEpisode SET mediaId = '" + media.mediaId + "', TVSerieName = '" +  media.TVSerieName + "', episodeNumber = '" + media.episodeNumber + "', seasonNumber = '" + media.seasonNumber + "', emmyAward = '" + media.emmyAward + "' WHERE mediaId = '" + media.mediaId + "';";
+            }
+            await this.db.sendQuery(sqlQuery);
+        } 
+        catch(err){
+            if(err.code == "ER_DUP_ENTRY"){
+                throw new AlreadyExist();
+            }
+            else{
+                throw err;
+            }
+        }
+        return result;
+    }
+
    public async deleteMedia(media: Media): Promise<any> {
         let result = null;
 

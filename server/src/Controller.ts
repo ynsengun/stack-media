@@ -328,6 +328,17 @@ export class Controller{
         }
     }
 
+    public async updateMedia(request: Request, response: Response): Promise<void> {
+        try{
+            this.validation.updateMediaValidation(request);
+            let result = await this.mediaBusiness.updateMedia(mediaMapping.map(request.body));
+            response.status(result.status).send(result);
+        } catch(error){
+            const errorResponse = new ErrorResponse(error);
+            response.status(errorResponse.status).send(new ErrorResponse(error));
+        }
+    }
+
     public async deleteMedia(request: Request, response: Response): Promise<void> {
         try{
             this.validation.deleteMediaValidation(request);
