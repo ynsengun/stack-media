@@ -130,7 +130,7 @@ export class MediaDBService {
             }
             else{ // it means it is a series, then add to series table
                 console.log( "Creating tv show...");
-                sqlQuery = "INSERT INTO TVSeriesEpisode VALUES('" + mediaId + "','" + media.TVSerieName + "','" + "','" + media.episodeNumber + "','" + media.seasonNumber + "','" + media.emmyAward + "');";
+                sqlQuery = "INSERT INTO TVSeriesEpisode VALUES('" + mediaId + "','" + media.TVSerieName + "','" + media.episodeNumber + "','" + media.seasonNumber + "','" + media.emmyAward + "');";
             }
             await this.db.sendQuery(sqlQuery);
             console.log( "Creating tv show2...");
