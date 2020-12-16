@@ -163,7 +163,7 @@ export class ChannelDBService {
     public async deleteMediaFromChannel(channel: Channel, media: Media): Promise<any> {
         let result = null;
 
-        let sqlQuery = "DELETE FROM ChannelMedia WHERE channelId = '" + media.mediaId + "' AND genreId = '" + channel.channelId + "';";
+        let sqlQuery = "DELETE FROM ChannelMedia WHERE mediaId = '" + media.mediaId + "' AND channelId = '" + channel.channelId + "';";
 
         try {
             await this.db.sendQuery(sqlQuery);

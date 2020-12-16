@@ -279,7 +279,7 @@ export class Routes{
                 this.controller.addMediaToChannel(req, res)
             });
 
-        app.route('/api/channel/deleteMovie')
+        app.route('/api/channel/deleteMedia')
             .post(this.tokenService.checkToken, (req: Request, res: Response) => {
                 this.controller.deleteMediaFromChannel(req, res)
             });

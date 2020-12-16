@@ -12,7 +12,7 @@ import { getAuthName, getAuthToken } from "../../util/AuthenticationUtil";
 
 export default function Media(props) {
   // pageType 0 = search page, 1 = only watch button, 2 = edit button, 4 = channelContents
-  const { mediaId, mediaType, mediaName, channelList, pageType } = props;
+  const { mediaId, mediaType, mediaName, channelList, pageType, deleteFromChannel } = props;
 
   const [selectedChannel, setSelectedChannel] = useState( "");
 
@@ -156,7 +156,7 @@ export default function Media(props) {
                 <button // delete button
                 className="btn btn-danger mt-4"
                 style={{ width: "60%" }}
-                onClick={handleDeleteFromChannelButton}
+                onClick={ () => ( deleteFromChannel( mediaId))}
                 >
                 Delete
                 </button>
