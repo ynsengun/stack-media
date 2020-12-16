@@ -21,6 +21,7 @@ export default function MediaPage() {
   const [rating, setRating] = useState(0);
   const [comments, setComments] = useState([{}]);
   const [commentText, setCommentText] = useState("");
+  const [ commentFlag, setCommentFlag] = useState(false);
 
   const history = useHistory();
 
@@ -53,64 +54,34 @@ export default function MediaPage() {
     ]);
     setNextMedia({ name: "sss", type: 0 });
     
-    // TODO fetch comments
-    fetch("http://localhost:4000/api/media/getComments", {
-        method: "POST",
-        mode: "cors",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify(
-        {
-            token: getAuthToken(),
-            username: getAuthName(), 
-            
-            mediaId: mediaId,
-        }),
-    })
-    .then((r) => checkResponse(r))
-    .then((r) => r.json())
-    .then((r) => {
-        console.log( r.data);
-        toast.success( "Successfully fetched comments!");
-    })
-    .catch((err) => {
-        console.log(err);
-        toast.error("Error, could not get comments!");
-    });
-    setComments([
-      {
-        commentId: "",
-        username: "cevat",
-        text: "slm ben cvt, proje cok eglenceli",
-        subComments: [
-          {
-            commentId: "",
-            username: "yusuf",
-            text: "@_@",
-            subComments: [],
-            parentId: "",
-          },
-        ],
-        parentId: null,
-      },
-      {
-        commentId: "",
-        username: "talha",
-        text: "<3",
-        subComments: [
-          {
-            commentId: "",
-            username: "hakan",
-            text: "<3",
-            subComments: [],
-            parentId: "",
-          },
-        ],
-        parentId: null,
-      },
-    ]);
-  }, [mediaId]);
+    // fetch comments
+    if ( mediaId != null && mediaId != "")
+    {
+        fetch("http://localhost:4000/api/media/getComments", {
+            method: "POST",
+            mode: "cors",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(
+            {
+                token: getAuthToken(),
+                username: getAuthName(), 
+                
+                mediaId: mediaId,
+            }),
+        })
+        .then((r) => checkResponse(r))
+        .then((r) => r.json())
+        .then((r) => {
+            setComments( r.data);
+        })
+        .catch((err) => {
+            console.log(err);
+            toast.error("Error, could not get comments!");
+        });
+    }
+  }, [mediaId, commentFlag]);
 
   useEffect(() => {
     if (progress === 3) {
@@ -160,20 +131,75 @@ export default function MediaPage() {
   };
 
   const handleCommentSend = (comment, commentText) => {
-    if (comment == null) {
-      // to media directly
-      // TODO fetch post comment
-      console.log(commentText, mediaId);
-
-      // TODO fetch after this point, fetching all the comments will be easier I think instead of arranging the comments array  :/
-    } else {
-      // to a comment, u can find all info inside the comment parameter
-      // TODO fetch post comment
-      console.log(commentText, comment);
-
-      // TODO fetch after this point, fetching all the comments will be easier I think instead of arranging the comments array  :/
-    }
-  };
+        if (comment == null) 
+        {
+            // to media directly
+            // fetch post comment
+            console.log(commentText, mediaId);
+            fetch("http://localhost:4000/api/user/addComment", {
+                method: "POST",
+                mode: "cors",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(
+                {
+                    token: getAuthToken(),
+                    username: getAuthName(), 
+                    
+                    mediaId: mediaId,
+                    text: commentText,
+                    timeStamp: Date.now(),
+                    parentId: null,
+                }),
+            })
+            .then((r) => checkResponse(r))
+            .then((r) => r.json())
+            .then((r) => {
+                toast.success( "Successfully posted comment!");
+                // fetch after this point, fetching all the comments will be easier I think instead of arranging the comments array  :/
+                setCommentFlag( !commentFlag);
+            })
+            .catch((err) => {
+                console.log(err);
+                toast.error("Error, Could not post comment!");
+            });
+        } 
+        else 
+        {
+            // to a comment, u can find all info inside the comment parameter
+            // fetch post comment
+            console.log(commentText, comment);
+            fetch("http://localhost:4000/api/user/addComment", {
+                method: "POST",
+                mode: "cors",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(
+                {
+                    token: getAuthToken(),
+                    username: getAuthName(), 
+                    
+                    mediaId: mediaId,
+                    text: commentText,
+                    timeStamp: Date.now(),
+                    parentId: comment.commentId,
+                }),
+            })
+            .then((r) => checkResponse(r))
+            .then((r) => r.json())
+            .then((r) => {
+                toast.success( "Successfully posted sub comment!");
+                // fetch after this point, fetching all the comments will be easier I think instead of arranging the comments array  :/
+                setCommentFlag( !commentFlag);
+            })
+            .catch((err) => {
+                console.log(err);
+                toast.error("Error, Could not post sub comment!");
+            });
+        }
+    };
 
   const getComments = (comments, depth) => {
     if (comments == undefined || comments.length === 0) return;
