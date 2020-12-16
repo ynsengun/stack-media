@@ -4,7 +4,8 @@ import { useHistory } from "react-router-dom";
 import { Container } from "semantic-ui-react";
 
 import WatchedMediaImage from "../images/mediaToWatch.png";
-
+import { checkResponse } from "../util/ResponseUtil";
+import { getAuthName, getAuthToken } from "../util/AuthenticationUtil";
 import Comment from "./Media/Comment";
 import MediaBox from "./MediaBox";
 
@@ -14,7 +15,7 @@ export default function MediaPage() {
     watch: true,
     finish: false,
   });
-  const [mediaName, setMediaName] = useState();
+  const [mediaId, setmediaId] = useState("");
   const [nextMedia, setNextMedia] = useState(null);
   const [suggestedMedias, setSuggestedMedias] = useState([{}]);
   const [rating, setRating] = useState(0);
@@ -25,11 +26,11 @@ export default function MediaPage() {
 
   useEffect(() => {
     let path = history.location.pathname.substring(7);
-    setMediaName(path);
+    setmediaId(path);
 
     const unListen = history.listen(() => {
       let path = history.location.pathname.substring(7);
-      setMediaName(path);
+      setmediaId(path);
 
       window.scrollTo(0, 0);
     });
@@ -42,7 +43,6 @@ export default function MediaPage() {
   useEffect(() => {
     // TODO fetch progress and set button actives accordingly
     // TODO fetch suggested and next(if series) media, rating
-    // TODO fetch comments
 
     setProgress(0);
     setButtonActive({ watch: true, finish: false });
@@ -52,6 +52,32 @@ export default function MediaPage() {
       { name: "bbb", type: 1 },
     ]);
     setNextMedia({ name: "sss", type: 0 });
+    
+    // TODO fetch comments
+    fetch("http://localhost:4000/api/media/getComments", {
+        method: "POST",
+        mode: "cors",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(
+        {
+            token: getAuthToken(),
+            username: getAuthName(), 
+            
+            mediaId: mediaId,
+        }),
+    })
+    .then((r) => checkResponse(r))
+    .then((r) => r.json())
+    .then((r) => {
+        console.log( r.data);
+        toast.success( "Successfully fetched comments!");
+    })
+    .catch((err) => {
+        console.log(err);
+        toast.error("Error, could not get comments!");
+    });
     setComments([
       {
         commentId: "",
@@ -84,7 +110,7 @@ export default function MediaPage() {
         parentId: null,
       },
     ]);
-  }, [mediaName]);
+  }, [mediaId]);
 
   useEffect(() => {
     if (progress === 3) {
@@ -137,7 +163,7 @@ export default function MediaPage() {
     if (comment == null) {
       // to media directly
       // TODO fetch post comment
-      console.log(commentText, mediaName);
+      console.log(commentText, mediaId);
 
       // TODO fetch after this point, fetching all the comments will be easier I think instead of arranging the comments array  :/
     } else {
@@ -170,7 +196,7 @@ export default function MediaPage() {
       <div className="col-9" style={{ borderRight: "2px solid black" }}>
         <div style={{ paddingLeft: "50px", paddingRight: "50px" }}>
           <div className="card bg-secondary">
-            <h1 className="h1 text-center mt-5 text-white">{mediaName}</h1>
+            <h1 className="h1 text-center mt-5 text-white">{mediaId}</h1>
             <div
               style={{
                 height: "40vh",

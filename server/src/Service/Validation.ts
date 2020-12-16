@@ -70,7 +70,7 @@ export class Validation{
     }
 
     public getMoviesWithGenrePreferenceValidation(req: Request): void {
-        if(!req.body.username || !req.body.genre)
+        if(!req.body.username)
             throw new InvalidRequest();
     }
 

@@ -76,10 +76,10 @@ export class MediaDBService {
         return result;
     }
 
-    public async getMoviesWithGenrePreference(genre: Genre): Promise<any> {
+    public async getMoviesWithGenrePreference(user: User): Promise<any> {
         let result = null;
 
-        let sqlQuery = "SELECT M.* FROM Movie M, MediaHasGenre MHG WHERE MHG.mediaId = M.mediaId AND MHG.genreId = '" + genre.genreId + "';";
+        let sqlQuery = "SELECT M.* FROM Media M, MediaHasGenre MHG WHERE MHG.mediaId = M.mediaId AND MHG.genreId IN ( SELECT GP.genreId FROM GenrePreference GP WHERE GP.username = '" + user.username +"' ) AND M.mediaID in ( SELECT mediaId FROM Movie);";
 
         try {
             result = await this.db.sendQuery(sqlQuery);
