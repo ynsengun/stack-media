@@ -14,12 +14,12 @@ export default function FriendLabel(props) {
         <h4 className="">
           {friendName}{" "}
           <button
-            className="btn btn-danger btn-sm"
+            className="btn btn-danger btn-sm float-right"
             onClick={() => {
               handleDeleteFriend(friendName);
             }}
           >
-            X
+            x
           </button>
         </h4>
         <p>Last Watched: {movieName}</p>

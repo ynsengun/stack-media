@@ -5,7 +5,7 @@ import { Container } from "semantic-ui-react";
 import "../../css/MainPage/MediaBar.css";
 
 export default function RedirectLabel(props) {
-  const { onClickEvent, labelName, type, labelId } = props;
+  const { onClickEvent, labelName, type, labelId, handleDelete } = props;
 
   return (
     <Container>
@@ -18,6 +18,14 @@ export default function RedirectLabel(props) {
         >
           {labelName}
         </label>
+        <button
+          className="btn btn-danger btn-sm float-right"
+          onClick={() => {
+            handleDelete(labelId);
+          }}
+        >
+          x
+        </button>
       </div>
     </Container>
   );

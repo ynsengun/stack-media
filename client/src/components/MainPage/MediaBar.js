@@ -12,84 +12,90 @@ import { getAuthName, getAuthToken } from "../../util/AuthenticationUtil";
 export default function MediaBar(props) {
   const { changeContent } = props;
 
-  const [channels, setChannels] = useState([]);
-  const [parties, setParties] = useState([]);
+  const [channels, setChannels] = useState([
+    { channelName: "", channelId: "" },
+  ]);
+  const [parties, setParties] = useState([{ name: "", id: "" }]);
   const [textInput, setTextInput] = useState({ channel: "", party: "" });
 
   useEffect(() => {
     // fetch channels of the user
     fetch("http://localhost:4000/api/user/getChannels", {
-        method: "POST",
-        mode: "cors",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify(
-        {
-            token: getAuthToken(),
-            username: getAuthName(),        
-        }),
+      method: "POST",
+      mode: "cors",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        token: getAuthToken(),
+        username: getAuthName(),
+      }),
     })
-    .then((r) => checkResponse(r))
-    .then((r) => r.json())
-    .then((r) => {
+      .then((r) => checkResponse(r))
+      .then((r) => r.json())
+      .then((r) => {
         let resArray = r.data;
-        setChannels( resArray);
-    })
-    .catch((err) => {
+        setChannels(resArray);
+      })
+      .catch((err) => {
         console.log(err);
         toast.error("Error, could not fetch your created channels!");
-    });
+      });
 
     // TODO fetch parties
-    setParties(["S3L4M", "S52L4M", "SL4M", "SLM2", "SLM1"]);
+    setParties([
+      { name: "S3L4M", id: "" },
+      { name: "S52L4M", id: "" },
+      { name: "SL4M", id: "" },
+      { name: "SLAA4AM", id: "" },
+    ]);
   }, []);
 
-    const handleChange = (e) => {
-        const { value, name } = e.currentTarget;
-        setTextInput({
-        ...textInput,
-        [name]: value,
-        });
-    };
+  const handleChange = (e) => {
+    const { value, name } = e.currentTarget;
+    setTextInput({
+      ...textInput,
+      [name]: value,
+    });
+  };
 
-    const handleNewChannel = () => 
-    {
-        // check if not empty name
-        if ( textInput.channel === "")
-        {
-            toast.error( "You cannot create channel with an empty name!");
-            return;
-        }
+  const handleNewChannel = () => {
+    // check if not empty name
+    if (textInput.channel === "") {
+      toast.error("You cannot create channel with an empty name!");
+      return;
+    }
 
-        // fetch, post request to add textInput.channel
-        fetch("http://localhost:4000/api/channel/create", {
-            method: "POST",
-            mode: "cors",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(
-            {
-                token: getAuthToken(),
-                username: getAuthName(),   
-                
-                title: textInput.channel,
-            }),
-        })
-        .then((r) => checkResponse(r))
-        .then((r) => r.json())
-        .then((r) => {
-            setChannels([...channels, { channelName: textInput.channel, channelId: r.data}]);
-            console.log( channels);
-        })
-        .catch((err) => {
-            console.log(err);
-            toast.error("Error, could not create channel!");
-        });
+    // fetch, post request to add textInput.channel
+    fetch("http://localhost:4000/api/channel/create", {
+      method: "POST",
+      mode: "cors",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        token: getAuthToken(),
+        username: getAuthName(),
 
-        setTextInput({ ...textInput, channel: "" });
-    };
+        title: textInput.channel,
+      }),
+    })
+      .then((r) => checkResponse(r))
+      .then((r) => r.json())
+      .then((r) => {
+        setChannels([
+          ...channels,
+          { channelName: textInput.channel, channelId: r.data },
+        ]);
+        console.log(channels);
+      })
+      .catch((err) => {
+        console.log(err);
+        toast.error("Error, could not create channel!");
+      });
+
+    setTextInput({ ...textInput, channel: "" });
+  };
 
   const handleNewParty = () => {
     // TODO fetch, post request to add textInput.party
@@ -120,8 +126,28 @@ export default function MediaBar(props) {
             toast.error("error");
         });*/
 
-    setParties([...parties, textInput.party]);
+    setParties([...parties, { name: textInput.party, id: "" }]); // TODO fetch id need to be returned from post and set here
     setTextInput({ ...textInput, party: "" });
+  };
+
+  const handleDeleteParty = (partyId) => {
+    //TODO fetch delete party
+
+    let temp = [];
+    parties.forEach((party) => {
+      if (partyId != party.id) temp.push(party);
+    });
+    setParties(temp);
+  };
+
+  const handleDeleteChannels = (channelId) => {
+    //TODO fetch delete channel
+
+    let temp = [];
+    channels.forEach((channel) => {
+      if (channelId != channel.channelId) temp.push(channel);
+    });
+    setChannels(temp);
   };
 
   return (
@@ -160,6 +186,7 @@ export default function MediaBar(props) {
               onClickEvent={changeContent}
               type={ContentType.CHANNEL}
               labelId={channel.channelId}
+              handleDelete={handleDeleteChannels}
             ></RedirectLabel>
           ))}
         </div>
@@ -184,10 +211,11 @@ export default function MediaBar(props) {
           {parties.map((party, index) => (
             <RedirectLabel
               key={index}
-              labelName={party}
+              labelName={party.name}
               onClickEvent={changeContent}
               type={ContentType.PARTY}
-              labelId={party}
+              labelId={party.id}
+              handleDelete={handleDeleteParty}
             ></RedirectLabel>
           ))}
         </div>

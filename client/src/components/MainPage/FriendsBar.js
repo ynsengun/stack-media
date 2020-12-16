@@ -36,7 +36,7 @@ export default function FriendsBar() {
   }, []);
 
   const handleNewFriend = () => {
-    // TODO fetch add new friend, if valid then fetch its last watch
+    // TODO fetch add new friend, if valid then fetch its last watch or return it as the result of first fetch
 
     setFriends([...friends, { name: textInput, lastWatch: "aa" }]);
     setTextInput(""); // to reset the input text field
