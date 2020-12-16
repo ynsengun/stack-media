@@ -8,16 +8,6 @@ export default function Comment(props) {
 
   const [commentText, setCommentText] = useState("");
   const [replyBox, setReplyBox] = useState(false);
-  const [upvoted, setUpvoted] = useState(false);
-
-  useEffect(() => {
-    // TODO fetch upvoted
-  }, []);
-
-  function handleUpvote(event) {
-    setUpvoted(!upvoted);
-    console.log("Pressed upvote checkbox");
-  }
 
   const handleChange = (e) => {
     const { value, name } = e.currentTarget;
@@ -39,17 +29,6 @@ export default function Comment(props) {
           </div>
         </div>
         <div className="col-2">
-          <button
-            className={
-              upvoted
-                ? "btn btn-success h-50 float-right"
-                : "btn btn-dark h-50 float-right"
-            }
-            style={{ borderRadius: 0, width: "80px" }}
-            onClick={handleUpvote}
-          >
-            Upvote
-          </button>
           <button
             className="btn btn-primary h-50 float-right"
             style={{ borderRadius: 0, width: "80px" }}

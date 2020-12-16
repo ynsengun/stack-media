@@ -4,7 +4,8 @@ import { useHistory } from "react-router-dom";
 import { Container } from "semantic-ui-react";
 
 import WatchedMediaImage from "../images/mediaToWatch.png";
-
+import { checkResponse } from "../util/ResponseUtil";
+import { getAuthName, getAuthToken } from "../util/AuthenticationUtil";
 import Comment from "./Media/Comment";
 import MediaBox from "./MediaBox";
 
@@ -14,22 +15,23 @@ export default function MediaPage() {
     watch: true,
     finish: false,
   });
-  const [mediaName, setMediaName] = useState();
+  const [mediaId, setmediaId] = useState("");
   const [nextMedia, setNextMedia] = useState(null);
   const [suggestedMedias, setSuggestedMedias] = useState([{}]);
   const [rating, setRating] = useState(0);
   const [comments, setComments] = useState([{}]);
   const [commentText, setCommentText] = useState("");
+  const [ commentFlag, setCommentFlag] = useState(false);
 
   const history = useHistory();
 
   useEffect(() => {
     let path = history.location.pathname.substring(7);
-    setMediaName(path);
+    setmediaId(path);
 
     const unListen = history.listen(() => {
       let path = history.location.pathname.substring(7);
-      setMediaName(path);
+      setmediaId(path);
 
       window.scrollTo(0, 0);
     });
@@ -42,7 +44,6 @@ export default function MediaPage() {
   useEffect(() => {
     // TODO fetch progress and set button actives accordingly
     // TODO fetch suggested and next(if series) media, rating
-    // TODO fetch comments
 
     setProgress(0);
     setButtonActive({ watch: true, finish: false });
@@ -52,39 +53,35 @@ export default function MediaPage() {
       { name: "bbb", type: 1 },
     ]);
     setNextMedia({ name: "sss", type: 0 });
-    setComments([
-      {
-        commentId: "",
-        username: "cevat",
-        text: "slm ben cvt, proje cok eglenceli",
-        subComments: [
-          {
-            commentId: "",
-            username: "yusuf",
-            text: "@_@",
-            subComments: [],
-            parentId: "",
-          },
-        ],
-        parentId: null,
-      },
-      {
-        commentId: "",
-        username: "talha",
-        text: "<3",
-        subComments: [
-          {
-            commentId: "",
-            username: "hakan",
-            text: "<3",
-            subComments: [],
-            parentId: "",
-          },
-        ],
-        parentId: null,
-      },
-    ]);
-  }, [mediaName]);
+    
+    // fetch comments
+    if ( mediaId != null && mediaId != "")
+    {
+        fetch("http://localhost:4000/api/media/getComments", {
+            method: "POST",
+            mode: "cors",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(
+            {
+                token: getAuthToken(),
+                username: getAuthName(), 
+                
+                mediaId: mediaId,
+            }),
+        })
+        .then((r) => checkResponse(r))
+        .then((r) => r.json())
+        .then((r) => {
+            setComments( r.data);
+        })
+        .catch((err) => {
+            console.log(err);
+            toast.error("Error, could not get comments!");
+        });
+    }
+  }, [mediaId, commentFlag]);
 
   useEffect(() => {
     if (progress === 3) {
@@ -134,20 +131,75 @@ export default function MediaPage() {
   };
 
   const handleCommentSend = (comment, commentText) => {
-    if (comment == null) {
-      // to media directly
-      // TODO fetch post comment
-      console.log(commentText, mediaName);
-
-      // TODO fetch after this point, fetching all the comments will be easier I think instead of arranging the comments array  :/
-    } else {
-      // to a comment, u can find all info inside the comment parameter
-      // TODO fetch post comment
-      console.log(commentText, comment);
-
-      // TODO fetch after this point, fetching all the comments will be easier I think instead of arranging the comments array  :/
-    }
-  };
+        if (comment == null) 
+        {
+            // to media directly
+            // fetch post comment
+            console.log(commentText, mediaId);
+            fetch("http://localhost:4000/api/user/addComment", {
+                method: "POST",
+                mode: "cors",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(
+                {
+                    token: getAuthToken(),
+                    username: getAuthName(), 
+                    
+                    mediaId: mediaId,
+                    text: commentText,
+                    timeStamp: Date.now(),
+                    parentId: null,
+                }),
+            })
+            .then((r) => checkResponse(r))
+            .then((r) => r.json())
+            .then((r) => {
+                toast.success( "Successfully posted comment!");
+                // fetch after this point, fetching all the comments will be easier I think instead of arranging the comments array  :/
+                setCommentFlag( !commentFlag);
+            })
+            .catch((err) => {
+                console.log(err);
+                toast.error("Error, Could not post comment!");
+            });
+        } 
+        else 
+        {
+            // to a comment, u can find all info inside the comment parameter
+            // fetch post comment
+            console.log(commentText, comment);
+            fetch("http://localhost:4000/api/user/addComment", {
+                method: "POST",
+                mode: "cors",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(
+                {
+                    token: getAuthToken(),
+                    username: getAuthName(), 
+                    
+                    mediaId: mediaId,
+                    text: commentText,
+                    timeStamp: Date.now(),
+                    parentId: comment.commentId,
+                }),
+            })
+            .then((r) => checkResponse(r))
+            .then((r) => r.json())
+            .then((r) => {
+                toast.success( "Successfully posted sub comment!");
+                // fetch after this point, fetching all the comments will be easier I think instead of arranging the comments array  :/
+                setCommentFlag( !commentFlag);
+            })
+            .catch((err) => {
+                console.log(err);
+                toast.error("Error, Could not post sub comment!");
+            });
+        }
+    };
 
   const getComments = (comments, depth) => {
     if (comments == undefined || comments.length === 0) return;
@@ -170,7 +222,7 @@ export default function MediaPage() {
       <div className="col-9" style={{ borderRight: "2px solid black" }}>
         <div style={{ paddingLeft: "50px", paddingRight: "50px" }}>
           <div className="card bg-secondary">
-            <h1 className="h1 text-center mt-5 text-white">{mediaName}</h1>
+            <h1 className="h1 text-center mt-5 text-white">{mediaId}</h1>
             <div
               style={{
                 height: "40vh",

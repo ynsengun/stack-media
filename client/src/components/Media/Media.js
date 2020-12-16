@@ -135,7 +135,7 @@ export default function Media(props) {
               className="btn btn-primary mt-4"
               style={{ width: "60%" }}
               onClick={() => {
-                history.push(`/media/${mediaName}`); // TODO give mediaId instead of mediaName? as db mostly works with mediaId
+                history.push(`/media/${mediaId}`); // TODO give mediaId instead of mediaName? as db mostly works with mediaId
               }}
             >
               Watch
@@ -148,7 +148,7 @@ export default function Media(props) {
                     className="btn btn-primary mt-4"
                     style={{ width: "60%" }}
                     onClick={() => {
-                    history.push(`/media/${mediaName}`); // TODO give mediaId instead of mediaName? as db mostly works with mediaId
+                    history.push(`/media/${mediaId}`); // TODO give mediaId instead of mediaName? as db mostly works with mediaId
                     }}
                 >
                     Watch

@@ -55,10 +55,10 @@ export class MediaBusiness {
         }
     }
 
-    public async getMoviesWithGenrePreference(genre: Genre): Promise<ResponseModel>
+    public async getMoviesWithGenrePreference(user: User): Promise<ResponseModel>
     {
         try {
-            let result = await this.mediaDBService.getMoviesWithGenrePreference(genre);
+            let result = await this.mediaDBService.getMoviesWithGenrePreference(user);
             return new SuccessResponse(result);
         } catch (error) {
             return new ErrorResponse(error);

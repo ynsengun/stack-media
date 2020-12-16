@@ -245,7 +245,7 @@ export class Controller{
     public async getMoviesWithGenrePreference(request: Request, response: Response): Promise<void> {
         try{
             this.validation.getMoviesWithGenrePreferenceValidation(request);
-            let result = await this.mediaBusiness.getMoviesWithGenrePreference(genreMapping.map(request.body.genre));
+            let result = await this.mediaBusiness.getMoviesWithGenrePreference(userMapping.map(request.body));
             response.status(result.status).send(result);
         } catch(error){
             const errorResponse = new ErrorResponse(error);
