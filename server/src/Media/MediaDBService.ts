@@ -65,7 +65,7 @@ export class MediaDBService {
     public async getSeriesWithGenrePreference(genre: Genre): Promise<any> {
         let result = null;
 
-        let sqlQuery = "SELECT TV.* FROM TVSeriesEpisode TV, MediaHasGenre MHG WHERE MHG.mediaId = TV.mediaId AND MHG.genreId = '" + genre.genreId + "';";
+        let sqlQuery = "SELECT DISTINCT TV.* FROM TVSeriesEpisode TV, MediaHasGenre MHG WHERE MHG.mediaId = TV.mediaId AND MHG.genreId = '" + genre.genreId + "';";
 
         try {
             result = await this.db.sendQuery(sqlQuery);
@@ -79,8 +79,7 @@ export class MediaDBService {
     public async getMoviesWithGenrePreference(user: User): Promise<any> {
         let result = null;
 
-        let sqlQuery = "SELECT M.* FROM Media M, MediaHasGenre MHG WHERE MHG.mediaId = M.mediaId AND MHG.genreId IN ( SELECT GP.genreId FROM GenrePreference GP WHERE GP.username = '" + user.username +"' ) AND M.mediaID in ( SELECT mediaId FROM Movie);";
-
+        let sqlQuery = "SELECT DISTINCT M.* FROM Media M, MediaHasGenre MHG WHERE MHG.mediaId = M.mediaId AND MHG.genreId IN ( SELECT GP.genreId FROM GenrePreference GP WHERE GP.username = '" + user.username +"' ) AND M.mediaID in ( SELECT mediaId FROM Movie);";
         try {
             result = await this.db.sendQuery(sqlQuery);
         } 
