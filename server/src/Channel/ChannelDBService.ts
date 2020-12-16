@@ -5,6 +5,7 @@ import { Channel } from "../Model/Channel/Channel";
 import {Database} from "../Database";
 import {AlreadyExist} from "../Model/Error/AlreadyExist";
 import {v1 as id} from "uuid";
+import mediaMapping from "../Service/MediaMapping";
 
 export class ChannelDBService {
     db: Database;
@@ -13,10 +14,32 @@ export class ChannelDBService {
         this.db = new Database();
     }
 
+    public async getMediasFromChannel(channel: Channel): Promise<any> {
+        let result = [];
+
+        let sqlQuery = "SELECT * FROM Media M, ChannelMedia CM, Movie MO WHERE CM.channelId = '" + channel.channelId + "' AND M.mediaId = CM.mediaId AND M.mediaId = MO.mediaId;";
+
+        try {
+            let movieResult = await this.db.sendQuery(sqlQuery);
+            sqlQuery = "SELECT * FROM Media M, ChannelMedia CM, TVSeriesEpisode TV WHERE CM.channelId = '" + channel.channelId + "' AND M.mediaId = CM.mediaId AND M.mediaId = TV.mediaId;";
+            let TVSeriesEpisodeResult = await this.db.sendQuery(sqlQuery);
+            for(let i = 0 ; i < movieResult.length ; i++){
+                result.push(mediaMapping.map(movieResult[i]));
+            }
+            for(let i = 0 ; i < TVSeriesEpisodeResult.length ; i++){
+                result.push(mediaMapping.map(TVSeriesEpisodeResult[i]));
+            }
+        } 
+        catch(err){
+            throw err;
+        }
+        return result;
+    }
+
     public async getMoviesFromChannel(channel: Channel): Promise<any> {
         let result = null;
 
-        let sqlQuery = "SELECT MO.* FROM Media M, ChannelMeadia CM, Movie MO WHERE ChannelMedia.channelId = '" + channel.channelId + "' AND M.mediaId = CM.mediaId AND M.mediaId = MO.mediaId;";
+        let sqlQuery = "SELECT MO.* FROM Media M, ChannelMedia CM, Movie MO WHERE ChannelMedia.channelId = '" + channel.channelId + "' AND M.mediaId = CM.mediaId AND M.mediaId = MO.mediaId;";
 
         try {
             result = await this.db.sendQuery(sqlQuery);

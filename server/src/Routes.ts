@@ -208,6 +208,11 @@ export class Routes{
 
     private channelRoutes(app){
         
+        app.route('/api/channel/getMedias')
+            .post(this.tokenService.checkToken, (req: Request, res: Response) => {
+                this.controller.getMediasFromChannel(req, res)
+            });
+
         app.route('/api/channel/getMovies')
             .post(this.tokenService.checkToken, (req: Request, res: Response) => {
                 this.controller.getMoviesFromChannel(req, res)

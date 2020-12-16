@@ -471,6 +471,17 @@ export class Controller{
 
     // channel functions
 
+    public async getMediasFromChannel(request: Request, response: Response): Promise<void> {
+        try{
+            this.validation.getMediasFromChannelValidation(request);
+            let result = await this.channelBusiness.getMediasFromChannel(channelMapping.map(request.body));
+            response.status(result.status).send(result);
+        } catch(error){
+            const errorResponse = new ErrorResponse(error);
+            response.status(errorResponse.status).send(new ErrorResponse(error));
+        }
+    }
+
     public async getMoviesFromChannel(request: Request, response: Response): Promise<void> {
         try{
             this.validation.getMoviesFromChannelValidation(request);

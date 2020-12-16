@@ -134,6 +134,10 @@ export class Validation{
     }
 
     // channel functions
+    public getMediasFromChannelValidation(req: Request): void {
+        if(!req.body.username || !req.body.channelId)
+            throw new InvalidRequest();
+    }
 
     public getMoviesFromChannelValidation(req: Request): void {
         if(!req.body.username || !req.body.channelId)
