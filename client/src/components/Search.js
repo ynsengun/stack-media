@@ -18,6 +18,7 @@ export default function Search() {
   });
   const [mediaList, setMediaList] = useState([]);
   const [allGenres, setAllGenres] = useState([]);
+  const [channels, setChannels] = useState([]);
 
   useEffect(() => {
     // fetch medias according to the search state
@@ -50,6 +51,32 @@ export default function Search() {
       setMediaList([]);
     }
   }, [search]);
+
+  useEffect(() => {
+    // fetch channels of the user
+    fetch("http://localhost:4000/api/user/getChannels", {
+        method: "POST",
+        mode: "cors",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(
+        {
+            token: getAuthToken(),
+            username: getAuthName(),        
+        }),
+    })
+    .then((r) => checkResponse(r))
+    .then((r) => r.json())
+    .then((r) => {
+        let resArray = r.data;
+        setChannels( resArray);
+    })
+    .catch((err) => {
+        console.log(err);
+        toast.error("Error, could not fetch your created channels!");
+    });
+  }, [channels]);
 
   useEffect(() => {
     // fetch genre for display!
@@ -132,6 +159,7 @@ export default function Search() {
           mediaId={media.mediaId}
           mediaType={media.type}
           mediaName={media.name}
+          channelList={channels}
           pageType={isAdmin() ? 2 : 0}
         />
       ))}

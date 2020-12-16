@@ -17,8 +17,6 @@ export class TokenService{
                 throw new NoAccess();
             const secret_key = config.SECRET_KEY;
             const verified = jwt.verify(token, secret_key);
-            console.log( verified.username);
-            console.log( req.body.username);
             if (verified.username !== req.body.username)
                 throw new NoAccess();
             next();

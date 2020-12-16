@@ -106,7 +106,7 @@ export class ChannelDBService {
 
     public async addMediaToChannel(channel: Channel, media: Media): Promise<any> {
         let result = null;
-
+        console.log( "Hello");
         let sqlQuery = "INSERT INTO ChannelMedia VALUES('" + media.mediaId + "', '" + channel.channelId + "');";
 
         try {
