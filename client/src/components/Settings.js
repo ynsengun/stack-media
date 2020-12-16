@@ -9,6 +9,7 @@ import { getAuthName, getAuthToken } from "../util/AuthenticationUtil";
 export default function Settings() {
   const [allGenres, setAllGenres] = useState([]);
   const [myGenres, setMyGenres] = useState([]);
+  const [inputText, setInputText] = useState({ pass: "", passR: "" });
 
   useEffect(() => {
     // fetch all-genres
@@ -27,126 +28,141 @@ export default function Settings() {
       .then((r) => r.json())
       .then((r) => {
         let resArray = r.data;
-        setAllGenres( resArray);
+        setAllGenres(resArray);
       })
       .catch((err) => {
         console.log(err);
         toast.error("Error, could not fetch all available genres!");
       });
-    
-      // fetch my-genres
+
+    // fetch my-genres
     fetch("http://localhost:4000/api/user/getUserGenres", {
-            method: "POST",
-            mode: "cors",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(
-            {
-                token: getAuthToken(),
-                username: getAuthName(),        
-            }),
-        })
-        .then((r) => checkResponse(r))
-        .then((r) => r.json())
-        .then((r) => {
-            let resArray = r.data;
-            setMyGenres( resArray);
-        })
-        .catch((err) => {
-            console.log(err);
-            toast.error("Error, could not fetch your previously recorded genre!");
-        });
+      method: "POST",
+      mode: "cors",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        token: getAuthToken(),
+        username: getAuthName(),
+      }),
+    })
+      .then((r) => checkResponse(r))
+      .then((r) => r.json())
+      .then((r) => {
+        let resArray = r.data;
+        setMyGenres(resArray);
+      })
+      .catch((err) => {
+        console.log(err);
+        toast.error("Error, could not fetch your previously recorded genre!");
+      });
   }, []);
 
   const getButtonClass = (genre) => {
-    
     let match = false;
-    myGenres.forEach( x => {
-        if ( x.genreId === genre.genreId)
-        {
-            match = true;
-        }
+    myGenres.forEach((x) => {
+      if (x.genreId === genre.genreId) {
+        match = true;
+      }
     });
     return match ? "btn btn-success ml-3" : "btn btn-danger ml-3";
   };
 
   const handleGenreClick = (genre) => {
-    
     let match = false;
-    myGenres.forEach( x => {
-        if ( x.genreId === genre.genreId)
-        {
-            match = true;
-        }
+    myGenres.forEach((x) => {
+      if (x.genreId === genre.genreId) {
+        match = true;
+      }
     });
-    
-    if (match) 
-    {
-        if ( myGenres.length === 1)
-        {
-            toast.error( "You must have at least 1 genre preference.");
-            return;
-        }
 
-        let temp = [];
-        myGenres.forEach((g) => {
-            if (g.genreId != genre.genreId) temp.push(g);
-        });
+    if (match) {
+      if (myGenres.length === 1) {
+        toast.error("You must have at least 1 genre preference.");
+        return;
+      }
 
-        // fetch, delete this genre from user
-        fetch("http://localhost:4000/api/user/deleteGenre", {
-            method: "DELETE",
-            mode: "cors",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(
-            {
-                token: getAuthToken(),
-                username: getAuthName(),    
-                
-                genreId: genre.genreId
-            }),
-        })
+      let temp = [];
+      myGenres.forEach((g) => {
+        if (g.genreId != genre.genreId) temp.push(g);
+      });
+
+      // fetch, delete this genre from user
+      fetch("http://localhost:4000/api/user/deleteGenre", {
+        method: "DELETE",
+        mode: "cors",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          token: getAuthToken(),
+          username: getAuthName(),
+
+          genreId: genre.genreId,
+        }),
+      })
         .then((r) => checkResponse(r))
         .then((r) => r.json())
         .then((r) => {
-            toast.success( "Genre " + genre.title + " is successfully deleted from your preferences.");
-            setMyGenres(temp);
+          toast.success(
+            "Genre " +
+              genre.title +
+              " is successfully deleted from your preferences."
+          );
+          setMyGenres(temp);
         })
         .catch((err) => {
-            console.log(err);
-            toast.error("Error, could not delete genre from your preference!");
+          console.log(err);
+          toast.error("Error, could not delete genre from your preference!");
         });
-    } 
-    else 
-    {
-        // fetch, add this genre from user
-        fetch("http://localhost:4000/api/user/addGenre", {
-            method: "POST",
-            mode: "cors",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(
-            {
-                token: getAuthToken(),
-                username: getAuthName(),
-                
-                genreId: genre.genreId
-            }),
-        })
+    } else {
+      // fetch, add this genre from user
+      fetch("http://localhost:4000/api/user/addGenre", {
+        method: "POST",
+        mode: "cors",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          token: getAuthToken(),
+          username: getAuthName(),
+
+          genreId: genre.genreId,
+        }),
+      })
         .then((r) => checkResponse(r))
         .then((r) => r.json())
         .then((r) => {
-            toast.success( "Genre " + genre.title + " is successfully added to your preferences.");
-            setMyGenres([...myGenres, genre]);
+          toast.success(
+            "Genre " +
+              genre.title +
+              " is successfully added to your preferences."
+          );
+          setMyGenres([...myGenres, genre]);
         })
         .catch((err) => {
-            console.log(err);
-            toast.error("Error, could not add your new genre preference!");
+          console.log(err);
+          toast.error("Error, could not add your new genre preference!");
         });
+    }
+  };
+
+  const handleChange = (e) => {
+    const { value, name } = e.currentTarget;
+    setInputText({
+      ...inputText,
+      [name]: value,
+    });
+  };
+
+  const handleSave = () => {
+    if (inputText.pass === inputText.passR) {
+      // TODO fetch new password
+      console.log("New Password: ", inputText.pass);
+      setInputText({ pass: "", passR: "" });
+    } else {
+      toast.error("Passwords does not match");
     }
   };
 
@@ -155,6 +171,23 @@ export default function Settings() {
       <div className="card bg-white p-5">
         <div className="card-body">
           <h3 className="h3">Settings</h3>
+          <label>Password</label>
+          <input
+            value={inputText.pass}
+            onChange={handleChange}
+            name="pass"
+            className="w-100"
+          />
+          <label className="mt-3">Password (Repeat)</label>
+          <input
+            value={inputText.passR}
+            onChange={handleChange}
+            name="passR"
+            className="w-100"
+          />
+          <button className="btn btn-primary mt-4 w-100" onClick={handleSave}>
+            Save
+          </button>
         </div>
       </div>
 
