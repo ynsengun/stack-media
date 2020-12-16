@@ -53,7 +53,7 @@ export default function Search() {
 
   useEffect(() => {
     // fetch genre for display!
-    fetch("http://localhost:4000/api/media/getGenres", {
+    fetch("http://localhost:4000/api/genre/getGenres", {
       method: "POST",
       mode: "cors",
       headers: {

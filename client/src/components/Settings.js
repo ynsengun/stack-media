@@ -12,7 +12,7 @@ export default function Settings() {
 
   useEffect(() => {
     // fetch all-genres, my-genres
-    fetch("http://localhost:4000/api/media/getGenres", {
+    fetch("http://localhost:4000/api/genre/getGenres", {
       method: "POST",
       mode: "cors",
       headers: {
@@ -72,7 +72,16 @@ export default function Settings() {
   };
 
   const handleGenreClick = (genre) => {
-    if (myGenres.includes(genre)) 
+    
+    let match = false;
+    myGenres.forEach( x => {
+        if ( x.genreId === genre.genreId)
+        {
+            match = true;
+        }
+    });
+    
+    if (match) 
     {
         // fetch, delete this genre from user
         fetch("http://localhost:4000/api/user/deleteGenre", {
@@ -101,7 +110,7 @@ export default function Settings() {
 
         let temp = [];
         myGenres.forEach((g) => {
-            if (g != genre) temp.push(g);
+            if (g.genreId != genre.genreId) temp.push(g);
         });
         setMyGenres(temp);
     } else {

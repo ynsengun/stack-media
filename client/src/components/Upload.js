@@ -148,7 +148,7 @@ export default function Upload() {
     }
 
     // fetch all genres
-    fetch("http://localhost:4000/api/media/getGenres", {
+    fetch("http://localhost:4000/api/genre/getGenres", {
       method: "POST",
       mode: "cors",
       headers: {
