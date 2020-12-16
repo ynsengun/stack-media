@@ -29,7 +29,6 @@ export default function Login() {
   const [registerUserType, setRegisterUserType] = useState(false);
 
   useEffect(() => {
-
     // fetch all genres
     fetch("http://localhost:4000/api/genre/getGenres", {
       method: "POST",
@@ -37,8 +36,7 @@ export default function Login() {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({
-      }),
+      body: JSON.stringify({}),
     })
       .then((r) => checkResponse(r))
       .then((r) => r.json())
@@ -81,10 +79,9 @@ export default function Login() {
       return;
     }
 
-    if ( !registerUserType && myGenres.length == 0)
-    {
-        toast.error( "You must specify at least one genre!");
-        return;
+    if (!registerUserType && myGenres.length == 0) {
+      toast.error("You must specify at least one genre!");
+      return;
     }
     register();
   }
@@ -148,53 +145,46 @@ export default function Login() {
   }
 
   const getButtonClass = (genre) => {
-
     let match = false;
-    myGenres.forEach( x => {
-        if ( x.genreId === genre.genreId)
-        {
-            match = true;
-        }
+    myGenres.forEach((x) => {
+      if (x.genreId === genre.genreId) {
+        match = true;
+      }
     });
-    return match ? "btn btn btn-success ml-3" : "btn btn btn-danger ml-3";
-};
+    return match ? "btn btn-sm btn-success mr-1" : "btn btn-sm btn-danger mr-1";
+  };
 
-const handleGenreClick = (genre) => {
-        
+  const handleGenreClick = (genre) => {
     let match = false;
-    myGenres.forEach( x => {
-        if ( x.genreId === genre.genreId)
-        {
-            match = true;
-        }
+    myGenres.forEach((x) => {
+      if (x.genreId === genre.genreId) {
+        match = true;
+      }
     });
-    
-    if (match) 
-    {
-        let temp = [];
-        myGenres.forEach((g) => {
-            if (g.genreId !== genre.genreId) temp.push(g);
-        });
-        
-        setMyGenres(temp);
-    } 
-    else 
-    {
-        setMyGenres([...myGenres, genre]);
+
+    if (match) {
+      let temp = [];
+      myGenres.forEach((g) => {
+        if (g.genreId !== genre.genreId) temp.push(g);
+      });
+
+      setMyGenres(temp);
+    } else {
+      setMyGenres([...myGenres, genre]);
     }
-};
+  };
 
-function filterBySelection(genre) {
+  function filterBySelection(genre) {
     for (let i = 0; i < myGenres.length; i++) {
-    if (genre.genreId === myGenres[i].genreId) {
+      if (genre.genreId === myGenres[i].genreId) {
         console.log(
-        "Genre title: " + genre.title + " selected genre: " + myGenres[i]
+          "Genre title: " + genre.title + " selected genre: " + myGenres[i]
         );
         return true;
-    }
+      }
     }
     return false;
-}
+  }
 
   return (
     <Container>
@@ -206,7 +196,7 @@ function filterBySelection(genre) {
           </div>
           <div>
             <input
-              className="TextInput"
+              className="w-100"
               type="text"
               id="usernameLoginInputID"
               onInput={(e) => setLoginUsername(e.target.value)}
@@ -218,7 +208,7 @@ function filterBySelection(genre) {
           </div>
           <div>
             <input
-              className="TextInput"
+              className="w-100"
               type="password"
               id="passwordLoginInputID"
               onInput={(e) => setLoginPassword(e.target.value)}
@@ -237,7 +227,7 @@ function filterBySelection(genre) {
           </div>
           <div>
             <input
-              className="TextInput"
+              className="w-100"
               type="text"
               id="emailRegisterInputID"
               onInput={(e) => setRegisterEmail(e.target.value)}
@@ -249,7 +239,7 @@ function filterBySelection(genre) {
           </div>
           <div>
             <input
-              className="TextInput"
+              className="w-100"
               type="text"
               id="usernameRegisterInputID"
               onInput={(e) => setRegisterUsername(e.target.value)}
@@ -261,7 +251,7 @@ function filterBySelection(genre) {
           </div>
           <div>
             <input
-              className="TextInput"
+              className="w-100"
               type="password"
               id="passwordRegisterInputID"
               onInput={(e) => setRegisterPassword(e.target.value)}
@@ -273,7 +263,7 @@ function filterBySelection(genre) {
           </div>
           <div>
             <input
-              className="TextInput"
+              className="w-100"
               type="password"
               id="passwordRegisterInput2ID"
               onInput={(e) => setRegisterPassswordCheck(e.target.value)}
@@ -281,17 +271,19 @@ function filterBySelection(genre) {
             ></input>
           </div>
           <div>
-            <label className="mr-3">Genres:</label>
+            <label className="mt-2">Genres:</label>
+            <br />
             {allGenres.map((genre) => (
-            <button
+              <button
                 className={getButtonClass(genre)}
                 onClick={() => {
-                handleGenreClick(genre);
+                  handleGenreClick(genre);
                 }}
-            >
+              >
                 {genre.title}
-            </button>
+              </button>
             ))}
+            <div className="mt-2" />
           </div>
           <div>
             <input
