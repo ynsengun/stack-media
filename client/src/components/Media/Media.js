@@ -11,7 +11,7 @@ import { checkResponse } from "../../util/ResponseUtil";
 import { getAuthName, getAuthToken } from "../../util/AuthenticationUtil";
 
 export default function Media(props) {
-  // pageType 0 = search page, 1 = only watch button, 2 = edit button
+  // pageType 0 = search page, 1 = only watch button, 2 = edit button, 4 = channelContents
   const { mediaId, mediaType, mediaName, channelList, pageType } = props;
 
   const [selectedChannel, setSelectedChannel] = useState( "");
@@ -71,6 +71,12 @@ export default function Media(props) {
     {
         toast.error( "There is not any channel selected that you can add media!");
     }
+  };
+
+  const handleDeleteFromChannelButton = () => {
+    console.log( "Deleting from channel!");
+    console.log( channelList[ 0]);
+    //TODO: fetch delete media request to server => wait for server to return channel media
   };
 
   const option = (name, index) => {
@@ -135,6 +141,28 @@ export default function Media(props) {
               Watch
             </button>
           )}
+          {
+              (pageType === 4) && ( // channel contents page
+                <div>
+                    <button // watch button
+                    className="btn btn-primary mt-4"
+                    style={{ width: "60%" }}
+                    onClick={() => {
+                    history.push(`/media/${mediaName}`); // TODO give mediaId instead of mediaName? as db mostly works with mediaId
+                    }}
+                >
+                    Watch
+                </button>
+                <button // delete button
+                className="btn btn-danger mt-4"
+                style={{ width: "60%" }}
+                onClick={handleDeleteFromChannelButton}
+                >
+                Delete
+                </button>
+            </div>
+              )
+          }
           {pageType === 2 && ( // eddit button
             <button
               className="btn btn-warning mt-5"

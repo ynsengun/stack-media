@@ -204,7 +204,7 @@ export default function ChannelContents() {
       <div>
         {medias.map((movie, index) => (
           <div key={index} className="mt-4">
-            <Media mediaName={movie} mediaType={1} pageType={1} />
+            <Media mediaName={movie} mediaType={1} channelList={[ { channelId: channelId, channelName: "" }]} pageType={4} />
           </div>
         ))}
       </div>
