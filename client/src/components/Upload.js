@@ -65,7 +65,7 @@ export default function Upload() {
         .then((r) => checkResponse(r))
         .then((r) => r.json())
         .then((r) => {
-            let resArray = r.data[0];
+            let resArray = r.data;
             if ( resArray.length === 1)
             {
                 let mediaObject = resArray[ 0];
@@ -194,6 +194,13 @@ export default function Upload() {
         
         if (match) 
         {
+            // media shouldh have at least one genre
+            if ( myGenres.length === 1)
+            {
+                toast.error( "The media must have at least one genre!");
+                return;
+            }
+
             let temp = [];
             myGenres.forEach((g) => {
                 if (g.genreId !== genre.genreId) temp.push(g);
@@ -201,20 +208,67 @@ export default function Upload() {
             
             if ( pageType == "edit")
             {
-                // TODO fetch, delete this genre from channel
-                console.log( "Deleting...");
+                // delete this genre from channel
+                fetch("http://localhost:4000/api/media/deleteGenre", {
+                    method: "POST",
+                    mode: "cors",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(
+                    {
+                        token: getAuthToken(),
+                        username: getAuthName(),    
+                        
+                        mediaId: media.mediaId,
+                        genreId: genre.genreId,
+                    }),
+                })
+                .then((r) => checkResponse(r))
+                .then((r) => r.json())
+                .then((r) => {
+                    toast.success( "Genre: " + genre.title + " successfully unselected.");
+                    setMyGenres(temp);
+                })
+                .catch((err) => {
+                    console.log(err);
+                    toast.error("Error, could not unselect the genre!");
+                });
             }
-            setMyGenres(temp);
+            //setMyGenres(temp);
         } 
         else 
         {
             if ( pageType == "edit")
             {
-                // TODO fetch, delete this genre from channel
-                console.log( "Adding...");
+                // add this genre to the genre list, update db
+                fetch("http://localhost:4000/api/media/addGenre", {
+                    method: "POST",
+                    mode: "cors",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(
+                    {
+                        token: getAuthToken(),
+                        username: getAuthName(),    
+                        
+                        mediaId: media.mediaId,
+                        genreId: genre.genreId,
+                    }),
+                })
+                .then((r) => checkResponse(r))
+                .then((r) => r.json())
+                .then((r) => {
+                    toast.success( "Genre: " + genre.title + " successfully selected.");
+                    setMyGenres([...myGenres, genre]);
+                })
+                .catch((err) => {
+                    console.log(err);
+                    toast.error("Error, could not select the genre!");
+                });
             }
-
-            setMyGenres([...myGenres, genre]);
+            //setMyGenres([...myGenres, genre]);
         }
     };
 
@@ -232,7 +286,6 @@ export default function Upload() {
             toast.warning("You need to specify at least one genre for the media!");
             return;
         }
-        // TODO: add tv series name
         fetch("http://localhost:4000/api/media/createMedia", {
         method: "POST",
         mode: "cors",
@@ -301,6 +354,7 @@ export default function Upload() {
             .then((r) => checkResponse(r))
             .then((r) => r.json())
             .then((r) => {
+                toast.success( "Deletion complete!");
                 // update history or state
                 setPageType("upload");
                 setMyGenres([]);
@@ -323,8 +377,41 @@ export default function Upload() {
 
     function handleEditButtonPress( event)
     {
-        // TODO: make  update request for the edited media!
-        console.log( "Edit button pressed!");
+        // make update request for the edited media!
+        fetch("http://localhost:4000/api/media/updateMedia", {
+        method: "POST",
+        mode: "cors",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            token: getAuthToken(),
+            username: getAuthName(),
+            publishUsername: getAuthName(),
+            mediaId: media.mediaId,
+            name: media.name,
+            description: media.description,
+            path: "https://www.youtube.com/channel/UC-lHJZR3Gqxm24_Vd_AJ5Yw",
+            uploadDate: Date.now(),
+            duration: -1,
+            oscarAward: null,
+            TVSerieName: media.tvShowName,
+            seasonNumber: media.type === "movie" ? null : parseInt(media.seasonNumber),
+            episodeNumber: media.type === "movie" ? null : parseInt(media.episodeNumber),
+            emmyAward: null,
+
+            genres: allGenres.filter(filterBySelection),
+        }),
+        })
+        .then((r) => checkResponse(r))
+        .then((r) => r.json())
+        .then((r) => {
+            toast.success("Successfully editted the media!");
+        })
+        .catch((err) => {
+            console.log(err);
+            toast.error("error");
+        });
     }
 
   return (

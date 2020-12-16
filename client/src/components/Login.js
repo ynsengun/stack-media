@@ -80,6 +80,12 @@ export default function Login() {
       toast.error("Check your password! Your passwords do not match...");
       return;
     }
+
+    if ( !registerUserType && myGenres.length == 0)
+    {
+        toast.error( "You must specify at least one genre!");
+        return;
+    }
     register();
   }
 

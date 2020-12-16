@@ -161,11 +161,12 @@ export class MediaDBService {
         let sqlQuery = "UPDATE Media SET mediaId = '" + media.mediaId + "', publishUsername = '" +  media.publishUsername + "', name = '" + media.name + "', description = '" + media.description + "', path = '" + media.path + "', duration = '" + media.duration + "', uploadDate = '" + media.uploadDate + "' WHERE mediaId = '" + media.mediaId + "';";
         try {
             await this.db.sendQuery(sqlQuery);  
-            if(media.oscarAward != null){ // it means it is a movie, then add to movie table
+            if(media.episodeNumber == null){ // it means it is a movie, then add to movie table
                 console.log( "Updating movie...");
                 sqlQuery = "UPDATE Movie SET mediaId = '" + media.mediaId + "', oscarAward = '" +  media.oscarAward + "' WHERE mediaId = '" + media.mediaId + "';";
             }
-            else if(media.episodeNumber != null){ // it means it is a series, then add to series table
+            else
+            { // it means it is a series, then add to series table
                 console.log( "Updating tv show...");
                 sqlQuery = "UPDATE TVSeriesEpisode SET mediaId = '" + media.mediaId + "', TVSerieName = '" +  media.TVSerieName + "', episodeNumber = '" + media.episodeNumber + "', seasonNumber = '" + media.seasonNumber + "', emmyAward = '" + media.emmyAward + "' WHERE mediaId = '" + media.mediaId + "';";
             }
@@ -274,7 +275,7 @@ export class MediaDBService {
 
     public async deleteGenreFromMedia(media: Media, genre: Genre): Promise<any> {
         let result = null;
-        let sqlQuery = "DELETE From MediaHasGenre WHERE mediaId='" + media.mediaId + "' AND genreId='" + genre.genreId + ");";
+        let sqlQuery = "DELETE FROM MediaHasGenre WHERE mediaId='" + media.mediaId + "' AND genreId='" + genre.genreId + "';";
         try {
             await this.db.sendQuery(sqlQuery);
         } 

@@ -39,7 +39,7 @@ export default function Search() {
         .then((r) => checkResponse(r))
         .then((r) => r.json())
         .then((r) => {
-          let resArray = r.data[0];
+          let resArray = r.data;
           // console.log(resArray, " ---- ", resArray.length);
           setMediaList(resArray);
         })

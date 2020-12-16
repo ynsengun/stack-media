@@ -110,6 +110,11 @@ export class Routes{
             .post(this.tokenService.checkToken, (req: Request, res: Response) => {
                 this.controller.addGenreToMedia(req, res)
             });
+
+        app.route('/api/media/deleteGenre')
+            .post(this.tokenService.checkToken, (req: Request, res: Response) => {
+                this.controller.deleteGenreFromMedia(req, res)
+            });
         
         app.route('/api/media/getSeries')
             .post(this.tokenService.checkToken, (req: Request, res: Response) => {

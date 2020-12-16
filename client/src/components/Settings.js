@@ -83,6 +83,12 @@ export default function Settings() {
     
     if (match) 
     {
+        if ( myGenres.length === 1)
+        {
+            toast.error( "You must have at least 1 genre preference.");
+            return;
+        }
+
         // fetch, delete this genre from user
         fetch("http://localhost:4000/api/user/deleteGenre", {
             method: "DELETE",
