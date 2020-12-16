@@ -235,7 +235,10 @@ export default function Upload() {
                     toast.error("Error, could not unselect the genre!");
                 });
             }
-            //setMyGenres(temp);
+            else
+            {
+                setMyGenres(temp);
+            }
         } 
         else 
         {
@@ -268,7 +271,10 @@ export default function Upload() {
                     toast.error("Error, could not select the genre!");
                 });
             }
-            //setMyGenres([...myGenres, genre]);
+            else
+            {
+                setMyGenres([...myGenres, genre]);
+            }
         }
     };
 

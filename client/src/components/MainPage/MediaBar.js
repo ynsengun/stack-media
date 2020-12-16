@@ -17,7 +17,7 @@ export default function MediaBar(props) {
   const [textInput, setTextInput] = useState({ channel: "", party: "" });
 
   useEffect(() => {
-    // TODO fetch channels of the user
+    // fetch channels of the user
     fetch("http://localhost:4000/api/user/getChannels", {
         method: "POST",
         mode: "cors",
@@ -40,8 +40,6 @@ export default function MediaBar(props) {
         console.log(err);
         toast.error("Error, could not fetch your created channels!");
     });
-    //setChannels(["Hello1", "Hello2", "Hello3", "Hello4", "Hello"]);
-
 
     // TODO fetch parties
     setParties(["S3L4M", "S52L4M", "SL4M", "SLM2", "SLM1"]);
@@ -64,7 +62,7 @@ export default function MediaBar(props) {
             return;
         }
 
-        // TODO fetch, post request to add textInput.channel
+        // fetch, post request to add textInput.channel
         fetch("http://localhost:4000/api/channel/create", {
             method: "POST",
             mode: "cors",
@@ -82,15 +80,14 @@ export default function MediaBar(props) {
         .then((r) => checkResponse(r))
         .then((r) => r.json())
         .then((r) => {
-            let resArray = r.data;
-            console.log( resArray);
+            setChannels([...channels, { channelName: textInput.channel, channelId: r.data}]);
+            console.log( channels);
         })
         .catch((err) => {
             console.log(err);
             toast.error("Error, could not create channel!");
         });
 
-        setChannels([...channels, textInput.channel]);
         setTextInput({ ...textInput, channel: "" });
     };
 
@@ -162,7 +159,7 @@ export default function MediaBar(props) {
               labelName={channel.channelName}
               onClickEvent={changeContent}
               type={ContentType.CHANNEL}
-              subName={channel.title}
+              labelId={channel.channelId}
             ></RedirectLabel>
           ))}
         </div>
@@ -190,7 +187,7 @@ export default function MediaBar(props) {
               labelName={party}
               onClickEvent={changeContent}
               type={ContentType.PARTY}
-              subName={party}
+              labelId={party}
             ></RedirectLabel>
           ))}
         </div>
