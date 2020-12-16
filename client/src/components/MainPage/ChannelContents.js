@@ -57,7 +57,7 @@ export default function ChannelContents() {
             setAllGenres(["Action", "Adventure", "Comedy", "Drama", "Horror"]); //TODO => wait for server to implement getChannelGenres
             setMyGenres(["Action", "Drama"]); //TODO => wait for server to implement getChannelGenres
 
-            // TODO:  suggested-medias, medias
+            // TODO:  suggested-medias, medias => wait for server
 
 
             setMedias(["cevat", "cevat", "cevat"]);

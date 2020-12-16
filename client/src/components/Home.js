@@ -46,7 +46,7 @@ export default function Home() {
           <Switch>
             <Route exact path="/movies"><MovieContents /></Route>
             <Route exact path="/series"><TVShowContents /></Route>
-            <Route exact path="/channels/:name"><ChannelContents></ChannelContents></Route>
+            <Route exact path="/channels/:channelId"><ChannelContents></ChannelContents></Route>
             <Route path="*"><NotFound /></Route>
           </Switch>
           {/* {content.type === ContentType.MOVIE && <MovieContents />}

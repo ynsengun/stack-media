@@ -238,7 +238,7 @@ export class Routes{
                 this.controller.deleteGenreFromChannel(req, res)
             });
 
-        app.route('/api/channel/addMovie')
+        app.route('/api/channel/addMedia')
             .post(this.tokenService.checkToken, (req: Request, res: Response) => {
                 this.controller.addMediaToChannel(req, res)
             });

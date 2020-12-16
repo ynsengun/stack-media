@@ -5,21 +5,24 @@ import TVShowLogo from "../../images/TVShowIcon.png";
 
 import "../../css/Media.css";
 import { useHistory } from "react-router-dom";
+import { toast } from "react-toastify";
+
+import { checkResponse } from "../../util/ResponseUtil";
+import { getAuthName, getAuthToken } from "../../util/AuthenticationUtil";
 
 export default function Media(props) {
   // pageType 0 = search page, 1 = only watch button, 2 = edit button
-  const { mediaId, mediaType, mediaName, pageType } = props;
+  const { mediaId, mediaType, mediaName, channelList, pageType } = props;
 
-  const [channels, setChannels] = useState([]);
-  const [selectedChannel, setSelectedChannel] = useState("");
+  const [selectedChannel, setSelectedChannel] = useState( "");
 
   const history = useHistory();
 
   useEffect(() => {
-    if (pageType === 0) {
-      // TODO fetch channels
-      setChannels(["channel1", "channel2"]);
-      setSelectedChannel("channel2");
+    if (pageType === 0) 
+    {
+        // Set default channel
+        setSelectedChannel( channelList.length > 0 ? channelList[0].channelName : "");
     }
   }, []);
 
@@ -33,8 +36,41 @@ export default function Media(props) {
   };
 
   const handleChannelButton = () => {
-    // TODO fetch, add media to channel
-    console.log(mediaName, selectedChannel);
+    
+    // Find the selected channel
+    let channel = channelList.filter( x => x.channelName === selectedChannel);
+    if ( channel != null && channel.length === 1 )
+    {
+        // add media to channel
+        fetch("http://localhost:4000/api/channel/addMedia", {
+            method: "POST",
+            mode: "cors",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(
+            {
+                token: getAuthToken(),
+                username: getAuthName(), 
+                
+                channelId: channel[0].channelId,
+                mediaId: mediaId,
+            }),
+        })
+        .then((r) => checkResponse(r))
+        .then((r) => r.json())
+        .then((r) => {
+            toast.success( "Successfully added media to the channel!");
+        })
+        .catch((err) => {
+            console.log(err);
+            toast.error("Error, could not add media to the channel!");
+        });
+    }
+    else
+    {
+        toast.error( "There is not any channel selected that you can add media!");
+    }
   };
 
   const option = (name, index) => {
@@ -81,7 +117,7 @@ export default function Media(props) {
                   }}
                   onChange={handleChange}
                 >
-                  {channels.map((channel, index) => option(channel, index))}
+                  {channelList.map((channel, index) => option(channel.channelName, index))}
                 </select>
                 <br style={{ height: "0px" }} />
               </div>
@@ -100,7 +136,6 @@ export default function Media(props) {
             </button>
           )}
           {pageType === 2 && ( // eddit button
-            // TODO button onClick (ask yusuf if done?) I think it should be done if this connects to upload
             <button
               className="btn btn-warning mt-5"
               style={{ width: "60%" }}
