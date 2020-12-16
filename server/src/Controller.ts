@@ -536,6 +536,16 @@ export class Controller{
             response.status(errorResponse.status).send(new ErrorResponse(error));
         }
     }
+
+    public async getGenresFromChannel(request: Request, response: Response): Promise<void> {
+        try{
+            let result = await this.channelBusiness.getGenresFromChannel(channelMapping.map(request.body));
+            response.status(result.status).send(result);
+        } catch(error){
+            const errorResponse = new ErrorResponse(error);
+            response.status(errorResponse.status).send(new ErrorResponse(error));
+        }
+    }
     
     public async addMediaToChannel(request: Request, response: Response): Promise<void> {
         try{

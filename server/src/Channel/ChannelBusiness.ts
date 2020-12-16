@@ -75,6 +75,16 @@ export class ChannelBusiness {
         }
     }
 
+    public async getGenresFromChannel(channel: Channel): Promise<ResponseModel>
+    {
+        try {
+            let result = await this.channelDBService.getGenresFromChannel(channel);
+            return new SuccessResponse(result);
+        } catch (error) {
+            return new ErrorResponse(error);
+        }
+    }
+
     public async addMediaToChannel(channel: Channel, media: Media): Promise<ResponseModel>
     {
         try {

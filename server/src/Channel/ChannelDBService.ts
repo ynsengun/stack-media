@@ -104,6 +104,20 @@ export class ChannelDBService {
         return result;
     }
 
+    public async getGenresFromChannel(channel: Channel): Promise<any> {
+        let result = null;
+
+        let sqlQuery = "SELECT * FROM Genre WHERE genreId IN (SELECT genreId FROM ChannelHasGenre WHERE channelId = '" + channel.channelId + "');";
+
+        try {
+            result = await this.db.sendQuery(sqlQuery);
+        } 
+        catch(err){
+            throw err;
+        }
+        return result;
+    }
+
     public async addMediaToChannel(channel: Channel, media: Media): Promise<any> {
         let result = null;
         console.log( "Hello");
