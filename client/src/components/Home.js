@@ -49,11 +49,6 @@ export default function Home() {
             <Route exact path="/channels/:channelId"><ChannelContents></ChannelContents></Route>
             <Route path="*"><NotFound /></Route>
           </Switch>
-          {/* {content.type === ContentType.MOVIE && <MovieContents />}
-          {content.type === ContentType.TVSHOW && <TVShowContents />}
-          {content.type === ContentType.CHANNEL && (
-            <ChannelContents channelName={content.name}></ChannelContents>
-          )} */}
         </Grid.Column>
 
         <Grid.Column width={3} style={{ padding: "0px", marginTop: "-29px" }}>
