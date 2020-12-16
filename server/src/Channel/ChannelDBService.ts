@@ -5,6 +5,7 @@ import { Channel } from "../Model/Channel/Channel";
 import {Database} from "../Database";
 import {AlreadyExist} from "../Model/Error/AlreadyExist";
 import {v1 as id} from "uuid";
+import mediaMapping from "../Service/MediaMapping";
 
 export class ChannelDBService {
     db: Database;
@@ -13,10 +14,32 @@ export class ChannelDBService {
         this.db = new Database();
     }
 
+    public async getMediasFromChannel(channel: Channel): Promise<any> {
+        let result = [];
+
+        let sqlQuery = "SELECT * FROM Media M, ChannelMedia CM, Movie MO WHERE CM.channelId = '" + channel.channelId + "' AND M.mediaId = CM.mediaId AND M.mediaId = MO.mediaId;";
+
+        try {
+            let movieResult = await this.db.sendQuery(sqlQuery);
+            sqlQuery = "SELECT * FROM Media M, ChannelMedia CM, TVSeriesEpisode TV WHERE CM.channelId = '" + channel.channelId + "' AND M.mediaId = CM.mediaId AND M.mediaId = TV.mediaId;";
+            let TVSeriesEpisodeResult = await this.db.sendQuery(sqlQuery);
+            for(let i = 0 ; i < movieResult.length ; i++){
+                result.push(mediaMapping.map(movieResult[i]));
+            }
+            for(let i = 0 ; i < TVSeriesEpisodeResult.length ; i++){
+                result.push(mediaMapping.map(TVSeriesEpisodeResult[i]));
+            }
+        } 
+        catch(err){
+            throw err;
+        }
+        return result;
+    }
+
     public async getMoviesFromChannel(channel: Channel): Promise<any> {
         let result = null;
 
-        let sqlQuery = "SELECT MO.* FROM Media M, ChannelMeadia CM, Movie MO WHERE ChannelMedia.channelId = '" + channel.channelId + "' AND M.mediaId = CM.mediaId AND M.mediaId = MO.mediaId;";
+        let sqlQuery = "SELECT MO.* FROM Media M, ChannelMedia CM, Movie MO WHERE ChannelMedia.channelId = '" + channel.channelId + "' AND M.mediaId = CM.mediaId AND M.mediaId = MO.mediaId;";
 
         try {
             result = await this.db.sendQuery(sqlQuery);
@@ -104,6 +127,20 @@ export class ChannelDBService {
         return result;
     }
 
+    public async getGenresFromChannel(channel: Channel): Promise<any> {
+        let result = null;
+
+        let sqlQuery = "SELECT * FROM Genre WHERE genreId IN (SELECT genreId FROM ChannelHasGenre WHERE channelId = '" + channel.channelId + "');";
+
+        try {
+            result = await this.db.sendQuery(sqlQuery);
+        } 
+        catch(err){
+            throw err;
+        }
+        return result;
+    }
+
     public async addMediaToChannel(channel: Channel, media: Media): Promise<any> {
         let result = null;
         console.log( "Hello");
@@ -126,7 +163,7 @@ export class ChannelDBService {
     public async deleteMediaFromChannel(channel: Channel, media: Media): Promise<any> {
         let result = null;
 
-        let sqlQuery = "DELETE FROM ChannelMedia WHERE channelId = '" + media.mediaId + "' AND genreId = '" + channel.channelId + "';";
+        let sqlQuery = "DELETE FROM ChannelMedia WHERE mediaId = '" + media.mediaId + "' AND channelId = '" + channel.channelId + "';";
 
         try {
             await this.db.sendQuery(sqlQuery);

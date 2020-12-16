@@ -15,6 +15,16 @@ export class ChannelBusiness {
         this.channelDBService = new ChannelDBService();
     }
 
+    public async getMediasFromChannel(channel: Channel): Promise<ResponseModel>
+    {
+        try {
+            let result = await this.channelDBService.getMediasFromChannel(channel);
+            return new SuccessResponse(result);
+        } catch (error) {
+            return new ErrorResponse(error);
+        }
+    }
+
     public async getMoviesFromChannel(channel: Channel): Promise<ResponseModel>
     {
         try {
@@ -69,6 +79,16 @@ export class ChannelBusiness {
     {
         try {
             let result = await this.channelDBService.deleteGenreFromChannel(channel, genre);
+            return new SuccessResponse(result);
+        } catch (error) {
+            return new ErrorResponse(error);
+        }
+    }
+
+    public async getGenresFromChannel(channel: Channel): Promise<ResponseModel>
+    {
+        try {
+            let result = await this.channelDBService.getGenresFromChannel(channel);
             return new SuccessResponse(result);
         } catch (error) {
             return new ErrorResponse(error);

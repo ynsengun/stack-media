@@ -76,6 +76,32 @@ export class Routes{
             .post(this.tokenService.checkToken, (req: Request, res: Response) => {
                 this.controller.changeInfo(req, res)
             });
+        
+        app.route('/api/user/getFriendshipInvitations')
+            .post(this.tokenService.checkToken, (req: Request, res: Response) => {
+                this.controller.getFriendshipInvitations(req, res)
+            });
+        
+        app.route('/api/user/acceptFriendshipInvitation')
+            .post(this.tokenService.checkToken, (req: Request, res: Response) => {
+                this.controller.acceptFriendshipInvitation(req, res)
+            });
+        
+        app.route('/api/user/sendFriendshipInvitation')
+            .post(this.tokenService.checkToken, (req: Request, res: Response) => {
+                this.controller.sendFriendshipInvitation(req, res)
+            });
+
+        app.route('/api/user/refuseFriendshipInvitation')
+            .post(this.tokenService.checkToken, (req: Request, res: Response) => {
+                this.controller.refuseFriendshipInvitation(req, res)
+            });
+
+        app.route('/api/user/removeFriend')
+            .post(this.tokenService.checkToken, (req: Request, res: Response) => {
+                this.controller.removeFriend(req, res)
+            });
+
         /*
         app.route('/api/user/logout')
             .post(this.tokenService.checkToken, (req: Request, res: Response) => {
@@ -208,6 +234,11 @@ export class Routes{
 
     private channelRoutes(app){
         
+        app.route('/api/channel/getMedias')
+            .post(this.tokenService.checkToken, (req: Request, res: Response) => {
+                this.controller.getMediasFromChannel(req, res)
+            });
+
         app.route('/api/channel/getMovies')
             .post(this.tokenService.checkToken, (req: Request, res: Response) => {
                 this.controller.getMoviesFromChannel(req, res)
@@ -238,12 +269,17 @@ export class Routes{
                 this.controller.deleteGenreFromChannel(req, res)
             });
 
+        app.route('/api/channel/getGenres')
+            .post(this.tokenService.checkToken, (req: Request, res: Response) => {
+                this.controller.getGenresFromChannel(req, res)
+            });
+
         app.route('/api/channel/addMedia')
             .post(this.tokenService.checkToken, (req: Request, res: Response) => {
                 this.controller.addMediaToChannel(req, res)
             });
 
-        app.route('/api/channel/deleteMovie')
+        app.route('/api/channel/deleteMedia')
             .post(this.tokenService.checkToken, (req: Request, res: Response) => {
                 this.controller.deleteMediaFromChannel(req, res)
             });
