@@ -28,20 +28,131 @@ export default function ChannelContents() {
   }, []);
 
   useEffect(() => {
-    // TODO fetch all-genres, my-genres, suggested-medias, medias
-    setAllGenres(["Action", "Adventure", "Comedy", "Drama", "Horror"]);
-    setMyGenres(["Action", "Drama"]);
+    // TODO fetch my-genres, suggested-medias, medias
+    // // fetch all-genres
+    // fetch("http://localhost:4000/api/genre/getGenres", {
+    //   method: "POST",
+    //   mode: "cors",
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //   },
+    //   body: JSON.stringify({
+    //     token: getAuthToken(),
+    //     username: getAuthName(),
+    //   }),
+    // })
+    //   .then((r) => checkResponse(r))
+    //   .then((r) => r.json())
+    //   .then((r) => {
+    //     let resArray = r.data;
+    //     setAllGenres( resArray);
+    //   })
+    //   .catch((err) => {
+    //     console.log(err);
+    //     toast.error("Error, could not fetch all available genres!");
+    //   });
+    setAllGenres(["Action", "Adventure", "Comedy", "Drama", "Horror"]); //TODO => wait for server to implement getChannelGenres
+    setMyGenres(["Action", "Drama"]); //TODO => wait for server to implement getChannelGenres
+
+
     setMedias(["cevat", "cevat", "cevat"]);
     setSuggestedMedias(["yusuf"]);
   }, [channelName]);
 
   const getButtonClass = (genre) => {
+    
+    // let match = false; //TODO => wait for server to implement getChannelGenres
+    // myGenres.forEach( x => {
+    //     if ( x.genreId === genre.genreId)
+    //     {
+    //         match = true;
+    //     }
+    // });
+    // return match ? "btn btn-success ml-3" : "btn btn-danger ml-3";
+    
     return myGenres.includes(genre)
       ? "btn btn-sm btn-danger ml-3"
       : "btn btn-sm btn-success ml-3";
   };
 
   const handleGenreClick = (genre) => {
+    
+    // let match = false; //TODO => wait for server to implement getChannelGenres
+    // myGenres.forEach( x => {
+    //     if ( x.genreId === genre.genreId)
+    //     {
+    //         match = true;
+    //     }
+    // });
+
+    // if (match) 
+    // {
+    //     if ( myGenres.length === 1)
+    //     {
+    //         toast.error( "You must have at least 1 genre preference.");
+    //         return;
+    //     }
+
+    //     let temp = [];
+    //     myGenres.forEach((g) => {
+    //         if (g.genreId != genre.genreId) temp.push(g);
+    //     });
+
+    //     // fetch, delete this genre from user
+    //     fetch("http://localhost:4000/api/channel/deleteGenre", {
+    //         method: "DELETE",
+    //         mode: "cors",
+    //         headers: {
+    //             "Content-Type": "application/json",
+    //         },
+    //         body: JSON.stringify(
+    //         {
+    //             token: getAuthToken(),
+    //             username: getAuthName(),    
+                
+    //             genreId: genre.genreId
+    //         }),
+    //     })
+    //     .then((r) => checkResponse(r))
+    //     .then((r) => r.json())
+    //     .then((r) => {
+    //         toast.success( "Genre " + genre.title + " is successfully deleted from your preferences.");
+    //         setMyGenres(temp);
+    //     })
+    //     .catch((err) => {
+    //         console.log(err);
+    //         toast.error("Error, could not delete genre from your preference!");
+    //     });
+    // } 
+    // else 
+    // {
+    //     // fetch, add this genre from user
+    //     fetch("http://localhost:4000/api/channel/addGenre", {
+    //         method: "POST",
+    //         mode: "cors",
+    //         headers: {
+    //             "Content-Type": "application/json",
+    //         },
+    //         body: JSON.stringify(
+    //         {
+    //             token: getAuthToken(),
+    //             username: getAuthName(),
+                
+    //             genreId: genre.genreId
+    //         }),
+    //     })
+    //     .then((r) => checkResponse(r))
+    //     .then((r) => r.json())
+    //     .then((r) => {
+    //         toast.success( "Genre " + genre.title + " is successfully added to your preferences.");
+    //         setMyGenres([...myGenres, genre]);
+    //     })
+    //     .catch((err) => {
+    //         console.log(err);
+    //         toast.error("Error, could not add your new genre preference!");
+    //     });
+    // }
+    
     if (myGenres.includes(genre)) {
       // TODO fetch, delete this genre from channel
       let temp = [];

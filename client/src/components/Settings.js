@@ -11,7 +11,7 @@ export default function Settings() {
   const [myGenres, setMyGenres] = useState([]);
 
   useEffect(() => {
-    // fetch all-genres, my-genres
+    // fetch all-genres
     fetch("http://localhost:4000/api/genre/getGenres", {
       method: "POST",
       mode: "cors",
@@ -89,6 +89,11 @@ export default function Settings() {
             return;
         }
 
+        let temp = [];
+        myGenres.forEach((g) => {
+            if (g.genreId != genre.genreId) temp.push(g);
+        });
+
         // fetch, delete this genre from user
         fetch("http://localhost:4000/api/user/deleteGenre", {
             method: "DELETE",
@@ -108,45 +113,41 @@ export default function Settings() {
         .then((r) => r.json())
         .then((r) => {
             toast.success( "Genre " + genre.title + " is successfully deleted from your preferences.");
+            setMyGenres(temp);
         })
         .catch((err) => {
             console.log(err);
             toast.error("Error, could not delete genre from your preference!");
         });
-
-        let temp = [];
-        myGenres.forEach((g) => {
-            if (g.genreId != genre.genreId) temp.push(g);
-        });
-        setMyGenres(temp);
-    } else {
+    } 
+    else 
+    {
         // fetch, add this genre from user
         fetch("http://localhost:4000/api/user/addGenre", {
-                method: "POST",
-                mode: "cors",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(
-                {
-                    token: getAuthToken(),
-                    username: getAuthName(),
-
-                    genreId: genre.genreId
-                }),
-            })
-            .then((r) => checkResponse(r))
-            .then((r) => r.json())
-            .then((r) => {
-                toast.success( "Genre " + genre.title + " is successfully added to your preferences.");
-            })
-            .catch((err) => {
-                console.log(err);
-                toast.error("Error, could not add your new genre preference!");
-            });
-
-        setMyGenres([...myGenres, genre]);
-        }
+            method: "POST",
+            mode: "cors",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(
+            {
+                token: getAuthToken(),
+                username: getAuthName(),
+                
+                genreId: genre.genreId
+            }),
+        })
+        .then((r) => checkResponse(r))
+        .then((r) => r.json())
+        .then((r) => {
+            toast.success( "Genre " + genre.title + " is successfully added to your preferences.");
+            setMyGenres([...myGenres, genre]);
+        })
+        .catch((err) => {
+            console.log(err);
+            toast.error("Error, could not add your new genre preference!");
+        });
+    }
   };
 
   return (

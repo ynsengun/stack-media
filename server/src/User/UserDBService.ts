@@ -125,7 +125,7 @@ export class UserDBService {
     public async getChannels(user: User): Promise<any> {
         let result = null;
 
-        let sqlQuery = "SELECT title AS channelName, channelId FROM User INNER JOIN Channel ON Channel.username = '" + user.username + "';";
+        let sqlQuery = "SELECT title AS channelName, channelId FROM User INNER JOIN Channel ON Channel.username = User.username WHERE User.username ='" + user.username + "';";
 
         try {
             result = await this.db.sendQuery(sqlQuery);

@@ -17,22 +17,54 @@ export default function MediaBar(props) {
   const [textInput, setTextInput] = useState({ channel: "", party: "" });
 
   useEffect(() => {
-    // TODO fetch channels and parties
-    setChannels(["Hello1", "Hello2", "Hello3", "Hello4", "Hello"]);
+    // TODO fetch channels of the user
+    fetch("http://localhost:4000/api/user/getChannels", {
+        method: "POST",
+        mode: "cors",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(
+        {
+            token: getAuthToken(),
+            username: getAuthName(),        
+        }),
+    })
+    .then((r) => checkResponse(r))
+    .then((r) => r.json())
+    .then((r) => {
+        let resArray = r.data;
+        setChannels( resArray);
+    })
+    .catch((err) => {
+        console.log(err);
+        toast.error("Error, could not fetch your created channels!");
+    });
+    //setChannels(["Hello1", "Hello2", "Hello3", "Hello4", "Hello"]);
+
+
+    // TODO fetch parties
     setParties(["S3L4M", "S52L4M", "SL4M", "SLM2", "SLM1"]);
   }, []);
 
-  const handleChange = (e) => {
-    const { value, name } = e.currentTarget;
-    setTextInput({
-      ...textInput,
-      [name]: value,
-    });
-  };
+    const handleChange = (e) => {
+        const { value, name } = e.currentTarget;
+        setTextInput({
+        ...textInput,
+        [name]: value,
+        });
+    };
 
-    const handleNewChannel = () => {
-    // TODO fetch, post request to add textInput.channel
+    const handleNewChannel = () => 
+    {
+        // check if not empty name
+        if ( textInput.channel === "")
+        {
+            toast.error( "You cannot create channel with an empty name!");
+            return;
+        }
 
+        // TODO fetch, post request to add textInput.channel
         fetch("http://localhost:4000/api/channel/create", {
             method: "POST",
             mode: "cors",
@@ -42,20 +74,20 @@ export default function MediaBar(props) {
             body: JSON.stringify(
             {
                 token: getAuthToken(),
-                username: getAuthName(),
+                username: getAuthName(),   
                 
                 title: textInput.channel,
-            
             }),
         })
         .then((r) => checkResponse(r))
         .then((r) => r.json())
         .then((r) => {
-            console.log( r);
+            let resArray = r.data;
+            console.log( resArray);
         })
         .catch((err) => {
             console.log(err);
-            toast.error("error");
+            toast.error("Error, could not create channel!");
         });
 
         setChannels([...channels, textInput.channel]);
@@ -127,10 +159,10 @@ export default function MediaBar(props) {
           {channels.map((channel, index) => (
             <RedirectLabel
               key={index}
-              labelName={channel}
+              labelName={channel.channelName}
               onClickEvent={changeContent}
               type={ContentType.CHANNEL}
-              subName={channel}
+              subName={channel.title}
             ></RedirectLabel>
           ))}
         </div>

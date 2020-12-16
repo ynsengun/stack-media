@@ -93,14 +93,14 @@ export default function Media(props) {
               className="btn btn-primary mt-4"
               style={{ width: "60%" }}
               onClick={() => {
-                history.push(`/media/${mediaName}`);
+                history.push(`/media/${mediaName}`); // TODO give mediaId instead of mediaName? as db mostly works with mediaId
               }}
             >
               Watch
             </button>
           )}
           {pageType === 2 && ( // eddit button
-            // TODO button onClick
+            // TODO button onClick (ask yusuf if done?) I think it should be done if this connects to upload
             <button
               className="btn btn-warning mt-5"
               style={{ width: "60%" }}
