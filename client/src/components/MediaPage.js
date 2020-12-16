@@ -18,6 +18,8 @@ export default function MediaPage() {
   const [nextMedia, setNextMedia] = useState(null);
   const [suggestedMedias, setSuggestedMedias] = useState([{}]);
   const [rating, setRating] = useState(0);
+  const [comments, setComments] = useState([{}]);
+  const [commentText, setCommentText] = useState("");
 
   const history = useHistory();
 
@@ -40,6 +42,7 @@ export default function MediaPage() {
   useEffect(() => {
     // TODO fetch progress and set button actives accordingly
     // TODO fetch suggested and next(if series) media, rating
+    // TODO fetch comments
 
     setProgress(0);
     setButtonActive({ watch: true, finish: false });
@@ -49,6 +52,38 @@ export default function MediaPage() {
       { name: "bbb", type: 1 },
     ]);
     setNextMedia({ name: "sss", type: 0 });
+    setComments([
+      {
+        commentId: "",
+        username: "cevat",
+        text: "slm ben cvt, proje cok eglenceli",
+        subComments: [
+          {
+            commentId: "",
+            username: "yusuf",
+            text: "@_@",
+            subComments: [],
+            parentId: "",
+          },
+        ],
+        parentId: null,
+      },
+      {
+        commentId: "",
+        username: "talha",
+        text: "<3",
+        subComments: [
+          {
+            commentId: "",
+            username: "hakan",
+            text: "<3",
+            subComments: [],
+            parentId: "",
+          },
+        ],
+        parentId: null,
+      },
+    ]);
   }, [mediaName]);
 
   useEffect(() => {
@@ -93,6 +128,23 @@ export default function MediaPage() {
       setRating(value);
       console.log(value);
     }
+    if (name === "commentText") {
+      setCommentText(value);
+    }
+  };
+
+  const getComments = (comments, depth) => {
+    console.log("------ ", comments, depth);
+    if (comments == undefined || comments.length === 0) return;
+    console.log("here");
+    return comments.map((comment) => {
+      return (
+        <React.Fragment>
+          <Comment depth={depth} content={comment} />
+          {getComments(comment.subComments, depth + 1)}
+        </React.Fragment>
+      );
+    });
   };
 
   return (
@@ -163,11 +215,18 @@ export default function MediaPage() {
             <div className="card bg-white p-5">
               <h3>Comments</h3>
               <hr />
-              {/* TODO commentlere henuz bakmadim
-              <Comment commentID={0} upvoted={true}></Comment>
-              <Comment commentID={1}></Comment>
-              <Comment commentID={2}></Comment>
-              <Comment commentID={3} upvoted={true}></Comment> */}
+              <div>
+                <textarea
+                  className="w-100"
+                  value={commentText}
+                  onChange={handleChange}
+                  name="commentText"
+                />
+                <button className="btn btn-sm btn-success w-100 my-2">
+                  Send
+                </button>
+              </div>
+              {getComments(comments, 0)}
             </div>
           </div>
         </div>
