@@ -133,14 +133,32 @@ export default function MediaPage() {
     }
   };
 
+  const handleCommentSend = (comment, commentText) => {
+    if (comment == null) {
+      // to media directly
+      // TODO fetch post comment
+      console.log(commentText, mediaName);
+
+      // TODO fetch after this point, fetching all the comments will be easier I think instead of arranging the comments array  :/
+    } else {
+      // to a comment, u can find all info inside the comment parameter
+      // TODO fetch post comment
+      console.log(commentText, comment);
+
+      // TODO fetch after this point, fetching all the comments will be easier I think instead of arranging the comments array  :/
+    }
+  };
+
   const getComments = (comments, depth) => {
-    console.log("------ ", comments, depth);
     if (comments == undefined || comments.length === 0) return;
-    console.log("here");
     return comments.map((comment) => {
       return (
         <React.Fragment>
-          <Comment depth={depth} content={comment} />
+          <Comment
+            depth={depth}
+            content={comment}
+            sendEvent={handleCommentSend}
+          />
           {getComments(comment.subComments, depth + 1)}
         </React.Fragment>
       );
@@ -222,7 +240,12 @@ export default function MediaPage() {
                   onChange={handleChange}
                   name="commentText"
                 />
-                <button className="btn btn-sm btn-success w-100 my-2">
+                <button
+                  className="btn btn-sm btn-success w-100 my-2"
+                  onClick={() => {
+                    handleCommentSend(null, commentText);
+                  }}
+                >
                   Send
                 </button>
               </div>

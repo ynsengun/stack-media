@@ -4,7 +4,7 @@ import { useHistory } from "react-router-dom";
 import { Checkbox, Container } from "semantic-ui-react";
 
 export default function Comment(props) {
-  const { depth, content } = props;
+  const { depth, content, sendEvent } = props;
 
   const [commentText, setCommentText] = useState("");
   const [replyBox, setReplyBox] = useState(false);
@@ -15,8 +15,8 @@ export default function Comment(props) {
   }, []);
 
   function handleUpvote(event) {
-    console.log("Pressed upvote checkbox");
     setUpvoted(!upvoted);
+    console.log("Pressed upvote checkbox");
   }
 
   const handleChange = (e) => {
@@ -72,6 +72,9 @@ export default function Comment(props) {
           <button
             className="btn btn-sm btn-success w-100"
             style={{ marginTop: "-10px" }}
+            onClick={() => {
+              sendEvent(content, commentText);
+            }}
           >
             Send
           </button>
