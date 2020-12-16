@@ -11,6 +11,7 @@ import { AlreadyExist } from "../Model/Error/AlreadyExist";
 import { TokenService } from "../Service/TokenService";
 import userMapping from "../Service/UserMapping";
 import {v1 as id} from "uuid";
+import { InvalidRequest } from "../Model/Error/InvalidRequest";
 
 export class UserDBService {
 
@@ -271,6 +272,96 @@ export class UserDBService {
         catch(err){
             throw err;
         }
+    }
+
+    public async getFriendshipInvitations(user: User): Promise<any> {
+        let result = null;
+
+        let sqlQuery = "SELECT inviterUsername FROM FriendshipInvitation WHERE invitedUsername = '" + user.username + "';";
+
+        try {
+            result = await this.db.sendQuery(sqlQuery);
+        } 
+        catch(err){
+            throw err;
+        }
+        return result;
+    }
+
+    public async acceptFriendshipInvitation(user: User, inviter: string): Promise<any> {
+        let result = null;
+
+        let sqlQuery = "DELETE FROM FriendshipInvitation WHERE invitedUsername = '" + user.username + "' AND inviterUsername = '" + inviter + "';";
+
+        try {
+            let deletionResult = await this.db.sendQuery(sqlQuery);
+            if(deletionResult.affectedRows == 0){
+                console.log("no deletion");
+                throw new InvalidRequest();
+            }
+            sqlQuery = "INSERT INTO Friendship VALUES('" + user.username + "', '" + inviter + "');";
+            await this.db.sendQuery(sqlQuery);
+        } 
+        catch(err){
+            if(err.code == "ER_DUP_ENTRY"){
+                throw new AlreadyExist();
+            }
+            else{
+                throw err;
+            }
+        }
+        return result;
+    }
+
+    public async refuseFriendshipInvitation(user: User, inviter: string): Promise<any> {
+        let result = null;
+
+        let sqlQuery = "DELETE FROM FriendshipInvitation WHERE invitedUsername = '" + user.username + "' AND inviterUsername = '" + inviter + "';";
+
+        try {
+            await this.db.sendQuery(sqlQuery);
+        } 
+        catch(err){
+            throw err;
+        }
+        return result;
+    }
+
+    public async removeFriend(user: User, friend: string): Promise<any> {
+        let result = null;
+
+        let sqlQuery = "DELETE FROM Friendship WHERE friend1Username = '" + user.username + "' AND friend2Username = '" + friend + "';";
+
+        try {
+            let deletionResult = await this.db.sendQuery(sqlQuery);
+            if(deletionResult.affectedRows != 0) return null;
+            sqlQuery = "DELETE FROM Friendship WHERE friend2Username = '" + user.username + "' AND friend1Username = '" + friend + "';";
+            deletionResult = await this.db.sendQuery(sqlQuery);
+            if(deletionResult.affectedRows == 0) throw new InvalidRequest();
+        } 
+        catch(err){
+            throw err;
+        }
+        return result;
+    }
+
+    public async sendFriendshipInvitation(user: User, invited: string): Promise<any> {
+        let result = null;
+
+        let sqlQuery = "INSERT INTO FriendshipInvitation VALUES('" + user.username + "', '" + invited + "');";
+        console.log(sqlQuery);
+        try {
+            await this.db.sendQuery(sqlQuery);
+        } 
+        catch(err){
+            if(err.code == "ER_DUP_ENTRY"){
+                throw new AlreadyExist();
+            }
+            else{
+                throw err;
+            }
+        }
+        return result;
     }
     /*
     

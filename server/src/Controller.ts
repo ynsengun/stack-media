@@ -159,6 +159,60 @@ export class Controller{
             response.status(errorResponse.status).send(new ErrorResponse(error));
         }
     }
+    
+    public async getFriendshipInvitations(request: Request, response: Response): Promise<void> {
+        try{
+            let result = await this.userBusiness.getFriendshipInvitations(userMapping.map(request.body));
+            response.status(result.status).send(result);
+        } catch(error){
+            const errorResponse = new ErrorResponse(error);
+            response.status(errorResponse.status).send(new ErrorResponse(error));
+        }
+    }
+
+    public async acceptFriendshipInvitation(request: Request, response: Response): Promise<void> {
+        try{
+            this.validation.acceptFriendshipInvitationValidation(request);
+            let result = await this.userBusiness.acceptFriendshipInvitation(userMapping.map(request.body), request.body.inviterUsername);
+            response.status(result.status).send(result);
+        } catch(error){
+            const errorResponse = new ErrorResponse(error);
+            response.status(errorResponse.status).send(new ErrorResponse(error));
+        }
+    }
+
+    public async refuseFriendshipInvitation(request: Request, response: Response): Promise<void> {
+        try{
+            this.validation.refuseFriendshipInvitationValidation(request);
+            let result = await this.userBusiness.refuseFriendshipInvitation(userMapping.map(request.body), request.body.inviterUsername);
+            response.status(result.status).send(result);
+        } catch(error){
+            const errorResponse = new ErrorResponse(error);
+            response.status(errorResponse.status).send(new ErrorResponse(error));
+        }
+    }
+
+    public async removeFriend(request: Request, response: Response): Promise<void> {
+        try{
+            this.validation.removeFriendValidation(request);
+            let result = await this.userBusiness.removeFriend(userMapping.map(request.body), request.body.friendUsername);
+            response.status(result.status).send(result);
+        } catch(error){
+            const errorResponse = new ErrorResponse(error);
+            response.status(errorResponse.status).send(new ErrorResponse(error));
+        }
+    }
+    
+    public async sendFriendshipInvitation(request: Request, response: Response): Promise<void> {
+        try{
+            this.validation.sendFriendshipInvitationValidation(request);
+            let result = await this.userBusiness.sendFriendshipInvitation(userMapping.map(request.body), request.body.invitedUsername);
+            response.status(result.status).send(result);
+        } catch(error){
+            const errorResponse = new ErrorResponse(error);
+            response.status(errorResponse.status).send(new ErrorResponse(error));
+        }
+    }
 
     public async getUserGenres(request: Request, response: Response): Promise<void> {
         try{

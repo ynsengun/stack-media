@@ -133,6 +133,26 @@ export class Validation{
             throw new InvalidRequest();
     }
 
+    public acceptFriendshipInvitationValidation(req: Request): void {
+        if(!req.body.username || !req.body.inviterUsername)
+            throw new InvalidRequest();
+    }
+
+    public refuseFriendshipInvitationValidation(req: Request): void {
+        if(!req.body.username || !req.body.inviterUsername)
+            throw new InvalidRequest();
+    }
+
+    public removeFriendValidation(req: Request): void {
+        if(!req.body.username || !req.body.friendUsername)
+            throw new InvalidRequest();
+    }
+    
+    public sendFriendshipInvitationValidation(req: Request): void {
+        if(!req.body.username || !req.body.invitedUsername)
+            throw new InvalidRequest();
+    }
+
     // channel functions
     public getMediasFromChannelValidation(req: Request): void {
         if(!req.body.username || !req.body.channelId)

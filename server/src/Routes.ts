@@ -76,6 +76,32 @@ export class Routes{
             .post(this.tokenService.checkToken, (req: Request, res: Response) => {
                 this.controller.changeInfo(req, res)
             });
+        
+        app.route('/api/user/getFriendshipInvitations')
+            .post(this.tokenService.checkToken, (req: Request, res: Response) => {
+                this.controller.getFriendshipInvitations(req, res)
+            });
+        
+        app.route('/api/user/acceptFriendshipInvitation')
+            .post(this.tokenService.checkToken, (req: Request, res: Response) => {
+                this.controller.acceptFriendshipInvitation(req, res)
+            });
+        
+        app.route('/api/user/sendFriendshipInvitation')
+            .post(this.tokenService.checkToken, (req: Request, res: Response) => {
+                this.controller.sendFriendshipInvitation(req, res)
+            });
+
+        app.route('/api/user/refuseFriendshipInvitation')
+            .post(this.tokenService.checkToken, (req: Request, res: Response) => {
+                this.controller.refuseFriendshipInvitation(req, res)
+            });
+
+        app.route('/api/user/removeFriend')
+            .post(this.tokenService.checkToken, (req: Request, res: Response) => {
+                this.controller.removeFriend(req, res)
+            });
+
         /*
         app.route('/api/user/logout')
             .post(this.tokenService.checkToken, (req: Request, res: Response) => {
