@@ -28,17 +28,19 @@ export default function Comment(props) {
             {content.text}
           </div>
         </div>
-        <div className="col-2">
-          <button
-            className="btn btn-primary h-50 float-right"
-            style={{ borderRadius: 0, width: "80px" }}
-            onClick={() => {
-              setReplyBox(!replyBox);
-            }}
-          >
-            Reply
-          </button>
-        </div>
+        {depth === 0 && (
+          <div className="col-2">
+            <button
+              className="btn btn-primary h-100 float-right"
+              style={{ borderRadius: 0, width: "80px" }}
+              onClick={() => {
+                setReplyBox(!replyBox);
+              }}
+            >
+              Reply
+            </button>
+          </div>
+        )}
       </div>
       {replyBox && (
         <div>
@@ -53,6 +55,8 @@ export default function Comment(props) {
             style={{ marginTop: "-10px" }}
             onClick={() => {
               sendEvent(content, commentText);
+              setReplyBox(false);
+              setCommentText("");
             }}
           >
             Send
