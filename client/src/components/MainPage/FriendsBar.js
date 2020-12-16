@@ -42,6 +42,16 @@ export default function FriendsBar() {
     setTextInput(""); // to reset the input text field
   };
 
+  const handleDeleteFriend = (friendName) => {
+    //TODO fetch delete friend
+
+    let temp = [];
+    friends.forEach((friend) => {
+      if (friendName != friend.name) temp.push(friend);
+    });
+    setFriends(temp);
+  };
+
   return (
     <div className="FriendsBar">
       <div className="MediaSection">
@@ -53,6 +63,7 @@ export default function FriendsBar() {
             <FriendLabel
               friendName={friend.name}
               movieName={friend.lastWatch}
+              handleDeleteFriend={handleDeleteFriend}
             ></FriendLabel>
           ))}
         </div>
