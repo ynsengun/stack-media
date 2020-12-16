@@ -5,7 +5,7 @@ import { Container } from "semantic-ui-react";
 import Media from "../Media/Media";
 
 export default function ChannelContents() {
-  const [channelName, setChannelName] = useState("");
+  const [channelId, setChannelId] = useState("");
 
   const [allGenres, setAllGenres] = useState([]);
   const [myGenres, setMyGenres] = useState([]);
@@ -15,10 +15,11 @@ export default function ChannelContents() {
   const history = useHistory();
 
   useEffect(() => {
-    setChannelName(history.location.pathname.substring(10));
+    setChannelId(history.location.pathname.substring(10));
+    console.log( channelId);
 
     const unListen = history.listen(() => {
-      setChannelName(history.location.pathname.substring(10));
+      setChannelId(history.location.pathname.substring(10));
       window.scrollTo(0, 0);
     });
 
@@ -27,37 +28,42 @@ export default function ChannelContents() {
     };
   }, []);
 
-  useEffect(() => {
-    // TODO fetch my-genres, suggested-medias, medias
-    // // fetch all-genres
-    // fetch("http://localhost:4000/api/genre/getGenres", {
-    //   method: "POST",
-    //   mode: "cors",
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //   },
-    //   body: JSON.stringify({
-    //     token: getAuthToken(),
-    //     username: getAuthName(),
-    //   }),
-    // })
-    //   .then((r) => checkResponse(r))
-    //   .then((r) => r.json())
-    //   .then((r) => {
-    //     let resArray = r.data;
-    //     setAllGenres( resArray);
-    //   })
-    //   .catch((err) => {
-    //     console.log(err);
-    //     toast.error("Error, could not fetch all available genres!");
-    //   });
-    setAllGenres(["Action", "Adventure", "Comedy", "Drama", "Horror"]); //TODO => wait for server to implement getChannelGenres
-    setMyGenres(["Action", "Drama"]); //TODO => wait for server to implement getChannelGenres
+    useEffect(() => {
+        if ( channelId != "")
+        {
+            // TODO fetch my-genres,
+            // // fetch all-genres
+            // fetch("http://localhost:4000/api/genre/getGenres", {
+            //   method: "POST",
+            //   mode: "cors",
+            //   headers: {
+            //     "Content-Type": "application/json",
+            //   },
+            //   body: JSON.stringify({
+            //     token: getAuthToken(),
+            //     username: getAuthName(),
+            //   }),
+            // })
+            //   .then((r) => checkResponse(r))
+            //   .then((r) => r.json())
+            //   .then((r) => {
+            //     let resArray = r.data;
+            //     setAllGenres( resArray);
+            //   })
+            //   .catch((err) => {
+            //     console.log(err);
+            //     toast.error("Error, could not fetch all available genres!");
+            //   });
+            setAllGenres(["Action", "Adventure", "Comedy", "Drama", "Horror"]); //TODO => wait for server to implement getChannelGenres
+            setMyGenres(["Action", "Drama"]); //TODO => wait for server to implement getChannelGenres
+
+            // TODO:  suggested-medias, medias
 
 
-    setMedias(["cevat", "cevat", "cevat"]);
-    setSuggestedMedias(["yusuf"]);
-  }, [channelName]);
+            setMedias(["cevat", "cevat", "cevat"]);
+            setSuggestedMedias(["yusuf"]);
+        }
+    }, [channelId]);
 
   const getButtonClass = (genre) => {
     
@@ -168,7 +174,7 @@ export default function ChannelContents() {
 
   return (
     <Container>
-      <h1 className="text-center">Channel {channelName}</h1>
+      <h1 className="text-center">Channel {channelId}</h1>
 
       <div className="my-4">
         <label className="mr-3">Genres:</label>
