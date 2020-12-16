@@ -73,12 +73,6 @@ export default function Media(props) {
     }
   };
 
-  const handleDeleteFromChannelButton = () => {
-    console.log( "Deleting from channel!");
-    console.log( channelList[ 0]);
-    //TODO: fetch delete media request to server => wait for server to return channel media
-  };
-
   const option = (name, index) => {
     if (selectedChannel === name)
       return (
@@ -135,7 +129,7 @@ export default function Media(props) {
               className="btn btn-primary mt-4"
               style={{ width: "60%" }}
               onClick={() => {
-                history.push(`/media/${mediaId}`); // TODO give mediaId instead of mediaName? as db mostly works with mediaId
+                history.push(`/media/${mediaId}`);
               }}
             >
               Watch
@@ -148,7 +142,7 @@ export default function Media(props) {
                     className="btn btn-primary mt-4"
                     style={{ width: "60%" }}
                     onClick={() => {
-                    history.push(`/media/${mediaId}`); // TODO give mediaId instead of mediaName? as db mostly works with mediaId
+                    history.push(`/media/${mediaId}`);
                     }}
                 >
                     Watch

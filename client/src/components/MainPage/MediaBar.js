@@ -141,13 +141,36 @@ export default function MediaBar(props) {
   };
 
   const handleDeleteChannels = (channelId) => {
-    //TODO fetch delete channel
-
+    
     let temp = [];
     channels.forEach((channel) => {
       if (channelId != channel.channelId) temp.push(channel);
     });
-    setChannels(temp);
+
+    // fetch delete channel
+    fetch("http://localhost:4000/api/channel/delete", {
+      method: "DELETE",
+      mode: "cors",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        token: getAuthToken(),
+        username: getAuthName(),
+
+        channelId: channelId,
+      }),
+    })
+    .then((r) => checkResponse(r))
+    .then((r) => r.json())
+    .then((r) => {
+        setChannels(temp);
+        toast.success( "Successfully deleted channel!");
+    })
+    .catch((err) => {
+        console.log(err);
+        toast.error("Error, could not delete channel!");
+    });
   };
 
   return (
