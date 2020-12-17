@@ -30,12 +30,12 @@ export class Validation{
     }
 
     public createMediaValidation(req: Request): void {
-        if(!req.body.publishUsername || !req.body.name || !req.body.description || !req.body.path || !req.body.uploadDate)
+        if(!req.body.publishUsername || !req.body.name || !req.body.description || !req.body.path)
             throw new InvalidRequest();
     }
 
     public updateMediaValidation(req: Request): void {
-        if(!req.body.publishUsername || !req.body.name || !req.body.description || !req.body.path || !req.body.uploadDate)
+        if(!req.body.publishUsername || !req.body.name || !req.body.description || !req.body.path)
             throw new InvalidRequest();
     }
 
@@ -110,7 +110,7 @@ export class Validation{
     }
 
     public addCommentValidation(req: Request): void {
-        if(!req.body.username || !req.body.mediaId || !req.body.text || !req.body.timeStamp)
+        if(!req.body.username || !req.body.mediaId || !req.body.text)
             throw new InvalidRequest();
     }
 
