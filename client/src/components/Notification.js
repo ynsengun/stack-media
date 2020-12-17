@@ -41,6 +41,33 @@ export default function Notification() {
         });
 
     // TODO fetch party notifications
+    fetch("http://localhost:4000", {
+        method: "POST",
+        mode: "cors",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          token: getAuthToken(),
+          username: getAuthName(),
+        }),
+      })
+        .then((r) => checkResponse(r))
+        .then((r) => r.json())
+        .then((r) => {
+          let resArray = r.data;
+          console.log( r.data);
+        //   let newFriendNotifications = [ ...notifications ];
+        //   for ( let i = 0; i < resArray.length; i++)
+        //   {
+        //     newFriendNotifications.push( { isFriend: false, name: resArray[ i].inviterUsername, id: resArray[ i].inviterUsername } );
+        //   }
+        //   setNotifications( newFriendNotifications)
+        })
+        .catch((err) => {
+          console.log(err);
+          toast.error("Error, could not get friend requests!");
+        });
 
     // setNotifications([
     //   { isFriend: false, name: "discoksjd party", id: "" },
