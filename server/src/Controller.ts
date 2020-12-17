@@ -768,7 +768,7 @@ export class Controller{
     public async getPartyInvitations(request: Request, response: Response): Promise<void> {
         try{
             this.validation.getPartyInvitations(request);
-            let result = await this.partyBusiness.getPartyInvitations(partyMapping.map(request.body));
+            let result = await this.partyBusiness.getPartyInvitations(userMapping.map(request.body));
             response.status(result.status).send(result);
         } catch(error){
             const errorResponse = new ErrorResponse(error);

@@ -1,7 +1,7 @@
 export interface Party {
     partyId: string
-    creatorUsername: string
+    username: string
     name: string
     description: string
-    numberOfMembers: number
+    role: string
 }
