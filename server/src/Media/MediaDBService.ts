@@ -35,11 +35,25 @@ export class MediaDBService {
         return result;
     }
 
-    public async getSeries(): Promise<any> {
+    public async getSeries(user: User): Promise<any> {
         let result = null;
 
-        let sqlQuery = "SELECT * FROM TVSeriesEpisode;";
+        let sqlQuery = "SELECT DISTINCT TVSerieName FROM TVSeriesEpisode TV, MediaHasGenre MG WHERE TV.mediaId=MG.mediaId AND MG.genreId IN (SELECT genreId FROM GenrePreference WHERE username='" + user.username + "');";
 
+        try {
+            result = await this.db.sendQuery(sqlQuery);
+        } 
+        catch(err){
+            throw err;
+        }
+        return result;
+    }
+
+    public async getSerie(user: User, media: Media): Promise<any> {
+        let result = null;
+
+        let sqlQuery = "SELECT M.*, TV.*, W.* FROM TVSeriesEpisode TV, Media M, Watch W WHERE M.mediaId = TV.mediaId AND W.mediaId=M.mediaId AND TV.TVSerieName='" + media.TVSerieName + "' AND W.username='" + user.username + "'ORDER BY W.timeStamp DESC;";
+        
         try {
             result = await this.db.sendQuery(sqlQuery);
         } 
@@ -63,10 +77,11 @@ export class MediaDBService {
         return result;
     }
 
-    public async getSeriesWithGenrePreference(genre: Genre): Promise<any> {
+    public async getSeriesWithGenrePreference(user: User, media: Media): Promise<any> {
         let result = null;
 
-        let sqlQuery = "SELECT DISTINCT TV.* FROM TVSeriesEpisode TV, MediaHasGenre MHG WHERE MHG.mediaId = TV.mediaId AND MHG.genreId = '" + genre.genreId + "';";
+        //let sqlQuery = "SELECT DISTINCT TV.* FROM TVSeriesEpisode TV, MediaHasGenre MHG WHERE MHG.mediaId = TV.mediaId AND MHG.genreId = '" + genre.genreId + "';";
+        let sqlQuery = "SELECT M.*, TV.*, W.* FROM TVSeriesEpisode TV, Media M, Watch W WHERE M.mediaId = TV.mediaId AND W.mediaId=M.mediaId AND TV.TVSerieName='" + media.TVSerieName + "' AND W.username='" + user.username + "'ORDER BY W.timeStamp DESC;";
 
         try {
             result = await this.db.sendQuery(sqlQuery);

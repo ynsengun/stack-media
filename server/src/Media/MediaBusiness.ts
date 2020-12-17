@@ -26,10 +26,20 @@ export class MediaBusiness {
     }
 
 
-    public async getSeries(): Promise<ResponseModel>
+    public async getSeries(user: User): Promise<ResponseModel>
     {
         try {
-            let result = await this.mediaDBService.getSeries();
+            let result = await this.mediaDBService.getSeries(user);
+            return new SuccessResponse(result);
+        } catch (error) {
+            return new ErrorResponse(error);
+        }
+    }
+
+    public async getSerie(user: User, media: Media): Promise<ResponseModel>
+    {
+        try {
+            let result = await this.mediaDBService.getSerie(user, media);
             return new SuccessResponse(result);
         } catch (error) {
             return new ErrorResponse(error);
@@ -46,10 +56,10 @@ export class MediaBusiness {
         }
     }
 
-    public async getSeriesWithGenrePreference(genre: Genre): Promise<ResponseModel>
+    public async getSeriesWithGenrePreference(user: User, media: Media): Promise<ResponseModel>
     {
         try {
-            let result = await this.mediaDBService.getSeriesWithGenrePreference(genre);
+            let result = await this.mediaDBService.getSeriesWithGenrePreference(user, media);
             return new SuccessResponse(result);
         } catch (error) {
             return new ErrorResponse(error);
