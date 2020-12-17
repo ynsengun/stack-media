@@ -102,7 +102,7 @@ export default function MediaPage() {
             });
 
         // fetch avegarge rating
-        fetch("http://localhost:4000/api/media/getRating", {
+        fetch("http://localhost:4000/api/media/getAverageRating", {
             method: "POST",
             mode: "cors",
             headers: {
@@ -135,6 +135,39 @@ export default function MediaPage() {
             });
 
             // TODO fetch my rating
+            fetch("http://localhost:4000/api/media/getUserRating", {
+                method: "POST",
+                mode: "cors",
+                headers: {
+                "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                token: getAuthToken(),
+                username: getAuthName(),
+
+                mediaId: mediaId,
+                }),
+            })
+                .then((r) => checkResponse(r))
+                .then((r) => r.json())
+                .then((r) => {
+                    let resArray = r.data;
+                    console.log( "Get user rating:");
+                    console.log( resArray);
+                    // if ( resArray.length === 0) // no rating has been done for the media
+                    // {
+                    //     setAvgRating(0);
+                    // }
+                    // else
+                    // {
+                    //     console.log( resArray);
+                    //     setAvgRating( resArray[0].rate);
+                    // }
+                })
+                .catch((err) => {
+                console.log(err);
+                toast.error("Error, could not get rating for the media!");
+                });
 
 
         // TODO fetch suggested and next(if series) media
