@@ -301,7 +301,7 @@ export class MediaDBService {
     public async watch(media: Media, user: User): Promise<any> {
         let result = null;
 
-        let sqlQuery = "UPDATE Watch SET progress = cachedProgress + 1, time-stamp = TIMESTAMP() WHERE MediaId = '" + media.mediaId + "' AND username = '" + user.username + "';";
+        let sqlQuery = "UPDATE Watch SET progress = progress + 1, timeStamp = TIMESTAMP() WHERE mediaId = '" + media.mediaId + "' AND username = '" + user.username + "';";
 
         try {
             await this.db.sendQuery(sqlQuery);
