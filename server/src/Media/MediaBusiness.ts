@@ -84,10 +84,20 @@ export class MediaBusiness {
         }
     }
 
-    public async getRating(media: Media): Promise<ResponseModel>
+    public async getAverageRating(media: Media): Promise<ResponseModel>
     {
         try {
-            let result = await this.mediaDBService.getRating(media);
+            let result = await this.mediaDBService.getAverageRating(media);
+            return new SuccessResponse(result);
+        } catch (error) {
+            return new ErrorResponse(error);
+        }
+    }
+
+    public async getUserRating(media: Media, user: User): Promise<ResponseModel>
+    {
+        try {
+            let result = await this.mediaDBService.getUserRating(media, user);
             return new SuccessResponse(result);
         } catch (error) {
             return new ErrorResponse(error);

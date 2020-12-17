@@ -119,10 +119,16 @@ export class Validation{
             throw new InvalidRequest();
     }
 
-    public getRatingValidation(req: Request): void {
+    public getAverageRatingValidation(req: Request): void {
         if(!req.body.username || !req.body.mediaId)
             throw new InvalidRequest();
     }
+    
+    public getUserRatingValidation(req: Request): void {
+        if(!req.body.username || !req.body.mediaId)
+            throw new InvalidRequest();
+    }
+
 
     public deleteCommentValidation(req: Request): void {
         if(!req.body.username || !req.body.commentId)

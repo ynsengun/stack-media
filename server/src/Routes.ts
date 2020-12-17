@@ -157,9 +157,14 @@ export class Routes{
                 this.controller.getSeriesWithGenrePreference(req, res)
             });
 
-        app.route('/api/media/getRating')
+        app.route('/api/media/getAverageRating')
             .post(this.tokenService.checkToken, (req: Request, res: Response) => {
-                this.controller.getRating(req, res)
+                this.controller.getAverageRating(req, res)
+            });
+
+        app.route('/api/media/getUserRating')
+            .post(this.tokenService.checkToken, (req: Request, res: Response) => {
+                this.controller.getUserRating(req, res)
             });
 
         

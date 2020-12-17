@@ -318,10 +318,21 @@ export class Controller{
         }
     }
 
-    public async getRating(request: Request, response: Response): Promise<void> {
+    public async getAverageRating(request: Request, response: Response): Promise<void> {
         try{
-            this.validation.getRatingValidation(request);
-            let result = await this.mediaBusiness.getRating(mediaMapping.map(request.body));
+            this.validation.getAverageRatingValidation(request);
+            let result = await this.mediaBusiness.getAverageRating(mediaMapping.map(request.body));
+            response.status(result.status).send(result);
+        } catch(error){
+            const errorResponse = new ErrorResponse(error);
+            response.status(errorResponse.status).send(new ErrorResponse(error));
+        }
+    }
+
+    public async getUserRating(request: Request, response: Response): Promise<void> {
+        try{
+            this.validation.getUserRatingValidation(request);
+            let result = await this.mediaBusiness.getUserRating(mediaMapping.map(request.body), userMapping.map(request.body));
             response.status(result.status).send(result);
         } catch(error){
             const errorResponse = new ErrorResponse(error);

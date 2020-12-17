@@ -90,10 +90,24 @@ export class MediaDBService {
         return result;
     }
 
-    public async getRating(media: Media): Promise<any> {
+    public async getAverageRating(media: Media): Promise<any> {
         let result = null;
         
         let sqlQuery = "SELECT M.mediaId, AVG(rate) FROM Media M INNER JOIN MediaRating ON M.mediaId = MediaRating.mediaId WHERE M.mediaId = '" + media.mediaId + "' GROUP BY M.mediaId;";
+
+        try {
+            result = await this.db.sendQuery(sqlQuery);
+        } 
+        catch(err){
+            throw err;
+        }
+        return result;
+    }
+
+    public async getUserRating(media: Media, user: User): Promise<any> {
+        let result = null;
+        
+        let sqlQuery = "SELECT MediaRating.* FROM Media M INNER JOIN MediaRating ON M.mediaId = MediaRating.mediaId WHERE MediaRating.username = '" + user.username + "' AND M.mediaId = '" + media.mediaId + "' GROUP BY M.mediaId;";
 
         try {
             result = await this.db.sendQuery(sqlQuery);
