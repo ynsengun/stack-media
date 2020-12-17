@@ -9,7 +9,7 @@ export default function TVShowContents() {
   const [tvShowInformation, setTVShowInformation] = useState([]);
 
   useEffect(() => {
-    // TODO fetch movies, then setTVShowInformation accordingly
+    // TODO fetch movies, then setTVShowInformation accordingly wait hakan for the new query!
     setTVShowInformation(["Talha", "Hakan", "Cevat", "Yusuf"]);
   }, []);
 
