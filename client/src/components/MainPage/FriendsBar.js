@@ -10,7 +10,7 @@ import { checkResponse } from "../../util/ResponseUtil";
 import { getAuthName, getAuthToken } from "../../util/AuthenticationUtil";
 
 export default function FriendsBar() {
-  const [friends, setFriends] = useState([{}]);
+  const [friends, setFriends] = useState([]);
   const [textInput, setTextInput] = useState("");
 
   const handleChange = (e) => {
