@@ -44,10 +44,10 @@ export default function MediaBar(props) {
 
     // TODO fetch parties
     setParties([
-      { name: "S3L4M", id: "" },
-      { name: "S52L4M", id: "" },
-      { name: "SL4M", id: "" },
-      { name: "SLAA4AM", id: "" },
+      { name: "S3L4M", id: "234" },
+      { name: "S52L4M", id: "3546346" },
+      { name: "SL4M", id: "345345ewr" },
+      { name: "SLAA4AM", id: "76tdgwe" },
     ]);
   }, []);
 
@@ -141,7 +141,6 @@ export default function MediaBar(props) {
   };
 
   const handleDeleteChannels = (channelId) => {
-    
     let temp = [];
     channels.forEach((channel) => {
       if (channelId != channel.channelId) temp.push(channel);
@@ -161,16 +160,16 @@ export default function MediaBar(props) {
         channelId: channelId,
       }),
     })
-    .then((r) => checkResponse(r))
-    .then((r) => r.json())
-    .then((r) => {
+      .then((r) => checkResponse(r))
+      .then((r) => r.json())
+      .then((r) => {
         setChannels(temp);
-        toast.success( "Successfully deleted channel!");
-    })
-    .catch((err) => {
+        toast.success("Successfully deleted channel!");
+      })
+      .catch((err) => {
         console.log(err);
         toast.error("Error, could not delete channel!");
-    });
+      });
   };
 
   return (

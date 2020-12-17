@@ -24,13 +24,14 @@ import TVShowContents from "./MainPage/TVShowContents";
 export default function Home() {
   const history = useHistory();
 
-  const changeContent = (type, channelId) => {
-    console.log(type, channelId);
+  const changeContent = (type, id) => {
+    console.log(type, id);
 
     let path = "";
     if (type == ContentType.MOVIE) path = "/movies";
     else if (type == ContentType.TVSHOW) path = "/series";
-    else if (type == ContentType.CHANNEL) path = `/channels/${channelId}`;
+    else if (type == ContentType.CHANNEL) path = `/channels/${id}`;
+    else if (type == ContentType.PARTY) path = `/party/${id}`;
     history.push(path);
   };
 

@@ -3,7 +3,6 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import "../css/App.css";
 
 import Home from "./Home";
-import NotFound from "./NotFound";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
 
@@ -12,6 +11,7 @@ import Upload from "./Upload";
 import Settings from "./Settings";
 import Login from "./Login";
 import MediaPage from "./MediaPage";
+import Party from "./PartyPage";
 import gsap from "gsap";
 
 export default function App() {
@@ -35,6 +35,7 @@ export default function App() {
             <Route exact path="/settings"><Settings /></Route>
             <Route exact path="/login"><Login /></Route>
             <Route exact path="/media/:name"><MediaPage /></Route>
+            <Route exact path="/party/:name"><Party /></Route>
             <Route path="/"><Home /></Route>
           </Switch>
 
