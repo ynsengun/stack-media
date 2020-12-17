@@ -158,7 +158,7 @@ export default function Settings() {
 
   const handleSave = () => {
     if (inputText.pass === inputText.passR) {
-      // TODO fetch, new password => wait for server
+      // fetch, new password
       fetch("http://localhost:4000/api/user/changePassword", {
         method: "POST",
         mode: "cors",

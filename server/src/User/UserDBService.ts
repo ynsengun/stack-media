@@ -142,17 +142,22 @@ export class UserDBService {
         let resultFriends = null;
         let resultActivities = null;
 
-        let sqlQuery = "SELECT F.friend2Username, WHERE F.friend1Username = '" + user.username + "';";
-
+        let sqlQuery = "SELECT UserFriend.username, TIMESTAMP(MAX(WatchMedia.timeStamp)) as lastActivity, WatchMedia.name as mediaName, WatchMedia.mediaId FROM ((SELECT friend1Username as username FROM Friendship WHERE friend2Username = '" + user.username + "') UNION (SELECT friend2Username as username FROM Friendship WHERE friend1Username = '" + user.username + "')) UserFriend LEFT OUTER JOIN (SELECT Watch.*, Media.name FROM Watch INNER JOIN Media ON Media.mediaId=Watch.mediaId ) WatchMedia ON UserFriend.username=WatchMedia.username GROUP BY UserFriend.username ORDER BY WatchMedia.timeStamp DESC;";
+        //SELECT UserFriend.username, TIMESTAMP(MAX(WatchMedia.timeStamp)) as lastActivity, WatchMedia.name as mediaName, WatchMedia.mediaId FROM ((SELECT friend1Username as username FROM Friendship WHERE friend2Username = 'yusuf') UNION (SELECT friend2Username as username FROM Friendship WHERE friend1Username = 'yusuf')) UserFriend LEFT OUTER JOIN (SELECT Watch.*, Media.name FROM Watch INNER JOIN Media ON Media.mediaId=Watch.mediaId ) WatchMedia ON UserFriend.username=WatchMedia.username GROUP BY UserFriend.username ORDER BY WatchMedia.timeStamp DESC;
         try {
-            resultFriends = await this.db.sendQuery(sqlQuery);
-            sqlQuery = "SELECT F.friend1Username, WHERE F.friend2Username = '" + user.username + "';";
-            resultFriends.concat(await this.db.sendQuery(sqlQuery));
+            resultActivities = await this.db.sendQuery(sqlQuery);
+            console.log(resultActivities[0]);
+            for(let i = 0 ; i < resultActivities.length ; i++){
+                let formattedTime = resultActivities[i].lastActivity.toLocaleString();
+                resultActivities[i].lastActivity = formattedTime;
+            }
+            /*sqlQuery = "SELECT F.friend1Username, WHERE F.friend2Username = '" + user.username + "';";
+             resultFriends.concat(await this.db.sendQuery(sqlQuery));
             if (resultFriends.length > 0)
             {
                 sqlQuery = "SELECT W.username, M.name FROM , Watch W, Media M WHERE FIND_IN_SET(W.username, " + resultFriends + ") AND W.mediaId = M.mediaId;";
                 resultActivities = await this.db.sendQuery(sqlQuery);
-            }
+            }*/
         } 
         catch(err){
             throw err;
@@ -237,12 +242,23 @@ export class UserDBService {
 
     public async changePassword(user: User, newPassword: string): Promise<any> {
         let result = null;
-        
-        let hashedPsw = await this.bcryptService.passwordHash(user.password);
-        let sqlQuery = "UPDATE User SET password = '" + newPassword + "' WHERE username = '" + user.username + "' AND password = '" + hashedPsw + "';";
+        let sqlQuery = "SELECT * FROM User WHERE username='" + user.username + "';";
 
         try {
+            let userResult = await this.db.sendQuery(sqlQuery);
+            console.log("check1")
+            if(userResult.length == 0) throw new WrongUsernameOrPassword();
+            console.log("check2")
+
+            let hashedPsw = userResult[0].password;
+            console.log("check3")
+
+            await this.bcryptService.comparePasswords(user.password, hashedPsw);
+            let newHashedPassword = await this.bcryptService.passwordHash(newPassword);
+            sqlQuery = "UPDATE User SET password = '" + newHashedPassword + "' WHERE username = '" + user.username + "';";
+            console.log("check4")
             await this.db.sendQuery(sqlQuery);
+            console.log("check5")
         } 
         catch(err){
             throw err;

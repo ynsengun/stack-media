@@ -25,4 +25,14 @@ export class TokenService{
             res.status(errorResponse.status).send(errorResponse);
         }
     }
+
+    checkTokenForParty(data){
+        const token = data.token;
+        if (!token)
+            throw new NoAccess();
+        const secret_key = config.SECRET_KEY;
+        const verified = jwt.verify(token, secret_key);
+        if (verified.username !== data.username)
+            throw new NoAccess();
+    }
 }
