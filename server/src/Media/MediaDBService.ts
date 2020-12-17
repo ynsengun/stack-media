@@ -138,8 +138,8 @@ export class MediaDBService {
     public async createMedia(media: Media, mediaGenres: Genre[]): Promise<any> {
         let result = null;
         let mediaId = id();
-        let uploadDate = Date.now().toLocaleString();
-        let sqlQuery = "INSERT INTO Media VALUES('" + mediaId + "','" + media.publishUsername + "','" + media.name + "','" + media.description + "','" + media.path + "','" + media.duration + "','" + uploadDate + "');";
+
+        let sqlQuery = "INSERT INTO Media VALUES('" + mediaId + "','" + media.publishUsername + "','" + media.name + "','" + media.description + "','" + media.path + "','" + media.duration + "', null);";
 
         try {
             await this.db.sendQuery(sqlQuery);  
@@ -173,8 +173,8 @@ export class MediaDBService {
 
     public async updateMedia(media: Media): Promise<any> {
         let result = null;
-        let uploadDate = Date.now().toLocaleString();
-        let sqlQuery = "UPDATE Media SET mediaId = '" + media.mediaId + "', publishUsername = '" +  media.publishUsername + "', name = '" + media.name + "', description = '" + media.description + "', path = '" + media.path + "', duration = '" + media.duration + "', uploadDate = '" + uploadDate + "' WHERE mediaId = '" + media.mediaId + "';";
+
+        let sqlQuery = "UPDATE Media SET mediaId = '" + media.mediaId + "', publishUsername = '" +  media.publishUsername + "', name = '" + media.name + "', description = '" + media.description + "', path = '" + media.path + "', duration = '" + media.duration + "', null WHERE mediaId = '" + media.mediaId + "';";
         try {
             await this.db.sendQuery(sqlQuery);  
             if(media.episodeNumber == null){ // it means it is a movie, then add to movie table

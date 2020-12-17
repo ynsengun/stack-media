@@ -89,8 +89,8 @@ export class UserDBService {
 
     public async addComment(user: User, media: Media, comment: Comment): Promise<any> {
         let commentId = id();
-        let timeStamp = Date.now().toLocaleString();
-        let sqlQuery = "INSERT INTO Comment VALUES('" + commentId + "', '" + user.username + "', '" + media.mediaId + "', '" + comment.text + "', '" + timeStamp + "');";
+
+        let sqlQuery = "INSERT INTO Comment VALUES('" + commentId + "', '" + user.username + "', '" + media.mediaId + "', '" + comment.text + "', null);";
 
         try {
             await this.db.sendQuery(sqlQuery);
