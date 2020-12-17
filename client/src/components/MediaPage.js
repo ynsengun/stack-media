@@ -42,11 +42,74 @@ export default function MediaPage() {
   }, []);
 
   useEffect(() => {
-    // TODO fetch progress and set button actives accordingly
-    // TODO fetch suggested and next(if series) media, rating
+    if ( mediaId != "")
+    {
+        // TODO fetch progress and set button actives accordingly
+        fetch("http://localhost:4000/api/media/getWatch", {
+            method: "POST",
+            mode: "cors",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              token: getAuthToken(),
+              username: getAuthName(),
+    
+              mediaId: mediaId,
+            }),
+          })
+            .then((r) => checkResponse(r))
+            .then((r) => r.json())
+            .then((r) => {
+              let resArray = r.data;
+              if ( resArray.length == 0) // first time being watched
+              {
+                    setProgress(0);
+                    setButtonActive({ watch: true, finish: false });
+              }
+              else // it is watched in the past, update status accordingly
+              {
+              }
+            })
+            .catch((err) => {
+              console.log(err);
+              toast.error("Error, could not get watch status!");
+            });
 
-    setProgress(0);
-    setButtonActive({ watch: true, finish: false });
+        // TODO fetch rating (WE CANNOT) wait for server
+        // fetch("http://localhost:4000/api/media/getWatch", {
+        //     method: "POST",
+        //     mode: "cors",
+        //     headers: {
+        //       "Content-Type": "application/json",
+        //     },
+        //     body: JSON.stringify({
+        //       token: getAuthToken(),
+        //       username: getAuthName(),
+    
+        //       mediaId: mediaId,
+        //     }),
+        //   })
+        //     .then((r) => checkResponse(r))
+        //     .then((r) => r.json())
+        //     .then((r) => {
+        //       let resArray = r.data;
+        //       if ( resArray.length == 0) // first time being watched
+        //       {
+        //             setProgress(0);
+        //             setButtonActive({ watch: true, finish: false });
+        //       }
+        //       else // it is watched in the past, update status accordingly
+        //       {
+        //       }
+        //     })
+        //     .catch((err) => {
+        //       console.log(err);
+        //       toast.error("Error, could not get watch status!");
+        //     });
+
+        // TODO fetch suggested and next(if series) media
+
     setRating(3);
     setSuggestedMedias([
       { name: "aaa", type: 0 },
@@ -54,6 +117,11 @@ export default function MediaPage() {
     ]);
     setNextMedia({ name: "sss", type: 0 });
 
+    }
+  }, [mediaId]);
+
+  useEffect(() => {
+   
     // fetch comments
     if (mediaId != null && mediaId != "") {
       fetch("http://localhost:4000/api/media/getComments", {
@@ -82,15 +150,42 @@ export default function MediaPage() {
   }, [mediaId, commentFlag]);
 
   useEffect(() => {
-    if (progress === 3) {
-      // TODO fetch, update progress
-      setButtonActive({ watch: false, finish: true });
+    if (progress % 4 !== 0) 
+    {
+        setButtonActive({ watch: false, finish: true }); // watch
     }
-    if (progress === 4) {
-      // TODO fetch, update finish
-      setButtonActive({ watch: false, finish: false });
+    else
+    {
+        setButtonActive({ watch: false, finish: false }); // finish watching
     }
   }, [progress]);
+
+  const handleProgressBarPress = () => {
+
+    // make progress, watch fetch
+    fetch("http://localhost:4000/api/media/watch", {
+        method: "POST",
+        mode: "cors",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          token: getAuthToken(),
+          username: getAuthName(),
+
+          mediaId: mediaId,
+        }),
+      })
+        .then((r) => checkResponse(r))
+        .then((r) => r.json())
+        .then((r) => {
+            setProgress( progress + 1);
+        })
+        .catch((err) => {
+          console.log(err);
+          toast.error("Error, media cannot be watched!");
+        });
+  };    
 
   const progressBar = (index) => {
     return (
@@ -230,7 +325,8 @@ export default function MediaPage() {
                   !buttonActive.watch && "disabled"
                 }`}
                 onClick={() => {
-                  if (progress < 3) setProgress(progress + 1);
+                    handleProgressBarPress();
+                  //if (progress < 3) setProgress(progress + 1);
                 }}
               >
                 Watch
@@ -240,7 +336,8 @@ export default function MediaPage() {
                   !buttonActive.finish && "disabled"
                 }`}
                 onClick={() => {
-                  if (progress === 3) setProgress(progress + 1);
+                    handleProgressBarPress();
+                  //if (progress === 3) setProgress(progress + 1);
                 }}
               >
                 Finish
