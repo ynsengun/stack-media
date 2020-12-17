@@ -287,7 +287,7 @@ export class MediaDBService {
     public async getWatch(media: Media, user: User): Promise<any> {
         let result = null;
 
-        let sqlQuery = "SELECT progress FROM Watch WHERE mediaId = '" + media.mediaId + "' AND username = '" + user.username + "';";
+        let sqlQuery = "SELECT Progress FROM Watch WHERE mediaId = '" + media.mediaId + "' AND username = '" + user.username + "';";
 
         try {
             result = await this.db.sendQuery(sqlQuery);
@@ -298,10 +298,25 @@ export class MediaDBService {
         return result;
     }   
 
+    public async initializeWatch(media: Media, user: User): Promise<any> {
+        let result = null;
+        console.log( "Initializing watch!");
+        let sqlQuery = "INSERT INTO Watch VALUES('" + user.username + "', '" + media.mediaId + "', '0', null);"
+
+        try {
+            await this.db.sendQuery(sqlQuery);
+        } 
+        catch(err){
+            throw err;
+        }
+        console.log( "query success!");
+        return result;
+    }   
+
     public async watch(media: Media, user: User): Promise<any> {
         let result = null;
-
-        let sqlQuery = "UPDATE Watch SET progress = progress + 1, timeStamp = TIMESTAMP() WHERE mediaId = '" + media.mediaId + "' AND username = '" + user.username + "';";
+        console.log( "watching");
+        let sqlQuery = "UPDATE Watch SET Progress = Progress + 1, timeStamp = TIMESTAMP() WHERE MediaId = '" + media.mediaId + "' AND username = '" + user.username + "';";
 
         try {
             await this.db.sendQuery(sqlQuery);

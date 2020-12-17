@@ -153,6 +153,16 @@ export class MediaBusiness {
        }
    }
 
+   public async initializeWatch(media: Media, user: User): Promise<ResponseModel>
+   {
+       try {
+           let result = await this.mediaDBService.initializeWatch(media, user);
+           return new SuccessResponse(result);
+       } catch (error) {
+           return new ErrorResponse(error);
+       }
+   }
+
    public async watch(media: Media, user: User): Promise<ResponseModel>
     {
         try {

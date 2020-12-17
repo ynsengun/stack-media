@@ -455,6 +455,21 @@ export class Controller{
         }
     }
 
+    public async initializeWatch(request: Request, response: Response): Promise<void> {
+        try{
+            console.log( "1");
+            this.validation.initializeWatchValidation(request);
+            console.log( "2");
+            let result = await this.mediaBusiness.initializeWatch(mediaMapping.map(request.body), userMapping.map(request));
+            console.log( "3");
+            response.status(result.status).send(result);
+            console.log( "4");
+        } catch(error){
+            const errorResponse = new ErrorResponse(error);
+            response.status(errorResponse.status).send(new ErrorResponse(error));
+        }
+    }
+
     public async watch(request: Request, response: Response): Promise<void> {
         try{
             this.validation.watchValidation(request);
