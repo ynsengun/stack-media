@@ -92,7 +92,7 @@ export class MediaDBService {
 
     public async getRating(media: Media): Promise<any> {
         let result = null;
-
+        
         let sqlQuery = "SELECT M.mediaId, AVG(rate) FROM Media M INNER JOIN MediaRating ON M.mediaId = MediaRating.mediaId WHERE M.mediaId = '" + media.mediaId + "' GROUP BY M.mediaId;";
 
         try {
@@ -330,9 +330,18 @@ export class MediaDBService {
     
     public async rate(media: Media, user: User, rate: number): Promise<any> {
         let result = null;
-        let sqlQuery = "INSERT INTO MediaRating VALUES('" + user.username + "', '" + media.mediaId + "', '" + rate + "');";
+        let sqlQuery = "SELECT * FROM MediaRating WHERE username = '" + user.username + "' AND mediaId = '" + media.mediaId + "';";
         try {
-            await this.db.sendQuery(sqlQuery);
+            result = await this.db.sendQuery(sqlQuery);
+            if (result.length > 0)
+            {
+                sqlQuery = "UPDATE MediaRating SET rate = '" + rate + "' WHERE username = '" + user.username + "' AND mediaId = '" + media.mediaId + "';";
+            }
+            else
+            {
+                sqlQuery = "INSERT INTO MediaRating VALUES('" + user.username + "', '" + media.mediaId + "', '" + rate + "');";
+            }
+            result = await this.db.sendQuery(sqlQuery);
         } 
         catch(err){
             throw err;
