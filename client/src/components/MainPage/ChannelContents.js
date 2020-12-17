@@ -106,7 +106,7 @@ export default function ChannelContents() {
                 toast.error("Error, could not fetch medias for the channel!");
               });
 
-            // fetch suggested-medias
+            // TODO fetch suggested-medias
             // fetch("http://localhost:4000/api/channel/getMedias", {
             //   method: "POST",
             //   mode: "cors",
