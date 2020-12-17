@@ -203,6 +203,11 @@ export class Routes{
                 this.controller.watch(req, res)
             });
 
+        app.route('/api/media/rate')
+            .post(this.tokenService.checkToken, (req: Request, res: Response) => {
+                this.controller.rate(req, res)
+            });
+
         app.route('/api/media/getSuggestion')
             .post(this.tokenService.checkToken, (req: Request, res: Response) => {
                 this.controller.getSuggestionForMedia(req, res)
@@ -242,6 +247,11 @@ export class Routes{
         app.route('/api/channel/getMedias')
             .post(this.tokenService.checkToken, (req: Request, res: Response) => {
                 this.controller.getMediasFromChannel(req, res)
+            });
+
+        app.route('/api/channel/getSuggestion')
+            .post(this.tokenService.checkToken, (req: Request, res: Response) => {
+                this.controller.getSuggestionForChannel(req, res)
             });
 
         app.route('/api/channel/getMovies')

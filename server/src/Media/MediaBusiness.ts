@@ -5,6 +5,7 @@ import {MediaDBService} from "./MediaDBService";
 import { User } from "../Model/User/User";
 import { Media } from "../Model/Media/Media";
 import { Genre } from "../Model/Genre/Genre";
+import { Channel } from "../Model/Channel/Channel";
 
 export class MediaBusiness {
 
@@ -163,7 +164,7 @@ export class MediaBusiness {
        }
    }
 
-   public async watch(media: Media, user: User): Promise<ResponseModel>
+    public async watch(media: Media, user: User): Promise<ResponseModel>
     {
         try {
             let result = await this.mediaDBService.watch(media, user);
@@ -173,10 +174,30 @@ export class MediaBusiness {
         }
     }
 
-    public async getSuggestionForMedia(media: Media, user: User): Promise<ResponseModel>
+    public async rate(media: Media, user: User, rate: number): Promise<ResponseModel>
     {
         try {
-            let result = await this.mediaDBService.getSuggestionForMedia(media, user);
+            let result = await this.mediaDBService.rate(media, user, rate);
+            return new SuccessResponse(result);
+        } catch (error) {
+            return new ErrorResponse(error);
+        }
+    }
+
+    public async getSuggestionForMedia(media: Media): Promise<ResponseModel>
+    {
+        try {
+            let result = await this.mediaDBService.getSuggestionForMedia(media);
+            return new SuccessResponse(result);
+        } catch (error) {
+            return new ErrorResponse(error);
+        }
+    }
+
+    public async getSuggestionForChannel(channel: Channel): Promise<ResponseModel>
+    {
+        try {
+            let result = await this.mediaDBService.getSuggestionForChannel(channel);
             return new SuccessResponse(result);
         } catch (error) {
             return new ErrorResponse(error);

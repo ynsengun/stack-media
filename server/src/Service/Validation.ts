@@ -94,8 +94,18 @@ export class Validation{
             throw new InvalidRequest();
     }
 
+    public rateValidation(req: Request): void {
+        if(!req.body.username || !req.body.mediaId || !req.body.rate)
+            throw new InvalidRequest();
+    }
+
     public getSuggestionForMediaValidation(req: Request): void {
         if(!req.body.username || !req.body.mediaId)
+            throw new InvalidRequest();
+    }
+
+    public getSuggestionForChannelValidation(req: Request): void {
+        if(!req.body.username || !req.body.channelId)
             throw new InvalidRequest();
     }
 

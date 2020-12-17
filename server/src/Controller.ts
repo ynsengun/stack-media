@@ -310,7 +310,7 @@ export class Controller{
     public async getSeriesWithGenrePreference(request: Request, response: Response): Promise<void> {
         try{
             this.validation.getSeriesWithGenrePreferenceValidation(request);
-            let result = await this.mediaBusiness.getSeriesWithGenrePreference(genreMapping.map(request.body.genre));
+            let result = await this.mediaBusiness.getSeriesWithGenrePreference(genreMapping.map(request.body));
             response.status(result.status).send(result);
         } catch(error){
             const errorResponse = new ErrorResponse(error);
@@ -447,7 +447,7 @@ export class Controller{
     public async getWatch(request: Request, response: Response): Promise<void> {
         try{
             this.validation.getWatchValidation(request);
-            let result = await this.mediaBusiness.getWatch(mediaMapping.map(request.body), userMapping.map(request));
+            let result = await this.mediaBusiness.getWatch(mediaMapping.map(request.body), userMapping.map(request.body));
             response.status(result.status).send(result);
         } catch(error){
             const errorResponse = new ErrorResponse(error);
@@ -460,7 +460,7 @@ export class Controller{
             console.log( "1");
             this.validation.initializeWatchValidation(request);
             console.log( "2");
-            let result = await this.mediaBusiness.initializeWatch(mediaMapping.map(request.body), userMapping.map(request));
+            let result = await this.mediaBusiness.initializeWatch(mediaMapping.map(request.body), userMapping.map(request.body));
             console.log( "3");
             response.status(result.status).send(result);
             console.log( "4");
@@ -473,7 +473,18 @@ export class Controller{
     public async watch(request: Request, response: Response): Promise<void> {
         try{
             this.validation.watchValidation(request);
-            let result = await this.mediaBusiness.watch(mediaMapping.map(request.body), userMapping.map(request));
+            let result = await this.mediaBusiness.watch(mediaMapping.map(request.body), userMapping.map(request.body));
+            response.status(result.status).send(result);
+        } catch(error){
+            const errorResponse = new ErrorResponse(error);
+            response.status(errorResponse.status).send(new ErrorResponse(error));
+        }
+    }
+
+    public async rate(request: Request, response: Response): Promise<void> {
+        try{
+            this.validation.rateValidation(request);
+            let result = await this.mediaBusiness.rate(mediaMapping.map(request.body), userMapping.map(request.body), request.body.rate);
             response.status(result.status).send(result);
         } catch(error){
             const errorResponse = new ErrorResponse(error);
@@ -484,7 +495,18 @@ export class Controller{
     public async getSuggestionForMedia(request: Request, response: Response): Promise<void> {
         try{
             this.validation.getSuggestionForMediaValidation(request);
-            let result = await this.mediaBusiness.getSuggestionForMedia(mediaMapping.map(request.body), userMapping.map(request.body));
+            let result = await this.mediaBusiness.getSuggestionForMedia(mediaMapping.map(request.body));
+            response.status(result.status).send(result);
+        } catch(error){
+            const errorResponse = new ErrorResponse(error);
+            response.status(errorResponse.status).send(new ErrorResponse(error));
+        }
+    }
+    
+    public async getSuggestionForChannel(request: Request, response: Response): Promise<void> {
+        try{
+            this.validation.getSuggestionForChannelValidation(request);
+            let result = await this.mediaBusiness.getSuggestionForChannel(channelMapping.map(request.body));
             response.status(result.status).send(result);
         } catch(error){
             const errorResponse = new ErrorResponse(error);

@@ -1,6 +1,7 @@
 import { User } from "../Model/User/User";
 import { Media } from "../Model/Media/Media";
 import { Genre } from "../Model/Genre/Genre";
+import { Channel } from "../Model/Channel/Channel";
 import {Database} from "../Database";
 import {AlreadyExist} from "../Model/Error/AlreadyExist";
 import {v1 as id} from "uuid";
@@ -325,13 +326,38 @@ export class MediaDBService {
             throw err;
         }
         return result;
-    }   
+    }  
+    
+    public async rate(media: Media, user: User, rate: number): Promise<any> {
+        let result = null;
+        let sqlQuery = "INSERT INTO MediaRating VALUES('" + user.username + "', '" + media.mediaId + "', '" + rate + "');";
+        try {
+            await this.db.sendQuery(sqlQuery);
+        } 
+        catch(err){
+            throw err;
+        }
+        return result;
+    }  
 
-    public async getSuggestionForMedia(media: Media, user: User): Promise<any> {
+    public async getSuggestionForMedia(media: Media): Promise<any> {
         let result = null;
 
-        let sqlQuery = "SELECT M.name FROM GenrePreference GP, HasGenre HG, Media WHERE GP.username = '" + user.username + "' and GP.genreId = HG.genreId and  HG.mediaId = M.mediaId;";
+        let sqlQuery = "SELECT DISTINCT M.* FROM MediaHasGenre MG, Media M WHERE MG.genreId IN (SELECT genreId FROM MediaHasGenre WHERE mediaId = '" + media.mediaId + "') AND M.mediaId=MG.mediaId AND M.mediaId!='" + media.mediaId + "'";
 
+        try {
+            result = await this.db.sendQuery(sqlQuery);
+        } 
+        catch(err){
+            throw err;
+        }
+        return result;
+    }
+
+    public async getSuggestionForChannel(channel: Channel): Promise<any> {
+        let result = null;
+
+        let sqlQuery = "SELECT DISTINCT M.* FROM MediaHasGenre MG, Media M WHERE MG.genreId IN (SELECT genreId FROM ChannelHasGenre WHERE channelId = '" + channel.channelId + "') AND M.mediaId=MG.mediaId AND M.mediaId NOT IN (SELECT mediaId from ChannelMedia WHERE channelId='" + channel.channelId + "');";
         try {
             result = await this.db.sendQuery(sqlQuery);
         } 
