@@ -35,15 +35,6 @@ export class UserBusiness {
         }
     }
 
-    public async getParties(user: User): Promise<ResponseModel> {
-        try {
-            let result = await this.userDBService.getParties(user);
-            return new SuccessResponse(result);
-        } catch (error) {
-            return new ErrorResponse(error);
-        }
-    }
-
     public async addComment(user: User, media: Media, comment: Comment): Promise<ResponseModel> {
         try {
             let result = await this.userDBService.addComment(user, media, comment);

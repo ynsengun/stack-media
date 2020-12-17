@@ -73,20 +73,6 @@ export class UserDBService {
         }
     }
 
-    public async getParties(user: User): Promise<any> {
-        let result = null;
-
-        let sqlQuery = "SELECT name AS partyName, partyId FROM Party WHERE creatorUsername = '" + user.username + "';";
-
-        try {
-            result = await this.db.sendQuery(sqlQuery);
-            return result;
-        } 
-        catch(err){
-            throw err;
-        }
-    }
-
     public async addComment(user: User, media: Media, comment: Comment): Promise<any> {
         let commentId = id();
 

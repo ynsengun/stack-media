@@ -22,11 +22,6 @@ export class Routes{
                 this.controller.register(req, res)
             });
         
-        app.route('/api/user/getParties')
-            .post(this.tokenService.checkToken, (req: Request, res: Response) => {
-                this.controller.getParties(req, res)
-            });
-        
         app.route('/api/user/getChannels')
             .post(this.tokenService.checkToken, (req: Request, res: Response) => {
                 this.controller.getChannels(req, res)
