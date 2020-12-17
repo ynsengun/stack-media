@@ -193,6 +193,11 @@ export class Routes{
                 this.controller.getWatch(req, res)
             });
 
+        app.route('/api/media/initializeWatch')
+            .post(this.tokenService.checkToken, (req: Request, res: Response) => {
+                this.controller.initializeWatch(req, res)
+            });
+
         app.route('/api/media/watch')
             .post(this.tokenService.checkToken, (req: Request, res: Response) => {
                 this.controller.watch(req, res)

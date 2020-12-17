@@ -66,6 +66,29 @@ export default function MediaPage() {
               {
                     setProgress(0);
                     setButtonActive({ watch: true, finish: false });
+                  // initialize watch fetch
+                  fetch("http://localhost:4000/api/media/initializeWatch", {
+                        method: "POST",
+                        mode: "cors",
+                        headers: {
+                        "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({
+                        token: getAuthToken(),
+                        username: getAuthName(),
+                
+                        mediaId: mediaId,
+                        }),
+                    })
+                        .then((r) => checkResponse(r))
+                        .then((r) => r.json())
+                        .then((r) => {
+                            toast.success( "First time starting to watch!");
+                        })
+                    .catch((err) => {
+                        console.log(err);
+                        toast.error("Error, could not initialize first watch!");
+                    });
               }
               else // it is watched in the past, update status accordingly
               {
@@ -110,12 +133,12 @@ export default function MediaPage() {
 
         // TODO fetch suggested and next(if series) media
 
-    setRating(3);
-    setSuggestedMedias([
-      { name: "aaa", type: 0 },
-      { name: "bbb", type: 1 },
-    ]);
-    setNextMedia({ name: "sss", type: 0 });
+        setRating(3);
+        setSuggestedMedias([
+        { name: "aaa", type: 0 },
+        { name: "bbb", type: 1 },
+        ]);
+        setNextMedia({ name: "sss", type: 0 });
 
     }
   }, [mediaId]);

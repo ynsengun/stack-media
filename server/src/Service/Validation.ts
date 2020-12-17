@@ -84,6 +84,11 @@ export class Validation{
             throw new InvalidRequest();
     }
 
+    public initializeWatchValidation(req: Request): void {
+        if(!req.body.username || !req.body.mediaId)
+            throw new InvalidRequest();
+    }
+
     public watchValidation(req: Request): void {
         if(!req.body.username || !req.body.mediaId)
             throw new InvalidRequest();
