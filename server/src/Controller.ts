@@ -282,7 +282,18 @@ export class Controller{
 
     public async getSeries(request: Request, response: Response): Promise<void> {
         try{
-            let result = await this.mediaBusiness.getSeries();
+            let result = await this.mediaBusiness.getSeries(userMapping.map(request.body));
+            response.status(result.status).send(result);
+        } catch(error){
+            const errorResponse = new ErrorResponse(error);
+            response.status(errorResponse.status).send(new ErrorResponse(error));
+        }
+    }
+
+    public async getSerie(request: Request, response: Response): Promise<void> {
+        try{
+            this.validation.getSerieValidation(request);
+            let result = await this.mediaBusiness.getSerie(userMapping.map(request.body), mediaMapping.map(request.body));
             response.status(result.status).send(result);
         } catch(error){
             const errorResponse = new ErrorResponse(error);
@@ -304,7 +315,7 @@ export class Controller{
     public async getSeriesWithGenrePreference(request: Request, response: Response): Promise<void> {
         try{
             this.validation.getSeriesWithGenrePreferenceValidation(request);
-            let result = await this.mediaBusiness.getSeriesWithGenrePreference(genreMapping.map(request.body));
+            let result = await this.mediaBusiness.getSeriesWithGenrePreference(userMapping.map(request.body), mediaMapping.map(request.body));
             response.status(result.status).send(result);
         } catch(error){
             const errorResponse = new ErrorResponse(error);

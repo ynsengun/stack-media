@@ -69,13 +69,18 @@ export class Validation{
             throw new InvalidRequest();
     }
 
+    public getSerieValidation(req: Request): void {
+        if(!req.body.TVSerieName)
+            throw new InvalidRequest();
+    }
+
     public getMoviesWithGenrePreferenceValidation(req: Request): void {
         if(!req.body.username)
             throw new InvalidRequest();
     }
 
     public getSeriesWithGenrePreferenceValidation(req: Request): void {
-        if(!req.body.username || !req.body.genre)
+        if(!req.body.username || !req.body.TVSerieName)
             throw new InvalidRequest();
     }
 

@@ -111,7 +111,7 @@ export default function ChannelContents() {
     useEffect(() => {
         if ( channelId != "")
         {
-            // TODO fetch suggested-medias
+            // fetch suggested-medias
             fetch("http://localhost:4000/api/channel/getSuggestion", {
               method: "POST",
               mode: "cors",
@@ -128,7 +128,7 @@ export default function ChannelContents() {
             .then((r) => checkResponse(r))
             .then((r) => r.json())
             .then((r) => {
-                console.log( r.data);
+                //console.log( r.data);
                 setSuggestedMedias( r.data);
             })
             .catch((err) => {
