@@ -119,6 +119,8 @@ export default function MediaPage() {
             .then((r) => r.json())
             .then((r) => {
                 let resArray = r.data;
+                console.log( "Avg rating:");
+                console.log( resArray);
                 if ( resArray.length === 0) // no rating has been done for the media
                 {
                     setAvgRating(0);
@@ -210,7 +212,7 @@ export default function MediaPage() {
   }, [mediaId, commentFlag]);
 
   useEffect(() => {
-    if (progress % 4 !== 0 && progress !== 0) 
+    if (progress % 4 === 3 && progress !== 0) 
     {
         setButtonActive({ watch: false, finish: true }); // watch
     }
@@ -240,6 +242,8 @@ export default function MediaPage() {
         .then((r) => r.json())
         .then((r) => {
             setProgress( progress + 1);
+            console.log( "Progress:");
+            console.log( progress);
         })
         .catch((err) => {
           console.log(err);
@@ -254,7 +258,7 @@ export default function MediaPage() {
           display: "inline-block",
           width: index === 3 ? "34%" : "33%",
           height: "100%",
-          backgroundColor: progress < index ? "gray" : "#303030",
+          backgroundColor: (progress % 4) < index ? "gray" : "#303030",
           border: "1px black solid",
         }}
       />
