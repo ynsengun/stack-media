@@ -15,7 +15,7 @@ export default function MediaBar(props) {
   const [channels, setChannels] = useState([
     { channelName: "", channelId: "" },
   ]);
-  const [parties, setParties] = useState([{ name: "", id: "" }]);
+  const [parties, setParties] = useState([{ partyName: "", partyId: "" }]);
   const [textInput, setTextInput] = useState({ channel: "", party: "" });
 
   useEffect(() => {
@@ -42,7 +42,7 @@ export default function MediaBar(props) {
         toast.error("Error, could not fetch your created channels!");
       });
 
-    // TODO fetch parties
+    // TODO fetch parties => wait server
     fetch("http://localhost:4000/api/party/getParties", {
       method: "POST",
       mode: "cors",
@@ -60,18 +60,17 @@ export default function MediaBar(props) {
         let resArray = r.data;
         console.log( "My parties:");
         console.log( resArray);
-        //setParties( resArray);
+        let myParties = [];
+        for ( let i = 0; i < resArray.length; i++)
+        {
+            parties.push( { partyName: resArray[i].name, partyId: resArray[i].partyId});
+        }
+        setParties( myParties);
       })
       .catch((err) => {
         console.log(err);
         toast.error("Error, could not fetch your created channels!");
       });
-    // setParties([
-    //   { name: "S3L4M", id: "234" },
-    //   { name: "S52L4M", id: "3546346" },
-    //   { name: "SL4M", id: "345345ewr" },
-    //   { name: "SLAA4AM", id: "76tdgwe" },
-    // ]);
   }, []);
 
   const handleChange = (e) => {
@@ -112,6 +111,7 @@ export default function MediaBar(props) {
         ]);
         //console.log(channels);
         setTextInput({ ...textInput, channel: "" });
+        toast.success( "Successfully created channel!");
       })
       .catch((err) => {
         console.log(err);
@@ -120,7 +120,14 @@ export default function MediaBar(props) {
   };
 
   const handleNewParty = () => {
-    // fetch, post request to add textInput.party
+    
+    if ( textInput.party === "")
+    {
+        toast.error( "Please specify a party name!");
+        return;
+    }
+    
+    // TODO fetch, post request to add textInput.party => wait server
     fetch("http://localhost:4000/api/party/addParty", {
             method: "POST",
             mode: "cors",
@@ -134,7 +141,7 @@ export default function MediaBar(props) {
                 
                 name: textInput.party,
                 creatorUsername: getAuthName(),
-                description: "LOL what do you need this info for?", // DOES IT REALLY NECESSARY?
+                description: "LOL what do you need this info for?",
             }),
         })
         .then((r) => checkResponse(r))
@@ -142,9 +149,13 @@ export default function MediaBar(props) {
         .then((r) => {
             console.log( "New party:");
             console.log( r);
+            let resArray = r.data;
             toast.success( "Successfuly created party!");
+            setParties([
+                ...parties,
+                { partyName: textInput.party, partyId: r.data[0].partyId },
+              ]);
             setTextInput({ ...textInput, party: "" });
-            // TODO Update party table when server returns id as if in adding channel
         })
         .catch((err) => {
             console.log(err);
@@ -156,10 +167,10 @@ export default function MediaBar(props) {
 
     let temp = [];
     parties.forEach((party) => {
-      if (partyId != party.id) temp.push(party);
+      if (partyId != party.partyId) temp.push(party);
     });
 
-    //TODO fetch delete party
+    //TODO fetch delete party => wait server
     fetch("http://localhost:4000/api/party/removeParty", {
       method: "DELETE",
       mode: "cors",
@@ -278,10 +289,10 @@ export default function MediaBar(props) {
           {parties.map((party, index) => (
             <RedirectLabel
               key={index}
-              labelName={party.name}
+              labelName={party.partyName}
               onClickEvent={changeContent}
               type={ContentType.PARTY}
-              labelId={party.id}
+              labelId={party.partyId}
               handleDelete={handleDeleteParty}
             ></RedirectLabel>
           ))}

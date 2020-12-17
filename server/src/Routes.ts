@@ -314,47 +314,47 @@ export class Routes{
                 this.controller.deleteChannel(req, res)
             });
 
-        app.route(!'/api/party/addParty')
+        app.route('/api/party/addParty')
             .delete(this.tokenService.checkToken, (req: Request, res: Response) => {
                 this.controller.addParty(req, res);
             });
 
-        app.route(!'/api/party/removeParty')
+        app.route('/api/party/removeParty')
             .delete(this.tokenService.checkToken, (req: Request, res: Response) => {
                 this.controller.removeParty(req, res);
             });
 
-        app.route(!'/api/party/getParties')
+        app.route('/api/party/getParties')
             .delete(this.tokenService.checkToken, (req: Request, res: Response) => {
                 this.controller.getParties(req, res);
             });
 
-        app.route(!'/api/party/inviteParticipant')
+        app.route('/api/party/inviteParticipant')
             .delete(this.tokenService.checkToken, (req: Request, res: Response) => {
                 this.controller.inviteParticipant(req, res);
             });
 
-        app.route(!'/api/party/acceptInvite')
+        app.route('/api/party/acceptInvite')
             .delete(this.tokenService.checkToken, (req: Request, res: Response) => {
                 this.controller.acceptPartyInvite(req, res);
             });
 
-        app.route(!'/api/party/declineInvite')
+        app.route('/api/party/declineInvite')
             .delete(this.tokenService.checkToken, (req: Request, res: Response) => {
                 this.controller.declinePartyInvite(req, res);
             });
 
-        app.route(!'/api/party/getInvitations')
+        app.route('/api/party/getInvitations')
             .delete(this.tokenService.checkToken, (req: Request, res: Response) => {
                 this.controller.getPartyInvitations(req, res);
             });
 
-        app.route(!'/api/party/getParticipants')
+        app.route('/api/party/getParticipants')
             .delete(this.tokenService.checkToken, (req: Request, res: Response) => {
                 this.controller.getParticipants(req, res);
             });
 
-        app.route(!'/api/party/removeParticipant')
+        app.route('/api/party/removeParticipant')
             .delete(this.tokenService.checkToken, (req: Request, res: Response) => {
                 this.controller.removeParticipant(req, res);
             });

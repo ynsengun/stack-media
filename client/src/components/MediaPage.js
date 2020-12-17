@@ -163,7 +163,7 @@ export default function MediaPage() {
                 });
 
 
-        // TODO fetch suggested and next(if series) media
+        // TODO fetch suggested and next(if series) media (cevat will do it next monday, if your not patient, you can do it urself)
         setSuggestedMedias([
         { name: "aaa", type: 0 },
         { name: "bbb", type: 1 },
