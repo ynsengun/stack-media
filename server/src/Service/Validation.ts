@@ -229,4 +229,44 @@ export class Validation{
         if(!req.body.username || !req.body.channelId)
             throw new InvalidRequest();
     }
+
+    public addPartyValidation(req: Request): void {
+        if(!req.body.username || !req.body.creatorUsername || !req.body.name || !req.body.description)
+            throw new InvalidRequest();
+    }
+
+    public removePartyValidation(req: Request): void {
+        if(!req.body.username || !req.body.partyId)
+            throw new InvalidRequest();
+    }
+
+    public getPartiesValidation(req: Request): void {
+        if(!req.body.username)
+            throw new InvalidRequest();
+    }
+
+    public inviteParticipantValidation(req: Request): void {
+        if(!req.body.username || !req.body.partyId || !req.body.invitedUsername)
+            throw new InvalidRequest();
+    }
+
+    public acceptPartyInviteValidation(req: Request): void {
+        if(!req.body.username || !req.body.partyId || !req.body.invitedUsername)
+            throw new InvalidRequest();
+    }
+
+    public declinePartyInviteValidation(req: Request): void {
+        if(!req.body.username || !req.body.partyId || !req.body.invitedUsername)
+            throw new InvalidRequest();
+    }
+
+    public getParticipantsValidation(req: Request): void {
+        if(!req.body.username || !req.body.partyId)
+            throw new InvalidRequest();
+    }
+
+    public removeParticipantValidation(req: Request): void {
+        if(!req.body.username || !req.body.partyId || !req.body.removedUsername)
+            throw new InvalidRequest();
+    }
 }
