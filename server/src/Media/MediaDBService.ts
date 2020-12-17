@@ -185,10 +185,10 @@ export class MediaDBService {
 
     public async getMediaComments(media: Media): Promise<any> {
         let result: Comment[] = [];
-        let sqlQuery = "SELECT * FROM (SELECT * FROM Comment WHERE mediaId='" + media.mediaId + "' AND commentId NOT IN ( SELECT childId FROM SubComment) ) temp LEFT OUTER JOIN SubComment ON temp.commentId=SubComment.parentId;";
+        let sqlQuery = "SELECT * FROM (SELECT * FROM Comment WHERE mediaId='" + media.mediaId + "' AND commentId NOT IN ( SELECT childId FROM SubComment) ) temp LEFT OUTER JOIN SubComment ON temp.commentId=SubComment.parentId ORDER BY timeStamp DESC;";
         try {
             let parentComments = await this.db.sendQuery(sqlQuery);
-            sqlQuery = "SELECT * FROM Comment WHERE mediaId='" + media.mediaId + "' AND commentId IN ( SELECT childId FROM SubComment);";
+            sqlQuery = "SELECT * FROM Comment WHERE mediaId='" + media.mediaId + "' AND commentId IN ( SELECT childId FROM SubComment) ORDER BY timeStamp ASC;";
             let childComments = await this.db.sendQuery(sqlQuery);
             let childCommentDict = {}
             for(let i = 0 ; i < childComments.length ; i++){
