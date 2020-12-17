@@ -237,12 +237,23 @@ export class UserDBService {
 
     public async changePassword(user: User, newPassword: string): Promise<any> {
         let result = null;
-        
-        let hashedPsw = await this.bcryptService.passwordHash(user.password);
-        let sqlQuery = "UPDATE User SET password = '" + newPassword + "' WHERE username = '" + user.username + "' AND password = '" + hashedPsw + "';";
+        let sqlQuery = "SELECT * FROM User WHERE username='" + user.username + "';";
 
         try {
+            let userResult = await this.db.sendQuery(sqlQuery);
+            console.log("check1")
+            if(userResult.length == 0) throw new WrongUsernameOrPassword();
+            console.log("check2")
+
+            let hashedPsw = userResult[0].password;
+            console.log("check3")
+
+            await this.bcryptService.comparePasswords(user.password, hashedPsw);
+            let newHashedPassword = await this.bcryptService.passwordHash(newPassword);
+            sqlQuery = "UPDATE User SET password = '" + newHashedPassword + "' WHERE username = '" + user.username + "';";
+            console.log("check4")
             await this.db.sendQuery(sqlQuery);
+            console.log("check5")
         } 
         catch(err){
             throw err;
