@@ -270,7 +270,7 @@ export default function MediaPage() {
     const { value, name } = e.currentTarget;
     if (name === "mediaRating") {
       
-        // TODO fetch, update value for rating
+        // fetch, update value for rating
         fetch("http://localhost:4000/api/media/rate", {
             method: "POST",
             mode: "cors",

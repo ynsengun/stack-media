@@ -105,33 +105,38 @@ export default function ChannelContents() {
                 console.log(err);
                 toast.error("Error, could not fetch medias for the channel!");
               });
-
-            // TODO fetch suggested-medias
-            // fetch("http://localhost:4000/api/channel/getMedias", {
-            //   method: "POST",
-            //   mode: "cors",
-            //   headers: {
-            //     "Content-Type": "application/json",
-            //   },
-            //   body: JSON.stringify({
-            //     token: getAuthToken(),
-            //     username: getAuthName(),
-
-            //     channelId: channelId,
-            //   }),
-            // })
-            // .then((r) => checkResponse(r))
-            // .then((r) => r.json())
-            // .then((r) => {
-            //     setSuggestedMedias(["yusuf"]);
-            // })
-            // .catch((err) => {
-            //     console.log(err);
-            //     toast.error("Error, could not fetch suggested medias for the channel!");
-            // });
-            setSuggestedMedias(["yusuf"]);
         }
     }, [channelId]);
+
+    useEffect(() => {
+        if ( channelId != "")
+        {
+            // TODO fetch suggested-medias
+            fetch("http://localhost:4000/api/channel/getSuggestion", {
+              method: "POST",
+              mode: "cors",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                token: getAuthToken(),
+                username: getAuthName(),
+
+                channelId: channelId,
+              }),
+            })
+            .then((r) => checkResponse(r))
+            .then((r) => r.json())
+            .then((r) => {
+                console.log( r.data);
+                setSuggestedMedias( r.data);
+            })
+            .catch((err) => {
+                console.log(err);
+                toast.error("Error, could not fetch suggested medias for the channel!");
+            });
+        }
+    }, [channelId, myGenres]);
 
   const getButtonClass = (genre) => {
     
@@ -305,8 +310,8 @@ export default function ChannelContents() {
       <h1 className="mt-4">Suggestion</h1>
       <hr></hr>
       <div>
-        {suggestedMedias.map((movie, index) => (
-          <Media key={index} mediaName={movie} mediaType={1} pageType={1} />
+        {suggestedMedias.map((media, index) => (
+          <Media key={index} mediaName={media.name} mediaType={media.episodeNumber === null ? 0 : 1} pageType={1} />
         ))}
       </div>
     </Container>
