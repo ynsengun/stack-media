@@ -9,7 +9,7 @@ import { getAuthName, getAuthToken } from "../util/AuthenticationUtil";
 export default function Settings() {
   const [allGenres, setAllGenres] = useState([]);
   const [myGenres, setMyGenres] = useState([]);
-  const [inputText, setInputText] = useState({ pass: "", passR: "" });
+  const [inputText, setInputText] = useState({ passCur: "", pass: "", passR: "" });
 
   useEffect(() => {
     // fetch all-genres
@@ -158,10 +158,34 @@ export default function Settings() {
 
   const handleSave = () => {
     if (inputText.pass === inputText.passR) {
-      // TODO fetch new password
-      console.log("New Password: ", inputText.pass);
-      setInputText({ pass: "", passR: "" });
-    } else {
+      // fetch, new password
+      fetch("http://localhost:4000/api/user/changePassword", {
+        method: "POST",
+        mode: "cors",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          token: getAuthToken(),
+          username: getAuthName(),
+          password: inputText.passCur,
+
+          newPassword: inputText.pass,
+        }),
+      })
+        .then((r) => checkResponse(r))
+        .then((r) => r.json())
+        .then((r) => {
+          toast.success( "Password is successfully changed!");
+          setInputText({ passCur: "", pass: "", passR: "" });
+        })
+        .catch((err) => {
+          console.log(err);
+          toast.error("Your password could not be changed!");
+        });
+    } 
+    else 
+    {
       toast.error("Passwords does not match");
     }
   };
@@ -171,14 +195,21 @@ export default function Settings() {
       <div className="card bg-white p-5">
         <div className="card-body">
           <h3 className="h3">Settings</h3>
-          <label>Password</label>
+          <label className="mt-3">Current Password</label>
+          <input
+            value={inputText.passCur}
+            onChange={handleChange}
+            name="passCur"
+            className="w-100"
+          />
+          <label className="mt-3">New Password</label>
           <input
             value={inputText.pass}
             onChange={handleChange}
             name="pass"
             className="w-100"
           />
-          <label className="mt-3">Password (Repeat)</label>
+          <label className="mt-3">New Password (Repeat)</label>
           <input
             value={inputText.passR}
             onChange={handleChange}
