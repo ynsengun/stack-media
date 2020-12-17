@@ -236,8 +236,9 @@ export class UserDBService {
 
     public async changePassword(user: User, newPassword: string): Promise<any> {
         let result = null;
-
-        let sqlQuery = "UPDATE User SET password = '" + newPassword + "' WHERE username = '" + user.username + "' AND password = '" + user.password + "';";
+        
+        let hashedPsw = await this.bcryptService.passwordHash(user.password);
+        let sqlQuery = "UPDATE User SET password = '" + newPassword + "' WHERE username = '" + user.username + "' AND password = '" + hashedPsw + "';";
 
         try {
             await this.db.sendQuery(sqlQuery);
