@@ -344,6 +344,11 @@ export class Routes{
                 this.controller.declinePartyInvite(req, res);
             });
 
+        app.route(!'/api/party/getInvitations')
+            .delete(this.tokenService.checkToken, (req: Request, res: Response) => {
+                this.controller.getPartyInvitations(req, res);
+            });
+
         app.route(!'/api/party/getParticipants')
             .delete(this.tokenService.checkToken, (req: Request, res: Response) => {
                 this.controller.getParticipants(req, res);

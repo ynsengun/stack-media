@@ -99,6 +99,19 @@ export class PartyDBService {
         return result;
     }
 
+    public async getPartyInvitations(party: Party): Promise<any> {
+        let result = null;
+        let sqlQuery = "SELECT * FROM PartyInvitation WHERE partyId '" + party.partyId + "';";
+        
+        try {
+            result = await this.db.sendQuery(sqlQuery);
+        } 
+        catch(err){
+            throw err;
+        }
+        return result;
+    }
+
     public async getParticipants(party: Party): Promise<any> {
         let result = null;
 
