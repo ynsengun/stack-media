@@ -19,6 +19,7 @@ export default function MediaPage() {
   const [nextMedia, setNextMedia] = useState(null);
   const [suggestedMedias, setSuggestedMedias] = useState([{}]);
   const [rating, setRating] = useState(0);
+  const [avgRating, setAvgRating] = useState(0);
   const [comments, setComments] = useState([{}]);
   const [commentText, setCommentText] = useState("");
   const [commentFlag, setCommentFlag] = useState(false);
@@ -44,7 +45,7 @@ export default function MediaPage() {
   useEffect(() => {
     if ( mediaId != "")
     {
-        // TODO fetch progress and set button actives accordingly
+        // fetch progress and set button actives accordingly
         fetch("http://localhost:4000/api/media/getWatch", {
             method: "POST",
             mode: "cors",
@@ -64,9 +65,7 @@ export default function MediaPage() {
               let resArray = r.data;
               if ( resArray.length == 0) // first time being watched
               {
-                    setProgress(0);
-                    setButtonActive({ watch: true, finish: false });
-                  // TODO initialize watch fetch
+                  // initialize watch fetch
                   fetch("http://localhost:4000/api/media/initializeWatch", {
                         method: "POST",
                         mode: "cors",
@@ -84,6 +83,7 @@ export default function MediaPage() {
                         .then((r) => r.json())
                         .then((r) => {
                             toast.success( "First time starting to watch!");
+                            setProgress(0);
                         })
                     .catch((err) => {
                         console.log(err);
@@ -92,6 +92,8 @@ export default function MediaPage() {
               }
               else // it is watched in the past, update status accordingly
               {
+                  let progCountFetched = resArray[ 0].Progress;
+                  setProgress( progCountFetched);
               }
             })
             .catch((err) => {
@@ -99,7 +101,7 @@ export default function MediaPage() {
               toast.error("Error, could not get watch status!");
             });
 
-        // TODO fetch rating (WE CANNOT) wait for server
+        // fetch avegarge rating
         fetch("http://localhost:4000/api/media/getRating", {
             method: "POST",
             mode: "cors",
@@ -116,17 +118,26 @@ export default function MediaPage() {
             .then((r) => checkResponse(r))
             .then((r) => r.json())
             .then((r) => {
-              console.log( r.data);
+                let resArray = r.data;
+                if ( resArray.length === 0) // no rating has been done for the media
+                {
+                    setAvgRating(0);
+                }
+                else
+                {
+                    console.log( resArray);
+                    setAvgRating( resArray[0].rate);
+                }
             })
             .catch((err) => {
               console.log(err);
               toast.error("Error, could not get rating for the media!");
             });
 
+            // TODO fetch my rating
+
 
         // TODO fetch suggested and next(if series) media
-
-        setRating(3);
         setSuggestedMedias([
         { name: "aaa", type: 0 },
         { name: "bbb", type: 1 },
@@ -166,13 +177,13 @@ export default function MediaPage() {
   }, [mediaId, commentFlag]);
 
   useEffect(() => {
-    if (progress % 4 !== 0) 
+    if (progress % 4 !== 0 && progress !== 0) 
     {
         setButtonActive({ watch: false, finish: true }); // watch
     }
     else
-    {
-        setButtonActive({ watch: false, finish: false }); // finish watching
+    { 
+        setButtonActive({ watch: true, finish: false }); // finish watching
     }
   }, [progress]);
 
@@ -385,6 +396,8 @@ export default function MediaPage() {
               {option(9)}
               {option(10)}
             </select>
+            <label className="mr-1">Avg Rating:</label>
+            <label className="mr-1">{avgRating === 0 ? "Not available" : avgRating}</label>
           </div>
 
           <div className="mt-4">
