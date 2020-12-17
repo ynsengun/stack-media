@@ -43,12 +43,35 @@ export default function MediaBar(props) {
       });
 
     // TODO fetch parties
-    setParties([
-      { name: "S3L4M", id: "234" },
-      { name: "S52L4M", id: "3546346" },
-      { name: "SL4M", id: "345345ewr" },
-      { name: "SLAA4AM", id: "76tdgwe" },
-    ]);
+    fetch("http://localhost:4000/api/party/getParties", {
+      method: "POST",
+      mode: "cors",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        token: getAuthToken(),
+        username: getAuthName(),
+      }),
+    })
+      .then((r) => checkResponse(r))
+      .then((r) => r.json())
+      .then((r) => {
+        let resArray = r.data;
+        console.log( "My parties:");
+        console.log( resArray);
+        //setParties( resArray);
+      })
+      .catch((err) => {
+        console.log(err);
+        toast.error("Error, could not fetch your created channels!");
+      });
+    // setParties([
+    //   { name: "S3L4M", id: "234" },
+    //   { name: "S52L4M", id: "3546346" },
+    //   { name: "SL4M", id: "345345ewr" },
+    //   { name: "SLAA4AM", id: "76tdgwe" },
+    // ]);
   }, []);
 
   const handleChange = (e) => {
@@ -87,21 +110,18 @@ export default function MediaBar(props) {
           ...channels,
           { channelName: textInput.channel, channelId: r.data },
         ]);
-        console.log(channels);
+        //console.log(channels);
+        setTextInput({ ...textInput, channel: "" });
       })
       .catch((err) => {
         console.log(err);
         toast.error("Error, could not create channel!");
       });
-
-    setTextInput({ ...textInput, channel: "" });
   };
 
   const handleNewParty = () => {
-    // TODO fetch, post request to add textInput.party
-
-    /*
-    fetch("http://localhost:4000/api/channel/create", {
+    // fetch, post request to add textInput.party
+    fetch("http://localhost:4000/api/party/addParty", {
             method: "POST",
             mode: "cors",
             headers: {
@@ -112,22 +132,24 @@ export default function MediaBar(props) {
                 token: getAuthToken(),
                 username: getAuthName(),
                 
-                title: textInput.party,
-            
+                name: textInput.party,
+                creatorUsername: getAuthName(),
+                description: "LOL what do you need this info for?", // DOES IT REALLY NECESSARY?
             }),
         })
         .then((r) => checkResponse(r))
         .then((r) => r.json())
         .then((r) => {
+            console.log( "New party:");
             console.log( r);
+            toast.success( "Successfuly created party!");
+            setTextInput({ ...textInput, party: "" });
+            // TODO Update party table when server returns id as if in adding channel
         })
         .catch((err) => {
             console.log(err);
-            toast.error("error");
-        });*/
-
-    setParties([...parties, { name: textInput.party, id: "" }]); // TODO fetch id need to be returned from post and set here
-    setTextInput({ ...textInput, party: "" });
+            toast.error("Error, party could not be created");
+        });
   };
 
   const handleDeleteParty = (partyId) => {
