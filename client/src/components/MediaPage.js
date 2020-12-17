@@ -66,7 +66,7 @@ export default function MediaPage() {
               {
                     setProgress(0);
                     setButtonActive({ watch: true, finish: false });
-                  // initialize watch fetch
+                  // TODO initialize watch fetch
                   fetch("http://localhost:4000/api/media/initializeWatch", {
                         method: "POST",
                         mode: "cors",

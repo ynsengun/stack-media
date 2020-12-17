@@ -20,42 +20,29 @@ export default function FriendsBar() {
 
   useEffect(() => {
     // TODO fetch friends of the user with their last watch => wait server
-    // fetch("http://localhost:4000/api/user/getFriendActivities", {
-    //   method: "POST",
-    //   mode: "cors",
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //   },
-    //   body: JSON.stringify({
-    //     token: getAuthToken(),
-    //     username: getAuthName(),
-    //   }),
-    // })
-    //   .then((r) => checkResponse(r))
-    //   .then((r) => r.json())
-    //   .then((r) => {
-    //     let resArray = r.data;
-    //     console.log( resArray);
-    //   })
-    //   .catch((err) => {
-    //     console.log(err);
-    //     toast.error("Error, could not load your friends!");
-    //   });
+    fetch("http://localhost:4000/api/user/getFriendActivities", {
+      method: "POST",
+      mode: "cors",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        token: getAuthToken(),
+        username: getAuthName(),
+      }),
+    })
+      .then((r) => checkResponse(r))
+      .then((r) => r.json())
+      .then((r) => {
+        let resArray = r.data;
+        console.log( resArray);
+        setFriends( resArray);
+      })
+      .catch((err) => {
+        console.log(err);
+        toast.error("Error, could not load your friends!");
+      });
 
-    setFriends([
-      {
-        name: "friend1",
-        lastWatch: "watch1",
-      },
-      {
-        name: "friend2",
-        lastWatch: "watch1",
-      },
-      {
-        name: "friend3",
-        lastWatch: "watch1",
-      },
-    ]);
   }, []);
 
   const handleNewFriend = () => {
@@ -84,19 +71,16 @@ export default function FriendsBar() {
         console.log(err);
         toast.error("Error, could not send friendship request!");
       });
-
-    // setFriends([...friends, { name: textInput, lastWatch: "aa" }]);
-    // setTextInput(""); // to reset the input text field
   };
 
   const handleDeleteFriend = (friendName) => {
     
     let temp = [];
     friends.forEach((friend) => {
-      if (friendName != friend.name) temp.push(friend);
+      if (friendName != friend.username) temp.push(friend);
     });
     
-    //TODO fetch delete friend => wait for server to implement getFriendActivities to actually test it
+    // fetch delete friend 
     fetch("http://localhost:4000/api/user/removeFriend", {
       method: "POST",
       mode: "cors",
@@ -131,8 +115,8 @@ export default function FriendsBar() {
         <div className="FriendsScroolBar">
           {friends.map((friend) => (
             <FriendLabel
-              friendName={friend.name}
-              movieName={friend.lastWatch}
+              friendName={friend.username}
+              movieName={friend.lastActivity == null ? "-" : friend.lastActivity}
               handleDeleteFriend={handleDeleteFriend}
             ></FriendLabel>
           ))}

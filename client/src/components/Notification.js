@@ -11,7 +11,7 @@ export default function Notification() {
   //{ isFriend: false, name: "", id: "" }
 
   useEffect(() => {
-    // TODO fetch friendship notifications
+    // fetch friendship notifications
     fetch("http://localhost:4000/api/user/getFriendshipInvitations", {
         method: "POST",
         mode: "cors",
@@ -50,7 +50,6 @@ export default function Notification() {
   }, []);
 
   const handleYes = (clickedNotification) => {
-    //TODO fetch add relation
 
     let temp = [];
     notifications.forEach((notification) => {
@@ -82,7 +81,7 @@ export default function Notification() {
               toast.error("Error, could not accept friend request!");
             });
     }
-    else // add to party
+    else // TODO add to party
     {
         // fetch("http://localhost:4000/api/user/getFriendshipInvitations", {
         //     method: "POST",
@@ -114,7 +113,7 @@ export default function Notification() {
       if (notification !== clickedNotification) temp.push(notification);
     });
 
-    //TODO fetch reject relation
+    // fetch reject relation
     if ( clickedNotification.isFriend ) // reject friend request
     {
         fetch("http://localhost:4000/api/user/refuseFriendshipInvitation", {
@@ -140,7 +139,7 @@ export default function Notification() {
               toast.error("Error, could not reject friend request!");
             });
     }
-    else // reject party request
+    else // TODO reject party request
     {
         // fetch("http://localhost:4000/api/user/getFriendshipInvitations", {
         //     method: "POST",
