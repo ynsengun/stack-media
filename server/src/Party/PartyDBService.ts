@@ -58,15 +58,20 @@ export class PartyDBService {
     public async inviteParticipant(party: Party, user: User): Promise<any> {
         let result = null;
 
-        let sqlQuery = "INSERT INTO PartyInvitation VALUES('" + party.partyId + "', '" + user.username + "', null);";
-
+        let sqlQuery = "SELECT * FROM User WHERE username = '" + user.username + "';";
+        
         try {
-            await this.db.sendQuery(sqlQuery);
+            result = await this.db.sendQuery(sqlQuery);
+            if (result.length > 0)
+            {
+                sqlQuery = "INSERT INTO PartyInvitation VALUES('" + party.partyId + "', '" + user.username + "', null);";
+                await this.db.sendQuery(sqlQuery);
+            }
         } 
         catch(err){
             throw err;
         }
-        return result;
+        return null;
     }
 
     public async acceptPartyInvite(party: Party, user: User): Promise<any> {

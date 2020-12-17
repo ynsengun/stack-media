@@ -352,20 +352,20 @@ export class UserDBService {
     public async sendFriendshipInvitation(user: User, invited: string): Promise<any> {
         let result = null;
 
-        let sqlQuery = "INSERT INTO FriendshipInvitation VALUES('" + user.username + "', '" + invited + "');";
-        console.log(sqlQuery);
+        let sqlQuery = "SELECT * FROM User WHERE username = '" + invited + "';";
+        
         try {
-            await this.db.sendQuery(sqlQuery);
+            result = await this.db.sendQuery(sqlQuery);
+            if (result.length > 0)
+            {
+                sqlQuery = "INSERT INTO FriendshipInvitation VALUES('" + user.username + "', '" + invited + "');";
+                await this.db.sendQuery(sqlQuery);
+            }
         } 
         catch(err){
-            if(err.code == "ER_DUP_ENTRY"){
-                throw new AlreadyExist();
-            }
-            else{
-                throw err;
-            }
+            throw err;
         }
-        return result;
+        return null;
     }
     /*
     
