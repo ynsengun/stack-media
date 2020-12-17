@@ -142,17 +142,17 @@ export class UserDBService {
         let resultFriends = null;
         let resultActivities = null;
 
-        let sqlQuery = "SELECT F.friend2Username, WHERE F.friend1Username = '" + user.username + "';";
+        let sqlQuery = "SELECT UserFriend.username as username, MAX(WatchMedia.timeStamp) as lastActivity WatchMedia.name FROM ((SELECT friend1Username as username FROM Friendship WHERE friend2Username = '" + user.username + "') UNION (SELECT friend2Username as username FROM Friendship WHERE friend1Username = '" + user.username + "')) UserFriend LEFT OUTER JOIN (SELECT * FROM Watch, Media WHERE Media.mediaId=Watch.mediaId ) WatchMedia ON UserFriend.username=WatchMedia.username GROUP BY UserFriend.username;";
 
         try {
-            resultFriends = await this.db.sendQuery(sqlQuery);
-            sqlQuery = "SELECT F.friend1Username, WHERE F.friend2Username = '" + user.username + "';";
-            resultFriends.concat(await this.db.sendQuery(sqlQuery));
+            resultActivities = await this.db.sendQuery(sqlQuery);
+            /*sqlQuery = "SELECT F.friend1Username, WHERE F.friend2Username = '" + user.username + "';";
+             resultFriends.concat(await this.db.sendQuery(sqlQuery));
             if (resultFriends.length > 0)
             {
                 sqlQuery = "SELECT W.username, M.name FROM , Watch W, Media M WHERE FIND_IN_SET(W.username, " + resultFriends + ") AND W.mediaId = M.mediaId;";
                 resultActivities = await this.db.sendQuery(sqlQuery);
-            }
+            }*/
         } 
         catch(err){
             throw err;
