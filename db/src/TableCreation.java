@@ -86,16 +86,6 @@ public class TableCreation {
                 "FOREIGN KEY(creatorUsername) REFERENCES User(username) on delete cascade )" +
                 "ENGINE=INNODB;");
         done();
-        statement.executeUpdate("CREATE TABLE IF NOT EXISTS Party (" +
-                "partyId VARCHAR(12) NOT NULL," +
-                "creatorUsername VARCHAR(32) NOT NULL," +
-                "name VARCHAR(64) NOT NULL," +
-                "description VARCHAR(256)," +
-                "numberOfMembers INT(10)," +
-                "PRIMARY KEY (partyId)," +
-                "FOREIGN KEY(creatorUsername) REFERENCES User(username) on delete cascade )" +
-                "ENGINE=INNODB;");
-        done();
         statement.executeUpdate("CREATE TABLE IF NOT EXISTS Genre (" +
                 "genreId VARCHAR(32) NOT NULL," +
                 "title VARCHAR(64) NOT NULL," +

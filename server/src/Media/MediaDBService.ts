@@ -108,7 +108,7 @@ export class MediaDBService {
     public async getAverageRating(media: Media): Promise<any> {
         let result = null;
         
-        let sqlQuery = "SELECT M.mediaId, AVG(rate) FROM Media M INNER JOIN MediaRating ON M.mediaId = MediaRating.mediaId WHERE M.mediaId = '" + media.mediaId + "' GROUP BY M.mediaId;";
+        let sqlQuery = "SELECT M.mediaId, AVG(rate) as avgRate FROM Media M INNER JOIN MediaRating ON M.mediaId = MediaRating.mediaId WHERE M.mediaId = '" + media.mediaId + "' GROUP BY M.mediaId;";
 
         try {
             result = await this.db.sendQuery(sqlQuery);
@@ -153,8 +153,8 @@ export class MediaDBService {
     public async createMedia(media: Media, mediaGenres: Genre[]): Promise<any> {
         let result = null;
         let mediaId = id();
-        let uploadDate = Date.now().toLocaleString();
-        let sqlQuery = "INSERT INTO Media VALUES('" + mediaId + "','" + media.publishUsername + "','" + media.name + "','" + media.description + "','" + media.path + "','" + media.duration + "','" + uploadDate + "');";
+
+        let sqlQuery = "INSERT INTO Media VALUES('" + mediaId + "','" + media.publishUsername + "','" + media.name + "','" + media.description + "','" + media.path + "','" + media.duration + "', null);";
 
         try {
             await this.db.sendQuery(sqlQuery);  
@@ -188,8 +188,8 @@ export class MediaDBService {
 
     public async updateMedia(media: Media): Promise<any> {
         let result = null;
-        let uploadDate = Date.now().toLocaleString();
-        let sqlQuery = "UPDATE Media SET mediaId = '" + media.mediaId + "', publishUsername = '" +  media.publishUsername + "', name = '" + media.name + "', description = '" + media.description + "', path = '" + media.path + "', duration = '" + media.duration + "', uploadDate = '" + uploadDate + "' WHERE mediaId = '" + media.mediaId + "';";
+
+        let sqlQuery = "UPDATE Media SET mediaId = '" + media.mediaId + "', publishUsername = '" +  media.publishUsername + "', name = '" + media.name + "', description = '" + media.description + "', path = '" + media.path + "', duration = '" + media.duration + "', null WHERE mediaId = '" + media.mediaId + "';";
         try {
             await this.db.sendQuery(sqlQuery);  
             if(media.episodeNumber == null){ // it means it is a movie, then add to movie table
@@ -397,7 +397,7 @@ export class MediaDBService {
     public async getSuggestionForChannel(channel: Channel): Promise<any> {
         let result = null;
 
-        let sqlQuery = "SELECT DISTINCT M.* FROM MediaHasGenre MG, Media M WHERE MG.genreId IN (SELECT genreId FROM ChannelHasGenre WHERE channelId = '" + channel.channelId + "') AND M.mediaId=MG.mediaId AND M.mediaId NOT IN (SELECT mediaId from ChannelMedia WHERE channelId='" + channel.channelId + "');";
+        let sqlQuery = "SELECT DISTINCT M.*, episodeNumber FROM (MediaHasGenre MG, Media M) LEFT OUTER JOIN TVSeriesEpisode ON TVSeriesEpisode.mediaId = M.mediaId WHERE MG.genreId IN (SELECT genreId FROM ChannelHasGenre WHERE channelId = '" + channel.channelId + "') AND M.mediaId=MG.mediaId AND M.mediaId NOT IN (SELECT mediaId from ChannelMedia WHERE channelId='" + channel.channelId + "');";
         try {
             result = await this.db.sendQuery(sqlQuery);
         } 

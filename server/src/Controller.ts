@@ -2,6 +2,7 @@ import {Request, Response} from "express";
 import {UserBusiness} from "./User/UserBusiness";
 import {MediaBusiness} from "./Media/MediaBusiness";
 import {ChannelBusiness} from "./Channel/ChannelBusiness";
+import {PartyBusiness} from "Party/PartyBusiness";
 import {Validation} from "./Service/Validation";
 import {ErrorResponse} from "./Model/Response/ErrorResponse";
 import userMapping from "./Service/UserMapping";
@@ -9,18 +10,21 @@ import mediaMapping from "./Service/MediaMapping";
 import commentMapping from "./Service/CommentMapping";
 import channelMapping from "./Service/ChannelMapping";
 import genreMapping from "./Service/GenreMapping";
+import partyMapping from "./Service/PartyMapping";
 
 export class Controller{
 
     private userBusiness: UserBusiness;
     private channelBusiness: ChannelBusiness;
     private mediaBusiness: MediaBusiness;
+    private partyBusiness: PartyBusiness;
     private validation: Validation;
 
     constructor() {
         this.userBusiness = new UserBusiness();
         this.channelBusiness = new ChannelBusiness();
         this.mediaBusiness = new MediaBusiness();
+        this.partyBusiness = new PartyBusiness();
         this.validation = new Validation();
     }
 
@@ -46,16 +50,6 @@ export class Controller{
                 genreList.push(genreMapping.map(requestGenres[i]));
             }
             let result = await this.userBusiness.register(userMapping.map(request.body), genreList);
-            response.status(result.status).send(result);
-        } catch(error){
-            const errorResponse = new ErrorResponse(error);
-            response.status(errorResponse.status).send(new ErrorResponse(error));
-        }
-    }
-
-    public async getParties(request: Request, response: Response): Promise<void> {
-        try{
-            let result = await this.userBusiness.getParties(userMapping.map(request.body));
             response.status(result.status).send(result);
         } catch(error){
             const errorResponse = new ErrorResponse(error);
@@ -708,6 +702,95 @@ export class Controller{
         try{
             this.validation.deleteChannelValidation(request);
             let result = await this.channelBusiness.deleteChannel(channelMapping.map(request.body));
+            response.status(result.status).send(result);
+        } catch(error){
+            const errorResponse = new ErrorResponse(error);
+            response.status(errorResponse.status).send(new ErrorResponse(error));
+        }
+    }
+
+    // party functions
+    public async addParty(request: Request, response: Response): Promise<void> {
+        try{
+            this.validation.addPartyValidation(request);
+            let result = await this.partyBusiness.addParty(partyMapping.map(request.body));
+            response.status(result.status).send(result);
+        } catch(error){
+            const errorResponse = new ErrorResponse(error);
+            response.status(errorResponse.status).send(new ErrorResponse(error));
+        }
+    }
+
+    public async removeParty(request: Request, response: Response): Promise<void> {
+        try{
+            this.validation.removePartyValidation(request);
+            let result = await this.partyBusiness.removeParty(partyMapping.map(request.body));
+            response.status(result.status).send(result);
+        } catch(error){
+            const errorResponse = new ErrorResponse(error);
+            response.status(errorResponse.status).send(new ErrorResponse(error));
+        }
+    }
+
+    public async getParties(request: Request, response: Response): Promise<void> {
+        try{
+            this.validation.getPartiesValidation(request);
+            let result = await this.partyBusiness.getParties(userMapping.map(request.body));
+            response.status(result.status).send(result);
+        } catch(error){
+            const errorResponse = new ErrorResponse(error);
+            response.status(errorResponse.status).send(new ErrorResponse(error));
+        }
+    }
+
+    public async inviteParticipant(request: Request, response: Response): Promise<void> {
+        try{
+            this.validation.inviteParticipantValidation(request);
+            let result = await this.partyBusiness.inviteParticipant(partyMapping.map(request.body), request.body.invitedUsername);
+            response.status(result.status).send(result);
+        } catch(error){
+            const errorResponse = new ErrorResponse(error);
+            response.status(errorResponse.status).send(new ErrorResponse(error));
+        }
+    }
+
+    public async acceptPartyInvite(request: Request, response: Response): Promise<void> {
+        try{
+            this.validation.acceptPartyInviteValidation(request);
+            let result = await this.partyBusiness.acceptPartyInvite(partyMapping.map(request.body), request.body.invitedUsername);
+            response.status(result.status).send(result);
+        } catch(error){
+            const errorResponse = new ErrorResponse(error);
+            response.status(errorResponse.status).send(new ErrorResponse(error));
+        }
+    }
+
+    public async declinePartyInvite(request: Request, response: Response): Promise<void> {
+        try{
+            this.validation.declinePartyInviteValidation(request);
+            let result = await this.partyBusiness.declinePartyInvite(partyMapping.map(request.body), request.body.invitedUsername);
+            response.status(result.status).send(result);
+        } catch(error){
+            const errorResponse = new ErrorResponse(error);
+            response.status(errorResponse.status).send(new ErrorResponse(error));
+        }
+    }
+
+    public async getParticipants(request: Request, response: Response): Promise<void> {
+        try{
+            this.validation.getParticipantsValidation(request);
+            let result = await this.partyBusiness.getParticipants(partyMapping.map(request.body));
+            response.status(result.status).send(result);
+        } catch(error){
+            const errorResponse = new ErrorResponse(error);
+            response.status(errorResponse.status).send(new ErrorResponse(error));
+        }
+    }
+
+    public async removeParticipant(request: Request, response: Response): Promise<void> {
+        try{
+            this.validation.removeParticipantValidation(request);
+            let result = await this.partyBusiness.removeParticipant(partyMapping.map(request.body), request.body.removedUsername);
             response.status(result.status).send(result);
         } catch(error){
             const errorResponse = new ErrorResponse(error);

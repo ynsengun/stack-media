@@ -102,7 +102,7 @@ export default function MediaPage() {
             });
 
         // fetch avegarge rating
-        fetch("http://localhost:4000/api/media/getRating", {
+        fetch("http://localhost:4000/api/media/getAverageRating", {
             method: "POST",
             mode: "cors",
             headers: {
@@ -119,14 +119,15 @@ export default function MediaPage() {
             .then((r) => r.json())
             .then((r) => {
                 let resArray = r.data;
+                // console.log( "Avg rating:");
+                // console.log( resArray);
                 if ( resArray.length === 0) // no rating has been done for the media
                 {
                     setAvgRating(0);
                 }
                 else
                 {
-                    console.log( resArray);
-                    setAvgRating( resArray[0].rate);
+                    setAvgRating( resArray[0].avgRate);
                 }
             })
             .catch((err) => {
@@ -134,7 +135,32 @@ export default function MediaPage() {
               toast.error("Error, could not get rating for the media!");
             });
 
-            // TODO fetch my rating
+            // fetch my rating
+            fetch("http://localhost:4000/api/media/getUserRating", {
+                method: "POST",
+                mode: "cors",
+                headers: {
+                "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                token: getAuthToken(),
+                username: getAuthName(),
+
+                mediaId: mediaId,
+                }),
+            })
+                .then((r) => checkResponse(r))
+                .then((r) => r.json())
+                .then((r) => {
+                    let resArray = r.data;
+                    // console.log( "Get user rating:");
+                    // console.log( resArray);
+                    setRating( resArray[ 0].rate);
+                })
+                .catch((err) => {
+                console.log(err);
+                toast.error("Error, could not get rating for the media!");
+                });
 
 
         // TODO fetch suggested and next(if series) media
@@ -177,7 +203,7 @@ export default function MediaPage() {
   }, [mediaId, commentFlag]);
 
   useEffect(() => {
-    if (progress % 4 !== 0 && progress !== 0) 
+    if (progress % 4 === 3 && progress !== 0) 
     {
         setButtonActive({ watch: false, finish: true }); // watch
     }
@@ -207,6 +233,8 @@ export default function MediaPage() {
         .then((r) => r.json())
         .then((r) => {
             setProgress( progress + 1);
+            // console.log( "Progress:");
+            // console.log( progress);
         })
         .catch((err) => {
           console.log(err);
@@ -221,7 +249,7 @@ export default function MediaPage() {
           display: "inline-block",
           width: index === 3 ? "34%" : "33%",
           height: "100%",
-          backgroundColor: progress < index ? "gray" : "#303030",
+          backgroundColor: (progress % 4) < index ? "gray" : "#303030",
           border: "1px black solid",
         }}
       />
@@ -241,9 +269,32 @@ export default function MediaPage() {
   const handleChange = (e) => {
     const { value, name } = e.currentTarget;
     if (name === "mediaRating") {
-      // TODO fetch, update value for rating
-      setRating(value);
-      console.log(value);
+      
+        // fetch, update value for rating
+        fetch("http://localhost:4000/api/media/rate", {
+            method: "POST",
+            mode: "cors",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              token: getAuthToken(),
+              username: getAuthName(),
+    
+              mediaId: mediaId,
+              rate: value,
+            }),
+          })
+            .then((r) => checkResponse(r))
+            .then((r) => r.json())
+            .then((r) => {
+                console.log( "add rating");
+                setRating(value);
+            })
+            .catch((err) => {
+              console.log(err);
+              toast.error("Error, media cannot be watched!");
+            });
     }
     if (name === "commentText") {
       setCommentText(value);
@@ -379,7 +430,7 @@ export default function MediaPage() {
 
           <div
             className={`mt-4 ${
-              (buttonActive.watch != false || buttonActive.finish != false) &&
+              (progress < 4) &&
               "d-none"
             }`}
           >
