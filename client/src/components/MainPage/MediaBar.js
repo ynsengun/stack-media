@@ -153,13 +153,36 @@ export default function MediaBar(props) {
   };
 
   const handleDeleteParty = (partyId) => {
-    //TODO fetch delete party
 
     let temp = [];
     parties.forEach((party) => {
       if (partyId != party.id) temp.push(party);
     });
-    setParties(temp);
+
+    //TODO fetch delete party
+    fetch("http://localhost:4000/api/party/removeParty", {
+      method: "DELETE",
+      mode: "cors",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        token: getAuthToken(),
+        username: getAuthName(),
+
+        partyId: partyId,
+      }),
+    })
+      .then((r) => checkResponse(r))
+      .then((r) => r.json())
+      .then((r) => {
+        setParties(temp);
+        toast.success("Successfully deleted party!");
+      })
+      .catch((err) => {
+        console.log(err);
+        toast.error("Error, could not delete party!");
+      });
   };
 
   const handleDeleteChannels = (channelId) => {
