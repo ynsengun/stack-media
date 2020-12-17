@@ -30,7 +30,6 @@ export default function MovieContents() {
     .then((r) => {
         let resArray = r.data;
         setMovieInformation( resArray);
-        console.log( resArray);
     })
     .catch((err) => {
         console.log(err);
