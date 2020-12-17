@@ -19,7 +19,7 @@ export default function FriendsBar() {
   };
 
   useEffect(() => {
-    // TODO fetch friends of the user with their last watch => wait server
+    // fetch friends of the user with their last watch
     fetch("http://localhost:4000/api/user/getFriendActivities", {
       method: "POST",
       mode: "cors",
@@ -116,7 +116,8 @@ export default function FriendsBar() {
           {friends.map((friend) => (
             <FriendLabel
               friendName={friend.username}
-              movieName={friend.lastActivity == null ? "-" : friend.lastActivity}
+              movieName={friend.mediaName == null ? "-" : friend.mediaName}
+              lastWatchedDate={friend.lastActivity}
               handleDeleteFriend={handleDeleteFriend}
             ></FriendLabel>
           ))}

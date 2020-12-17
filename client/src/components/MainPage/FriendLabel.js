@@ -6,7 +6,7 @@ import "../../css/MainPage/Home.css";
 import "../../css/MainPage/FriendsBar.css";
 
 export default function FriendLabel(props) {
-  const { friendName, movieName, handleDeleteFriend } = props;
+  const { friendName, movieName, lastWatchedDate, handleDeleteFriend } = props;
 
   return (
     <Container>
@@ -23,6 +23,7 @@ export default function FriendLabel(props) {
           </button>
         </h4>
         <p>Last Watched: {movieName}</p>
+        <p>On: {lastWatchedDate === null ? "-" : lastWatchedDate}</p>
       </div>
     </Container>
   );

@@ -93,7 +93,7 @@ export class MediaDBService {
     public async getAverageRating(media: Media): Promise<any> {
         let result = null;
         
-        let sqlQuery = "SELECT M.mediaId, AVG(rate) FROM Media M INNER JOIN MediaRating ON M.mediaId = MediaRating.mediaId WHERE M.mediaId = '" + media.mediaId + "' GROUP BY M.mediaId;";
+        let sqlQuery = "SELECT M.mediaId, AVG(rate) as avgRate FROM Media M INNER JOIN MediaRating ON M.mediaId = MediaRating.mediaId WHERE M.mediaId = '" + media.mediaId + "' GROUP BY M.mediaId;";
 
         try {
             result = await this.db.sendQuery(sqlQuery);
@@ -382,7 +382,7 @@ export class MediaDBService {
     public async getSuggestionForChannel(channel: Channel): Promise<any> {
         let result = null;
 
-        let sqlQuery = "SELECT DISTINCT M.* FROM MediaHasGenre MG, Media M WHERE MG.genreId IN (SELECT genreId FROM ChannelHasGenre WHERE channelId = '" + channel.channelId + "') AND M.mediaId=MG.mediaId AND M.mediaId NOT IN (SELECT mediaId from ChannelMedia WHERE channelId='" + channel.channelId + "');";
+        let sqlQuery = "SELECT DISTINCT M.*, episodeNumber FROM (MediaHasGenre MG, Media M) LEFT OUTER JOIN TVSeriesEpisode ON TVSeriesEpisode.mediaId = M.mediaId WHERE MG.genreId IN (SELECT genreId FROM ChannelHasGenre WHERE channelId = '" + channel.channelId + "') AND M.mediaId=MG.mediaId AND M.mediaId NOT IN (SELECT mediaId from ChannelMedia WHERE channelId='" + channel.channelId + "');";
         try {
             result = await this.db.sendQuery(sqlQuery);
         } 
