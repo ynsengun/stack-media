@@ -3,39 +3,172 @@ import { toast } from "react-toastify";
 import { useHistory } from "react-router-dom";
 import { Container, Card } from "semantic-ui-react";
 
+import { checkResponse } from "../util/ResponseUtil";
+import { getAuthName, getAuthToken } from "../util/AuthenticationUtil";
+
 export default function Notification() {
-  const [notifications, setNotifications] = useState([
-    { isFriend: false, name: "", id: "" },
-  ]);
+  const [notifications, setNotifications] = useState([]);
+  //{ isFriend: false, name: "", id: "" }
 
   useEffect(() => {
-    // TODO fetch notifications
+    // TODO fetch friendship notifications
+    fetch("http://localhost:4000/api/user/getFriendshipInvitations", {
+        method: "POST",
+        mode: "cors",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          token: getAuthToken(),
+          username: getAuthName(),
+        }),
+      })
+        .then((r) => checkResponse(r))
+        .then((r) => r.json())
+        .then((r) => {
+          let resArray = r.data;
+          console.log( r.data);
+          let newFriendNotifications = [ ...notifications ];
+          for ( let i = 0; i < resArray.length; i++)
+          {
+            newFriendNotifications.push( { isFriend: true, name: resArray[ i].inviterUsername, id: resArray[ i].inviterUsername } );
+          }
+          setNotifications( newFriendNotifications)
+        })
+        .catch((err) => {
+          console.log(err);
+          toast.error("Error, could not get friend requests!");
+        });
 
-    setNotifications([
-      { isFriend: false, name: "discoksjd party", id: "" },
-      { isFriend: false, name: "disco party2", id: "" },
-      { isFriend: true, name: "friend2", id: "" },
-    ]);
+    // TODO fetch party notifications
+
+    // setNotifications([
+    //   { isFriend: false, name: "discoksjd party", id: "" },
+    //   { isFriend: false, name: "disco party2", id: "" },
+    //   { isFriend: true, name: "friend2", id: "" },
+    // ]);
   }, []);
 
-  const handleYes = (clicked) => {
+  const handleYes = (clickedNotification) => {
     //TODO fetch add relation
 
     let temp = [];
     notifications.forEach((notification) => {
-      if (notification !== clicked) temp.push(notification);
+      if (notification !== clickedNotification) temp.push(notification);
     });
-    setNotifications(temp);
+
+    if ( clickedNotification.isFriend) // add to friendship
+    {
+        fetch("http://localhost:4000/api/user/acceptFriendshipInvitation", {
+            method: "POST",
+            mode: "cors",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              token: getAuthToken(),
+              username: getAuthName(),
+                
+              inviterUsername: clickedNotification.id,
+            }),
+          })
+            .then((r) => checkResponse(r))
+            .then((r) => r.json())
+            .then((r) => {
+              setNotifications( temp);
+            })
+            .catch((err) => {
+              console.log(err);
+              toast.error("Error, could not accept friend request!");
+            });
+    }
+    else // add to party
+    {
+        // fetch("http://localhost:4000/api/user/getFriendshipInvitations", {
+        //     method: "POST",
+        //     mode: "cors",
+        //     headers: {
+        //       "Content-Type": "application/json",
+        //     },
+        //     body: JSON.stringify({
+        //       token: getAuthToken(),
+        //       username: getAuthName(),
+        //     }),
+        //   })
+        //     .then((r) => checkResponse(r))
+        //     .then((r) => r.json())
+        //     .then((r) => {
+
+        //       setNotifications(temp);
+        //     })
+        //     .catch((err) => {
+        //       console.log(err);
+        //       toast.error("Error, could not accept party invitaion!");
+        //     });
+    }
   };
 
-  const handleNo = (clicked) => {
-    //TODO fetch reject relation
-
+  const handleNo = (clickedNotification) => {
     let temp = [];
     notifications.forEach((notification) => {
-      if (notification !== clicked) temp.push(notification);
+      if (notification !== clickedNotification) temp.push(notification);
     });
-    setNotifications(temp);
+
+    //TODO fetch reject relation
+    if ( clickedNotification.isFriend ) // reject friend request
+    {
+        fetch("http://localhost:4000/api/user/refuseFriendshipInvitation", {
+            method: "POST",
+            mode: "cors",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              token: getAuthToken(),
+              username: getAuthName(),
+                
+              inviterUsername: clickedNotification.id,
+            }),
+          })
+            .then((r) => checkResponse(r))
+            .then((r) => r.json())
+            .then((r) => {
+              setNotifications( temp);
+            })
+            .catch((err) => {
+              console.log(err);
+              toast.error("Error, could not reject friend request!");
+            });
+    }
+    else // reject party request
+    {
+        // fetch("http://localhost:4000/api/user/getFriendshipInvitations", {
+        //     method: "POST",
+        //     mode: "cors",
+        //     headers: {
+        //       "Content-Type": "application/json",
+        //     },
+        //     body: JSON.stringify({
+        //       token: getAuthToken(),
+        //       username: getAuthName(),
+        //     }),
+        //   })
+        //     .then((r) => checkResponse(r))
+        //     .then((r) => r.json())
+        //     .then((r) => {
+        //       let resArray = r.data;
+        //       let newFriendNotifications = [];
+        //       for ( let i = 0; i < resArray.length; i++)
+        //       {
+        //         newFriendNotifications.append( { isFriend: true, name: resArray[ i], id: resArray[ i] } );
+        //       }
+        //       setNotifications(temp);
+        //     })
+        //     .catch((err) => {
+        //       console.log(err);
+        //       toast.error("Error, could not reject party request!");
+        //     });
+    }
   };
 
   const getNotification = (notification) => {
@@ -77,7 +210,8 @@ export default function Notification() {
     <div style={{ display: "flex", justifyContent: "center" }}>
       <Card className="text-center p-2" style={{ width: "30vw" }}>
         <h3 className="text-center h3">Invitations</h3>
-        {notifications.map((notification) => getNotification(notification))}
+        { notifications.length > 0 && notifications.map((notification) => getNotification(notification))}
+        { notifications.length == 0 && <label>You do not have any new notifications</label>}
       </Card>
     </div>
   );
