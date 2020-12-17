@@ -93,7 +93,7 @@ export class MediaDBService {
     public async getRating(media: Media): Promise<any> {
         let result = null;
 
-        let sqlQuery = "SELECT M.mediaId AVG(rate) FROM Media M INNER JOIN MediaRating ON M.mediaId = MediaRating.media-id WHERE M.mediaId = '" + media.mediaId + "' GROUP BY M.mediaId;";
+        let sqlQuery = "SELECT M.mediaId, AVG(rate) FROM Media M INNER JOIN MediaRating ON M.mediaId = MediaRating.mediaId WHERE M.mediaId = '" + media.mediaId + "' GROUP BY M.mediaId;";
 
         try {
             result = await this.db.sendQuery(sqlQuery);

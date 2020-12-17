@@ -100,36 +100,29 @@ export default function MediaPage() {
             });
 
         // TODO fetch rating (WE CANNOT) wait for server
-        // fetch("http://localhost:4000/api/media/getWatch", {
-        //     method: "POST",
-        //     mode: "cors",
-        //     headers: {
-        //       "Content-Type": "application/json",
-        //     },
-        //     body: JSON.stringify({
-        //       token: getAuthToken(),
-        //       username: getAuthName(),
+        fetch("http://localhost:4000/api/media/getRating", {
+            method: "POST",
+            mode: "cors",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              token: getAuthToken(),
+              username: getAuthName(),
     
-        //       mediaId: mediaId,
-        //     }),
-        //   })
-        //     .then((r) => checkResponse(r))
-        //     .then((r) => r.json())
-        //     .then((r) => {
-        //       let resArray = r.data;
-        //       if ( resArray.length == 0) // first time being watched
-        //       {
-        //             setProgress(0);
-        //             setButtonActive({ watch: true, finish: false });
-        //       }
-        //       else // it is watched in the past, update status accordingly
-        //       {
-        //       }
-        //     })
-        //     .catch((err) => {
-        //       console.log(err);
-        //       toast.error("Error, could not get watch status!");
-        //     });
+              mediaId: mediaId,
+            }),
+          })
+            .then((r) => checkResponse(r))
+            .then((r) => r.json())
+            .then((r) => {
+              console.log( r.data);
+            })
+            .catch((err) => {
+              console.log(err);
+              toast.error("Error, could not get rating for the media!");
+            });
+
 
         // TODO fetch suggested and next(if series) media
 
@@ -237,7 +230,7 @@ export default function MediaPage() {
   const handleChange = (e) => {
     const { value, name } = e.currentTarget;
     if (name === "mediaRating") {
-      // TODO fetch, value for rating
+      // TODO fetch, update value for rating
       setRating(value);
       console.log(value);
     }
