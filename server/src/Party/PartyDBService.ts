@@ -77,7 +77,7 @@ export class PartyDBService {
     public async acceptPartyInvite(party: Party, user: User): Promise<any> {
         let result = null;
 
-        let sqlQuery = "REMOVE FROM PartyInvitation WHERE username = '" +  user.username + "' and partyId = '" + party.partyId + "';";
+        let sqlQuery = "DELETE FROM PartyInvitation WHERE username = '" +  user.username + "' and partyId = '" + party.partyId + "';";
 
         try {
             await this.db.sendQuery(sqlQuery);
@@ -92,7 +92,7 @@ export class PartyDBService {
 
     public async declinePartyInvite(party: Party, user: User): Promise<any> {
         let result = null;
-        let sqlQuery = "REMOVE FROM PartyInvitation WHERE username = '" +  user.username + "' and partyId = '" + party.partyId + "';";
+        let sqlQuery = "DELETE FROM PartyInvitation WHERE username = '" +  user.username + "' and partyId = '" + party.partyId + "';";
 
         try {
             await this.db.sendQuery(sqlQuery);
@@ -133,7 +133,7 @@ export class PartyDBService {
     public async removeParticipant(party: Party, user: User): Promise<any> {
         let result = null;
 
-        let sqlQuery = "REMOVE FROM PartyParticipation WHERE partyId = '" + party.partyId + "' AND username = '" + user.username + "';";
+        let sqlQuery = "DELETE FROM PartyParticipation WHERE partyId = '" + party.partyId + "' AND username = '" + user.username + "';";
 
         try {
             await this.db.sendQuery(sqlQuery);
