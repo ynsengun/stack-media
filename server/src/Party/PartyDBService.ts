@@ -105,7 +105,7 @@ export class PartyDBService {
 
     public async getPartyInvitations(user: User): Promise<any> {
         let result = null;
-        let sqlQuery = "SELECT * FROM PartyInvitation WHERE username = '" + user.username + "';";
+        let sqlQuery = "SELECT PI.username, P.name FROM PartyInvitation PI, Party P WHERE PI.partyId = P.PartyId AND PI.username = '" + user.username + "';";
         
         try {
             result = await this.db.sendQuery(sqlQuery);
