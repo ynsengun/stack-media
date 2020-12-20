@@ -16,7 +16,9 @@ export class PartyDBService {
 
     public async addParty(party: Party): Promise<any> {
         let partyId = id();
-        let sqlQuery = "INSERT INTO Party VALUES('" + partyId + "', '" + party.username + "', '" + party.name + "', '" + party.description + "', 'ROLE_CREATOR');";
+        console.log( "PArty id length");
+        console.log( partyId);
+        let sqlQuery = "INSERT INTO Party VALUES('" + partyId + "', '" + party.username + "', '" + party.name + "', '" + party.description + "', 'ROLE_CREATOR');"; //32
 
         console.log( "Partu addition 1");
         try {
@@ -58,16 +60,16 @@ export class PartyDBService {
         return result;
     }
 
-    public async inviteParticipant(party: Party, user: User): Promise<any> {
+    public async inviteParticipant(party: Party, invitedUserName: string): Promise<any> {
         let result = null;
 
-        let sqlQuery = "SELECT * FROM User WHERE username = '" + user.username + "';";
+        let sqlQuery = "SELECT * FROM User WHERE username = '" + invitedUserName + "';";
         
         try {
             result = await this.db.sendQuery(sqlQuery);
             if (result.length > 0)
             {
-                sqlQuery = "INSERT INTO PartyInvitation VALUES('" + party.partyId + "', '" + user.username + "', null);";
+                sqlQuery = "INSERT INTO PartyInvitation VALUES('" + party.partyId + "', '" + invitedUserName + "', null);";
                 await this.db.sendQuery(sqlQuery);
             }
         } 
@@ -77,14 +79,14 @@ export class PartyDBService {
         return null;
     }
 
-    public async acceptPartyInvite(party: Party, user: User): Promise<any> {
+    public async acceptPartyInvite(party: Party, invitedUsername: string): Promise<any> {
         let result = null;
 
-        let sqlQuery = "DELETE FROM PartyInvitation WHERE username = '" +  user.username + "' and partyId = '" + party.partyId + "';";
+        let sqlQuery = "DELETE FROM PartyInvitation WHERE username = '" +  invitedUsername + "' AND partyId = '" + party.partyId + "';";
 
         try {
             await this.db.sendQuery(sqlQuery);
-            sqlQuery = "INSERT INTO Party VALUES('" + party.partyId + "', '" + party.username + "', " + party.name + "', " + party.description + "', ROLE_PARTICIPANT);";
+            sqlQuery = "INSERT INTO Party VALUES('" + party.partyId + "', '" + party.username + "', '" + party.name + "', '" + party.description + "', 'ROLE_PARTICIPANT');";
             await this.db.sendQuery(sqlQuery);
         } 
         catch(err){
@@ -93,22 +95,23 @@ export class PartyDBService {
         return result;
     }
 
-    public async declinePartyInvite(party: Party, user: User): Promise<any> {
+    public async declinePartyInvite(party: Party, invitedUsername: string): Promise<any> {
         let result = null;
-        let sqlQuery = "DELETE FROM PartyInvitation WHERE username = '" +  user.username + "' and partyId = '" + party.partyId + "';";
-
+        let sqlQuery = "DELETE FROM PartyInvitation WHERE username = '" +  invitedUsername + "' AND partyId = '" + party.partyId + "';";
+        console.log( "SLM");
         try {
             await this.db.sendQuery(sqlQuery);
         } 
         catch(err){
             throw err;
         }
+        console.log( "END SLM");
         return result;
     }
 
     public async getPartyInvitations(user: User): Promise<any> {
         let result = null;
-        let sqlQuery = "SELECT PI.username, P.name FROM PartyInvitation PI, Party P WHERE PI.partyId = P.PartyId AND PI.username = '" + user.username + "';";
+        let sqlQuery = "SELECT PI.*, P.name FROM PartyInvitation PI, Party P WHERE PI.partyId = P.PartyId AND PI.username = '" + user.username + "' AND P.role = 'ROLE_CREATOR';";
         
         try {
             result = await this.db.sendQuery(sqlQuery);
@@ -123,13 +126,14 @@ export class PartyDBService {
         let result = null;
 
         let sqlQuery = "SELECT * FROM Party WHERE partyId = '" + party.partyId + "';";
-        
+        console.log( "party participiten 1");
         try {
             result = await this.db.sendQuery(sqlQuery);
         } 
         catch(err){
             throw err;
         }
+        console.log( "party participiten 2");
         return result;
     }
     

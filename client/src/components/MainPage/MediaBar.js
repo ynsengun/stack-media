@@ -153,7 +153,7 @@ export default function MediaBar(props) {
             toast.success( "Successfuly created party!");
             setParties([
                 ...parties,
-                { partyName: textInput.party, partyId: r.data[0].partyId },
+                { partyName: textInput.party, partyId: r.data },
               ]);
             setTextInput({ ...textInput, party: "" });
         })
@@ -170,7 +170,7 @@ export default function MediaBar(props) {
       if (partyId != party.partyId) temp.push(party);
     });
 
-    //TODO fetch delete party => wait server
+    // fetch delete party
     fetch("http://localhost:4000/api/party/removeParty", {
       method: "POST",
       mode: "cors",

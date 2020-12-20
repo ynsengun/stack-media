@@ -780,8 +780,11 @@ export class Controller{
 
     public async declinePartyInvite(request: Request, response: Response): Promise<void> {
         try{
+            console.log( "d0");
             this.validation.declinePartyInviteValidation(request);
+            console.log( "d1");
             let result = await this.partyBusiness.declinePartyInvite(partyMapping.map(request.body), request.body.invitedUsername);
+            console.log( "d2");
             response.status(result.status).send(result);
         } catch(error){
             const errorResponse = new ErrorResponse(error);

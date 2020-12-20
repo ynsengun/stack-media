@@ -64,8 +64,17 @@ class PartyEventController{
 
     private getPartyById(partyId: string): Party{
         for(let i = 0 ; i < this.parties.length; i++){
-            if(this.parties[i].getPartyId() == partyId) return this.parties[i];
+            console.log( "Get party id:");
+            console.log(this.parties[i].getPartyId() );
+            console.log( "PArty ID arg");
+            console.log( partyId);
+            if(this.parties[i].getPartyId() === partyId)
+            {
+                console.log( this.parties[i]);
+                return this.parties[i];
+            }
         }
+        console.log( "Out of loop!");
         return null;
     }
 
@@ -217,9 +226,12 @@ class PartyEventController{
     }
 
     public remove(data){ // it is called by party business, not by the client socket
+        console.log( "rem1");
         let partyId: string = data.partyId;
         let party: Party = this.getPartyById(partyId);
+        console.log( "rem2");
         if(party == null) {
+            console.log( "rem3");
             throw new InvalidRequest();
         }
         console.log("there is a party (remove)");

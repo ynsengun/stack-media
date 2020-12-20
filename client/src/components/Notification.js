@@ -42,7 +42,7 @@ export default function Notification() {
           toast.error("Error, could not get friend requests!");
         });
 
-    // TODO fetch party notifications => wait server
+    // fetch party notifications
     fetch("http://localhost:4000/api/party/getInvitations", {
         method: "POST",
         mode: "cors",
@@ -62,7 +62,7 @@ export default function Notification() {
           let newPartyNotifications = [ ...notifications ];
           for ( let i = 0; i < resArray.length; i++)
           {
-            newPartyNotifications.push( { isFriend: false, name: resArray[ i].partyId, id: resArray[ i].partyId } ); //TODO ask server to return party name :( => wait server
+            newPartyNotifications.push( { isFriend: false, name: resArray[ i].name, id: resArray[ i].partyId } ); //TODO ask server to return party name :( => wait server
           }
           setPartyNotifications( newPartyNotifications)
         })
@@ -117,8 +117,9 @@ export default function Notification() {
               toast.error("Error, could not accept friend request!");
             });
     }
-    else // TODO add to party => wait server
+    else // add to party
     {
+
         fetch("http://localhost:4000/api/party/acceptInvite", {
             method: "POST",
             mode: "cors",
@@ -131,6 +132,8 @@ export default function Notification() {
 
               partyId: clickedNotification.id,
               invitedUsername: getAuthName(),
+              description: ":(",
+              name: clickedNotification.name,
             }),
           })
             .then((r) => checkResponse(r))
@@ -177,10 +180,10 @@ export default function Notification() {
               toast.error("Error, could not reject friend request!");
             });
     }
-    else // TODO reject party request
+    else // reject party request
     {
         fetch("http://localhost:4000/api/party/declineInvite", {
-            method: "POST",
+            method: "DELETE",
             mode: "cors",
             headers: {
               "Content-Type": "application/json",
@@ -197,6 +200,8 @@ export default function Notification() {
             .then((r) => r.json())
             .then((r) => {
               setNotifications(temp);
+
+              toast.success( "Successfully deleted the party request!");
             })
             .catch((err) => {
               console.log(err);

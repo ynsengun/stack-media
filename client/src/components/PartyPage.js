@@ -15,7 +15,7 @@ export default function PartyPage() {
     watch: true,
     finish: false,
   });
-  const [mediaId, setmediaId] = useState("");
+  const [partyId, setpartyId] = useState("");
   const [commentText, setCommentText] = useState("");
   const [participants, setParticipants] = useState([]);
   const [chat, setChat] = useState([]);
@@ -25,11 +25,11 @@ export default function PartyPage() {
 
   useEffect(() => {
     let path = history.location.pathname.substring(7);
-    setmediaId(path);
+    setpartyId(path);
 
     const unListen = history.listen(() => {
       let path = history.location.pathname.substring(7);
-      setmediaId(path);
+      setpartyId(path);
 
       window.scrollTo(0, 0);
     });
@@ -41,11 +41,37 @@ export default function PartyPage() {
 
   useEffect(() => {
     // TODO fetch
+    if ( partyId != "")
+    {
+        // fetch party participants
+        fetch("http://localhost:4000/api/party/getParticipants", {
+            method: "POST",
+            mode: "cors",
+            headers: {
+            "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+            token: getAuthToken(),
+            username: getAuthName(),
 
-    setProgress(0);
-    setButtonActive({ watch: true, finish: false });
-    setParticipants(["aaaa", "bbbbb"]);
-  }, [mediaId]);
+            partyId: partyId,
+            }),
+        })
+            .then((r) => checkResponse(r))
+            .then((r) => r.json())
+            .then((r) => {
+                setParticipants( r.data);
+            })
+            .catch((err) => {
+            console.log(err);
+            toast.error("Error, could not get party members!");
+            });
+
+        // TODO fetch these when how movie will be set determined!
+        setProgress(0);
+        setButtonActive({ watch: true, finish: false });
+    }
+  }, [partyId]);
 
   useEffect(() => {
     if (progress === 3) {
@@ -87,9 +113,31 @@ export default function PartyPage() {
   };
 
   const handleNewParticipant = () => {
-    // TODO fetch
-    setParticipants([...participants, participantText]);
-    setParticipantText("");
+    // fetch party participants
+    fetch("http://localhost:4000/api/party/inviteParticipant", {
+        method: "POST",
+        mode: "cors",
+        headers: {
+        "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            token: getAuthToken(),
+            username: getAuthName(),
+
+            invitedUsername: participantText,
+            partyId: partyId,
+        }),
+    })
+    .then((r) => checkResponse(r))
+    .then((r) => r.json())
+    .then((r) => {
+        setParticipantText("");
+        toast.success( "User successfully invited to the party!");
+    })
+    .catch((err) => {
+    console.log(err);
+    toast.error("Error, could not invite the user to the party!");
+    });
   };
 
   const handleDeleteParticipant = (clicked) => {
@@ -107,7 +155,7 @@ export default function PartyPage() {
       <div className="col-9" style={{ borderRight: "2px solid black" }}>
         <div style={{ paddingLeft: "50px", paddingRight: "50px" }}>
           <div className="card bg-secondary">
-            <h1 className="h1 text-center mt-5 text-white">{mediaId}</h1>
+            <h1 className="h1 text-center mt-5 text-white">{partyId}</h1>
             <div
               style={{
                 height: "40vh",
@@ -193,15 +241,16 @@ export default function PartyPage() {
         <hr />
         {participants.map((participant) => (
           <h3 className="h3 w-75">
-            {participant}{" "}
-            <button
+            {participant.username}{" "}
+            { participant.role != "ROLE_CREATOR" && participant.username != getAuthName() && (<button
               className="btn btn-danger btn-sm float-right"
               onClick={() => {
                 handleDeleteParticipant(participant);
               }}
             >
               x
-            </button>
+            </button>)}
+            { participant.role == "ROLE_CREATOR" && (<label>Admin</label>)}
           </h3>
         ))}
         <input

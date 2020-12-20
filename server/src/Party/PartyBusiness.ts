@@ -31,6 +31,7 @@ export class PartyBusiness {
     {
         try {
             let result = await this.partyDBService.removeParty(party);
+            console.log( "PARTY BUSINESS");
             partyEventController.remove({username: party.username, partyId: party.partyId});
             return new SuccessResponse(result);
         } catch (error) {
@@ -48,17 +49,17 @@ export class PartyBusiness {
         }
     }
 
-    public async inviteParticipant(party: Party, user: User): Promise<ResponseModel>
+    public async inviteParticipant(party: Party, invitedName: string): Promise<ResponseModel>
     {
         try {
-            let result = await this.partyDBService.inviteParticipant(party, user);
+            let result = await this.partyDBService.inviteParticipant(party, invitedName);
             return new SuccessResponse(result);
         } catch (error) {
             return new ErrorResponse(error);
         }
     }
 
-    public async acceptPartyInvite(party: Party, user: User): Promise<ResponseModel>
+    public async acceptPartyInvite(party: Party, user: string): Promise<ResponseModel>
     {
         try {
             let result = await this.partyDBService.acceptPartyInvite(party, user);
@@ -68,7 +69,7 @@ export class PartyBusiness {
         }
     }
 
-    public async declinePartyInvite(party: Party, user: User): Promise<ResponseModel>
+    public async declinePartyInvite(party: Party, user: string): Promise<ResponseModel>
     {
         try {
             let result = await this.partyDBService.declinePartyInvite(party, user);

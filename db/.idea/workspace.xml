@@ -2,11 +2,15 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="be2c9031-305c-4619-8534-d48bc6ee8f01" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/../client/src/components/MainPage/MediaBar.js" beforeDir="false" afterPath="$PROJECT_DIR$/../client/src/components/MainPage/MediaBar.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../client/src/components/PartyPage.js" beforeDir="false" afterPath="$PROJECT_DIR$/../client/src/components/PartyPage.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/Netflix_DB/TableCreation.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Netflix_DB/TableCreation.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/TableCreation.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/TableCreation.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../server/src/Party/PartyBusiness.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../server/src/Party/PartyBusiness.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../server/src/Party/PartyDBService.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../server/src/Party/PartyDBService.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../server/src/Party/PartyEventController.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../server/src/Party/PartyEventController.ts" afterDir="false" />
     </list>
-    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -39,24 +43,14 @@
     <property name="aspect.path.notification.shown" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/../../mysql-connector-java-8.0.22" />
     <property name="project.structure.last.edited" value="Libraries" />
-    <property name="project.structure.proportion" value="0.0" />
+    <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
     <property name="settings.editor.selected.configurable" value="preferences.lookFeel" />
   </component>
-  <component name="RunDashboard">
-    <option name="ruleStates">
-      <list>
-        <RuleState>
-          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
-        </RuleState>
-        <RuleState>
-          <option name="name" value="StatusDashboardGroupingRule" />
-        </RuleState>
-      </list>
-    </option>
-  </component>
   <component name="RunManager">
     <configuration name="TableCreation" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="ALTERNATIVE_JRE_PATH" value="13" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
       <option name="MAIN_CLASS_NAME" value="TableCreation" />
       <module name="Netflix_DB" />
       <method v="2">
@@ -69,7 +63,7 @@
       </list>
     </recent_temporary>
   </component>
-  <component name="SpellCheckerSettings" BundledDictionaries="0" Folders="0" CustomDictionaries="0" Dictionaries="0" CorrectionsLimit="5" DefaultDictionary="application-level" UseSingleDictionary="true" />
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="SvnConfiguration">
     <configuration />
   </component>
@@ -81,6 +75,7 @@
       <option name="presentableId" value="Default" />
       <updated>1606255855185</updated>
       <workItem from="1607796574149" duration="144000" />
+      <workItem from="1608481167426" duration="83000" />
     </task>
     <servers />
   </component>
@@ -97,11 +92,32 @@
         </entry>
       </map>
     </option>
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="461" y="223" key="SettingsEditor" timestamp="1607796730461">
+    <state x="424" y="246" width="1071" height="724" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1608481185809">
       <screen x="0" y="23" width="1920" height="1122" />
     </state>
-    <state x="461" y="223" key="SettingsEditor/0.23.1920.1122@0.23.1920.1122" timestamp="1607796730461" />
+    <state x="424" y="246" width="1071" height="724" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.23.1920.1122@0.23.1920.1122" timestamp="1608481185809" />
+    <state width="1878" height="311" key="GridCell.Tab.0.bottom" timestamp="1608481219412">
+      <screen x="0" y="23" width="1920" height="1122" />
+    </state>
+    <state width="1878" height="311" key="GridCell.Tab.0.bottom/0.23.1920.1122@0.23.1920.1122" timestamp="1608481219412" />
+    <state width="1878" height="311" key="GridCell.Tab.0.center" timestamp="1608481219411">
+      <screen x="0" y="23" width="1920" height="1122" />
+    </state>
+    <state width="1878" height="311" key="GridCell.Tab.0.center/0.23.1920.1122@0.23.1920.1122" timestamp="1608481219411" />
+    <state width="1878" height="311" key="GridCell.Tab.0.left" timestamp="1608481219410">
+      <screen x="0" y="23" width="1920" height="1122" />
+    </state>
+    <state width="1878" height="311" key="GridCell.Tab.0.left/0.23.1920.1122@0.23.1920.1122" timestamp="1608481219410" />
+    <state width="1878" height="311" key="GridCell.Tab.0.right" timestamp="1608481219411">
+      <screen x="0" y="23" width="1920" height="1122" />
+    </state>
+    <state width="1878" height="311" key="GridCell.Tab.0.right/0.23.1920.1122@0.23.1920.1122" timestamp="1608481219411" />
+    <state x="461" y="223" key="SettingsEditor" timestamp="1608481252475">
+      <screen x="0" y="23" width="1920" height="1122" />
+    </state>
+    <state x="461" y="223" key="SettingsEditor/0.23.1920.1122@0.23.1920.1122" timestamp="1608481252475" />
   </component>
 </project>
