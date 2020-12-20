@@ -24,8 +24,6 @@ public class TableCreation {
         done();
         statement.executeUpdate("DROP TABLE IF EXISTS PartyInvitation");
         done();
-        statement.executeUpdate("DROP TABLE IF EXISTS PartyParticipation");
-        done();
         statement.executeUpdate("DROP TABLE IF EXISTS MediaRating");
         done();
         statement.executeUpdate("DROP TABLE IF EXISTS Watch");
@@ -82,6 +80,7 @@ public class TableCreation {
                 "name VARCHAR(64) NOT NULL," +
                 "description VARCHAR(256)," +
                 "numberOfMembers INT(10)," +
+                "role VARCHAR(20) NOT NULL,"
                 "PRIMARY KEY (partyId)," +
                 "FOREIGN KEY(creatorUsername) REFERENCES User(username) on delete cascade )" +
                 "ENGINE=INNODB;");
@@ -218,13 +217,6 @@ public class TableCreation {
                 "PRIMARY KEY(username , mediaId)," +
                 "FOREIGN KEY(username) REFERENCES User(username) on delete cascade," +
                 "FOREIGN KEY(mediaId) REFERENCES Media(mediaId) on delete cascade) ENGINE=INNODB;");
-        done();
-        statement.executeUpdate("CREATE TABLE IF NOT EXISTS PartyParticipation(" +
-                "partyId VARCHAR(32) NOT NULL," +
-                "username VARCHAR(32) NOT NULL," +
-                "PRIMARY KEY(partyId, username)," +
-                "FOREIGN KEY(partyId) REFERENCES Party(partyId) on delete cascade," +
-                "FOREIGN KEY(username) REFERENCES User(username) on delete cascade) ENGINE=INNODB;");
         done();
         statement.executeUpdate("CREATE TABLE IF NOT EXISTS PartyInvitation(" +
                 "partyId VARCHAR(32) NOT NULL," +

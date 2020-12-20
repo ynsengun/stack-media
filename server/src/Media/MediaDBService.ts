@@ -357,7 +357,29 @@ export class MediaDBService {
             throw err;
         }
         return result;
-    }  
+    }
+    
+    public async partyWatch(username: string, mediaId: string, progress: number): Promise<any> {
+        let result = null;
+        console.log( "watching");
+        let sqlQuery = "SELECT * FROM Watch WHERE username='" + username + "' AND mediaId='" + mediaId + "';"
+
+        try {
+            let watchCheck = await this.db.sendQuery(sqlQuery);
+            if(watchCheck.length == 0){
+                sqlQuery = "INSERT INTO Watch VALUES('" + username + "', '" + mediaId + "', '" + progress + "', null);";
+                await this.db.sendQuery(sqlQuery);
+            }
+            else{
+                sqlQuery = "UPDATE Watch SET Progress = '" + progress + "', timeStamp = CURRENT_TIMESTAMP WHERE mediaId = '" + mediaId + "' AND username = '" + username + "';";
+                await this.db.sendQuery(sqlQuery);
+            }
+        } 
+        catch(err){
+            throw err;
+        }
+        return result;
+    }
     
     public async rate(media: Media, user: User, rate: number): Promise<any> {
         let result = null;

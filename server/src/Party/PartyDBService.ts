@@ -99,10 +99,10 @@ export class PartyDBService {
         return result;
     }
 
-    public async getParticipants(party: Party): Promise<any> {
+    public async getParticipants(partyId: string): Promise<any> {
         let result = null;
 
-        let sqlQuery = "SELECT * FROM PartyParticipation WHERE partyId = '" + party.partyId + "';";
+        let sqlQuery = "SELECT * FROM PartyParticipation WHERE partyId = '" + partyId + "';";
         
         try {
             result = await this.db.sendQuery(sqlQuery);
@@ -112,8 +112,9 @@ export class PartyDBService {
         }
         return result;
     }
+    
 
-    public async removeParticipant(party: Party, user: User): Promise<any> {
+    public async removeParticipant(party: s, user: User): Promise<any> {
         let result = null;
 
         let sqlQuery = "REMOVE FROM PartyParticipation WHERE partyId = '" + party.partyId + "' AND username = '" + user.username + "';";

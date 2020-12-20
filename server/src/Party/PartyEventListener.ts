@@ -18,7 +18,7 @@ export class PartyEventListener{
             console.log("new participation");
             try{
                 this.tokenService.checkTokenForParty(data);
-                //this.eventController.saveUserId(client, data);
+                this.eventController.participate(socket, client, data);
             }
             catch(error){
                 client.emit(new ErrorResponse(error));
