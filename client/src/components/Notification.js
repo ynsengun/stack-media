@@ -8,6 +8,8 @@ import { getAuthName, getAuthToken } from "../util/AuthenticationUtil";
 
 export default function Notification() {
   const [notifications, setNotifications] = useState([]);
+  const [friendshipNotifications, setFriendshipNotifications] = useState([]);
+  const [partyNotifications, setPartyNotifications] = useState([]);
   //{ isFriend: false, name: "", id: "" }
 
   useEffect(() => {
@@ -33,7 +35,7 @@ export default function Notification() {
           {
             newFriendNotifications.push( { isFriend: true, name: resArray[ i].inviterUsername, id: resArray[ i].inviterUsername } );
           }
-          setNotifications( newFriendNotifications)
+          setFriendshipNotifications( newFriendNotifications);
         })
         .catch((err) => {
           console.log(err);
@@ -62,13 +64,26 @@ export default function Notification() {
           {
             newPartyNotifications.push( { isFriend: false, name: resArray[ i].partyId, id: resArray[ i].partyId } ); //TODO ask server to return party name :( => wait server
           }
-          setNotifications( newPartyNotifications)
+          setPartyNotifications( newPartyNotifications)
         })
         .catch((err) => {
           console.log(err);
           toast.error("Error, could not get patry requests!");
         });
   }, []);
+
+  useEffect(() => {
+    let newNotifications = [];
+    for ( let i = 0; i < friendshipNotifications.length; i++)
+    {
+        newNotifications.push( friendshipNotifications[i] );
+    }
+    for ( let i = 0; i < partyNotifications.length; i++)
+    {
+        newNotifications.push( partyNotifications[i] );
+    }
+    setNotifications( newNotifications);
+  }, [friendshipNotifications, partyNotifications]);
 
   const handleYes = (clickedNotification) => {
 
