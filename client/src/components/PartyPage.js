@@ -8,6 +8,7 @@ import { checkResponse } from "../util/ResponseUtil";
 import { getAuthName, getAuthToken } from "../util/AuthenticationUtil";
 import Comment from "./Media/Comment";
 import MediaBox from "./MediaBox";
+import Search from "./Search";
 
 export default function PartyPage() {
   const [progress, setProgress] = useState(0);
@@ -17,11 +18,14 @@ export default function PartyPage() {
   });
   const [partyId, setpartyId] = useState("");
   const [partyName, setpartyName] = useState("");
-  const [commentText, setCommentText] = useState("");
+  const [commentText, setCommentText] = useState(""); // this is chat text to send
   const [participants, setParticipants] = useState([]);
-  const [chat, setChat] = useState([]);
+  const [chat, setChat] = useState([]); // this is complete chat
   const [participantText, setParticipantText] = useState("");
   const [isCreator, setCreator] = useState(false);
+  const [mediaSelectActive, setMediaSelectActive] = useState(false);
+  const [mediaId, setmediaId] = useState("");
+  const [mediaName, setmediaName] = useState("");
 
   const history = useHistory();
 
@@ -42,66 +46,62 @@ export default function PartyPage() {
   }, []);
 
   useEffect(() => {
-    
-    if ( partyId != "")
-    {
-        // fetch the party name
-        fetch("http://localhost:4000/api/party/getParties", {
-            method: "POST",
-            mode: "cors",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              token: getAuthToken(),
-              username: getAuthName(),
-            }),
-          })
-            .then((r) => checkResponse(r))
-            .then((r) => r.json())
-            .then((r) => {
-              let resArray = r.data;
-              for ( let i = 0; i < resArray.length; i++)
-              {
-                  if ( resArray[i].partyId === partyId)
-                  {
-                      setpartyName( resArray[i].name);
-                      break;
-                  }
-              }
-            })
-            .catch((err) => {
-              console.log(err);
-              toast.error("Error, could not fetch your created parties!");
-            });
-
-        // fetch party participants
-        fetch("http://localhost:4000/api/party/getParticipants", {
-            method: "POST",
-            mode: "cors",
-            headers: {
-            "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-            token: getAuthToken(),
-            username: getAuthName(),
-
-            partyId: partyId,
-            }),
+    if (partyId != "") {
+      // fetch the party name
+      fetch("http://localhost:4000/api/party/getParties", {
+        method: "POST",
+        mode: "cors",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          token: getAuthToken(),
+          username: getAuthName(),
+        }),
+      })
+        .then((r) => checkResponse(r))
+        .then((r) => r.json())
+        .then((r) => {
+          let resArray = r.data;
+          for (let i = 0; i < resArray.length; i++) {
+            if (resArray[i].partyId === partyId) {
+              setpartyName(resArray[i].name);
+              break;
+            }
+          }
         })
-            .then((r) => checkResponse(r))
-            .then((r) => r.json())
-            .then((r) => {
-                setParticipants( r.data);
-            })
-            .catch((err) => {
-            console.log(err);
-            toast.error("Error, could not get party members!");
-            });
+        .catch((err) => {
+          console.log(err);
+          toast.error("Error, could not fetch your created parties!");
+        });
 
-        // TODO fetch these when how movie will be set determined!
-        setProgress(0);
-        setButtonActive({ watch: true, finish: false });
+      // fetch party participants
+      fetch("http://localhost:4000/api/party/getParticipants", {
+        method: "POST",
+        mode: "cors",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          token: getAuthToken(),
+          username: getAuthName(),
+
+          partyId: partyId,
+        }),
+      })
+        .then((r) => checkResponse(r))
+        .then((r) => r.json())
+        .then((r) => {
+          setParticipants(r.data);
+        })
+        .catch((err) => {
+          console.log(err);
+          toast.error("Error, could not get party members!");
+        });
+
+      // TODO fetch these when how movie will be set determined!
+      setProgress(0);
+      setButtonActive({ watch: true, finish: false });
     }
   }, [partyId]);
 
@@ -117,12 +117,13 @@ export default function PartyPage() {
   }, [progress]);
 
   useEffect(() => {
-    for ( let i = 0; i < participants.length; i++)
-    {
-        if ( participants[i].username == getAuthName() && participants[i].role === "ROLE_CREATOR")
-        {
-            setCreator( true);
-        }
+    for (let i = 0; i < participants.length; i++) {
+      if (
+        participants[i].username == getAuthName() &&
+        participants[i].role === "ROLE_CREATOR"
+      ) {
+        setCreator(true);
+      }
     }
   }, [participants]);
 
@@ -157,29 +158,29 @@ export default function PartyPage() {
   const handleNewParticipant = () => {
     // fetch party participants
     fetch("http://localhost:4000/api/party/inviteParticipant", {
-        method: "POST",
-        mode: "cors",
-        headers: {
+      method: "POST",
+      mode: "cors",
+      headers: {
         "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-            token: getAuthToken(),
-            username: getAuthName(),
+      },
+      body: JSON.stringify({
+        token: getAuthToken(),
+        username: getAuthName(),
 
-            invitedUsername: participantText,
-            partyId: partyId,
-        }),
+        invitedUsername: participantText,
+        partyId: partyId,
+      }),
     })
-    .then((r) => checkResponse(r))
-    .then((r) => r.json())
-    .then((r) => {
+      .then((r) => checkResponse(r))
+      .then((r) => r.json())
+      .then((r) => {
         setParticipantText("");
-        toast.success( "User successfully invited to the party!");
-    })
-    .catch((err) => {
-    console.log(err);
-    toast.error("Error, could not invite the user to the party!");
-    });
+        toast.success("User successfully invited to the party!");
+      })
+      .catch((err) => {
+        console.log(err);
+        toast.error("Error, could not invite the user to the party!");
+      });
   };
 
   const handleDeleteParticipant = (clicked) => {
@@ -192,12 +193,21 @@ export default function PartyPage() {
     setParticipants(temp);
   };
 
+  const handleMediaSelect = (mediaId, mediaName) => {
+    // TODO
+    console.log(mediaId);
+    setMediaSelectActive(false);
+    setmediaId(mediaId);
+    setmediaName(mediaName);
+  };
+
   return (
     <div className="row">
       <div className="col-9" style={{ borderRight: "2px solid black" }}>
         <div style={{ paddingLeft: "50px", paddingRight: "50px" }}>
+          <h1 className="h1 text-center mb-4 text-black">Party: {partyName}</h1>
           <div className="card bg-secondary">
-            <h1 className="h1 text-center mt-5 text-white">{partyName}</h1>
+            <h1 className="h1 text-center mt-5 text-white">{mediaName}</h1>
             <div
               style={{
                 height: "40vh",
@@ -235,12 +245,20 @@ export default function PartyPage() {
             </div>
           </div>
 
-          <div
-            className={`mt-4 ${
-              (buttonActive.watch != false || buttonActive.finish != false) &&
-              "d-none"
-            }`}
-          ></div>
+          {mediaSelectActive ? (
+            <div className="mt-4">
+              <Search isParty={true} handleMediaSelect={handleMediaSelect} />
+            </div>
+          ) : (
+            <button
+              className="mt-4 btn btn-primary w-100"
+              onClick={() => {
+                setMediaSelectActive(true);
+              }}
+            >
+              Choose Media
+            </button>
+          )}
 
           <div className="mt-4">
             <div className="card bg-white p-5">
@@ -281,18 +299,20 @@ export default function PartyPage() {
       <div className="col-3 p-4">
         <h1 className="h1">Participants</h1>
         <hr />
-        { participants.map((participant) => (
+        {participants.map((participant) => (
           <h3 className="h3 w-75">
             {participant.username}{" "}
-            {  isCreator && participant.username !== getAuthName() && (<button
-              className="btn btn-danger btn-sm float-right"
-              onClick={() => {
-                handleDeleteParticipant(participant);
-              }}
-            >
-              x
-            </button>)}
-            { participant.role == "ROLE_CREATOR" && (<label>Creator</label>)}
+            {isCreator && participant.username !== getAuthName() && (
+              <button
+                className="btn btn-danger btn-sm float-right"
+                onClick={() => {
+                  handleDeleteParticipant(participant);
+                }}
+              >
+                x
+              </button>
+            )}
+            {participant.role == "ROLE_CREATOR" && <label>Creator</label>}
           </h3>
         ))}
         <input

@@ -10,7 +10,9 @@ import { getAuthName, getAuthToken, isAdmin } from "../util/AuthenticationUtil";
 
 import "../css/Search.css";
 
-export default function Search() {
+export default function Search(props) {
+  const { isParty, handleMediaSelect } = props;
+
   const [search, setSearch] = useState({
     text: "",
     genre: "Action",
@@ -41,7 +43,7 @@ export default function Search() {
         .then((r) => r.json())
         .then((r) => {
           let resArray = r.data;
-          console.log( r.data);
+          console.log(r.data);
           // console.log(resArray, " ---- ", resArray.length);
           setMediaList(resArray);
         })
@@ -56,27 +58,26 @@ export default function Search() {
   useEffect(() => {
     // fetch channels of the user
     fetch("http://localhost:4000/api/user/getChannels", {
-        method: "POST",
-        mode: "cors",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify(
-        {
-            token: getAuthToken(),
-            username: getAuthName(),        
-        }),
+      method: "POST",
+      mode: "cors",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        token: getAuthToken(),
+        username: getAuthName(),
+      }),
     })
-    .then((r) => checkResponse(r))
-    .then((r) => r.json())
-    .then((r) => {
+      .then((r) => checkResponse(r))
+      .then((r) => r.json())
+      .then((r) => {
         let resArray = r.data;
-        setChannels( resArray);
-    })
-    .catch((err) => {
+        setChannels(resArray);
+      })
+      .catch((err) => {
         console.log(err);
         toast.error("Error, could not fetch your created channels!");
-    });
+      });
   }, [channels]);
 
   useEffect(() => {
@@ -104,56 +105,47 @@ export default function Search() {
       });
   }, []);
 
-  function handleOrder(e)
-  {
-      console.log( "test1" > "testtest1");
+  function handleOrder(e) {
+    console.log("test1" > "testtest1");
     let sortAlgos = {
-        "Date Asc": orderByDateAsc,
-        "Date Desc": orderByDateDesc,
-        "Name Asc": orderByNameAsc,
-        "Name Desc": orderByNameDesc,
+      "Date Asc": orderByDateAsc,
+      "Date Desc": orderByDateDesc,
+      "Name Asc": orderByNameAsc,
+      "Name Desc": orderByNameDesc,
     };
 
-    let sortedMediaList = [ ...mediaList];
-    sortedMediaList.sort( sortAlgos[e.target.value] );
-    setMediaList( sortedMediaList);
-  };
+    let sortedMediaList = [...mediaList];
+    sortedMediaList.sort(sortAlgos[e.target.value]);
+    setMediaList(sortedMediaList);
+  }
 
-  function orderByDateAsc(m1, m2)
-  {
-    if ( m1.timeStamp > m2.timeStamp)
-    {
-        return 1;
+  function orderByDateAsc(m1, m2) {
+    if (m1.timeStamp > m2.timeStamp) {
+      return 1;
     }
     return -1;
-  };
+  }
 
-  function orderByDateDesc(m1, m2)
-  {
-    if ( m1.timeStamp < m2.timeStamp)
-    {
-        return 1;
+  function orderByDateDesc(m1, m2) {
+    if (m1.timeStamp < m2.timeStamp) {
+      return 1;
     }
     return -1;
-  };
+  }
 
-  function orderByNameAsc(m1, m2)
-  {
-      if ( m1.name > m2.name)
-      {
-          return 1;
-      }
-      return -1;
-  };
-
-  function orderByNameDesc( m1, m2)
-  {
-    if ( m1.name < m2.name)
-    {
-        return 1;
+  function orderByNameAsc(m1, m2) {
+    if (m1.name > m2.name) {
+      return 1;
     }
     return -1;
-  };
+  }
+
+  function orderByNameDesc(m1, m2) {
+    if (m1.name < m2.name) {
+      return 1;
+    }
+    return -1;
+  }
 
   const handleChange = (e) => {
     const { value, name } = e.currentTarget;
@@ -212,7 +204,8 @@ export default function Search() {
           mediaType={media.type}
           mediaName={media.name}
           channelList={channels}
-          pageType={isAdmin() ? 2 : 0}
+          pageType={isParty === true ? 5 : isAdmin() ? 2 : 0}
+          handleMediaSelect={handleMediaSelect}
         />
       ))}
     </Container>
