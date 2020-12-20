@@ -62,7 +62,7 @@ export default function Notification() {
           let newPartyNotifications = [ ...notifications ];
           for ( let i = 0; i < resArray.length; i++)
           {
-            newPartyNotifications.push( { isFriend: false, name: resArray[ i].name, id: resArray[ i].partyId } ); //TODO ask server to return party name :( => wait server
+            newPartyNotifications.push( { isFriend: false, name: resArray[ i].name, id: resArray[ i].partyId } );
           }
           setPartyNotifications( newPartyNotifications)
         })

@@ -35,6 +35,152 @@ export default function Media(props) {
     }
   };
 
+    const handleWatchButtonClick = () =>
+    {
+        // if tv serie, fetch information, find episode id, than load next page!
+        if ( mediaType != 0)
+        {
+            // run shitty algorithm to find last episode mediaName = tv show name
+            foundAndLoadLastWatchedEpisode();
+        }
+        else
+        {
+            history.push(`/media/${mediaId}`);
+        }
+    };
+
+    function foundAndLoadLastWatchedEpisode()
+    {
+                    // fetch TV SHOWS
+                    fetch("http://localhost:4000/api/media/getSerie", {
+                        method: "POST",
+                        mode: "cors",
+                        headers: {
+                        "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({
+                            token: getAuthToken(),
+                            username: getAuthName(),
+        
+                            TVSerieName: mediaName,
+                        }),
+                    })
+                        .then((r) => checkResponse(r))
+                        .then((r) => r.json())
+                        .then((r) => {
+                            let resArray = r.data;
+                            console.log("FOUND TV SERIE EPISODES WATCHED:");
+                            console.log( resArray);
+
+                            if ( resArray.length == 0)
+                            {
+                                loadFirstTimeTvSerie();
+                            }
+                            else
+                            {
+                                loadLastWatchedEpisode( resArray);
+                            }
+                        })
+                        .catch((err) => {
+                        console.log(err);
+                        toast.error("Error, could not get TV-Serie specific topics!");
+                        });
+    };
+
+    function loadFirstTimeTvSerie()
+    {
+        // load the first episode of the tv serie
+                            // fetch TV SHOWS
+                            fetch("http://localhost:4000/api/media/getSeriesWithPreference", {
+                                method: "POST",
+                                mode: "cors",
+                                headers: {
+                                "Content-Type": "application/json",
+                                },
+                                body: JSON.stringify({
+                                    token: getAuthToken(),
+                                    username: getAuthName(),
+                
+                                    TVSerieName: mediaName,
+                                }),
+                            })
+                                .then((r) => checkResponse(r))
+                                .then((r) => r.json())
+                                .then((r) => {
+                                    let resArray = r.data;
+                                    console.log("FOUND TV SERIE EPISODES WITHOUT WATCHED:");
+                                    console.log( resArray);
+                                    if ( resArray.length == 0)
+                                    {
+                                        toast.error( "No episode for the TV show could be found!");
+                                    }
+                                    else
+                                    {
+                                        history.push(`/media/${resArray[0].mediaId}`);
+                                    }
+                                })
+                                .catch((err) => {
+                                console.log(err);
+                                toast.error("Error, could not get TV-Serie specific topics!");
+                                });
+    };
+
+    function loadLastWatchedEpisode( resArray)
+    {
+        let lastWatchedEpisode = resArray[ 0];
+        if (lastWatchedEpisode.Progress < 4 || lastWatchedEpisode.Progress % 4 != 0 ) // this is the last watched and not finished
+        {
+            history.push(`/media/${lastWatchedEpisode.mediaId}`);
+        }
+        else // find the next episode as this is last watched but finished
+        {
+            loadNextEpisode( lastWatchedEpisode);
+        }
+    };
+
+    function loadNextEpisode( lastEpisode)
+    {
+        fetch("http://localhost:4000/api/media/getSeriesWithPreference", {
+            method: "POST",
+            mode: "cors",
+            headers: {
+            "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                token: getAuthToken(),
+                username: getAuthName(),
+
+                TVSerieName: mediaName,
+            }),
+        })
+            .then((r) => checkResponse(r))
+            .then((r) => r.json())
+            .then((r) => {
+                let resArray = r.data;
+                console.log("FOUND TV SERIE EPISODES WITHOUT WATCHED:");
+                console.log( resArray);
+                if ( resArray.length == 0)
+                {
+                    toast.error( "No episode for the TV show could be found!");
+                }
+                else
+                {
+                    for ( let i = 0; i < resArray.length; i++)
+                    {
+                        if ( (resArray[i].episodeNumber === lastEpisode.episodeNumber + 1 && resArray[i].seasonNumber === lastEpisode.seasonNumber) 
+                            || resArray[i].seasonNumber === lastEpisode.seasonNumber + 1 && resArray[i].episodeNumber === 1 )
+                            {
+                                history.push(`/media/${resArray[i].mediaId}`);
+                            }
+                    }
+                }
+            })
+            .catch((err) => {
+            console.log(err);
+            toast.error("Error, could not get TV-Serie specific topics!");
+            });
+    };
+
   const handleChannelButton = () => {
     
     // Find the selected channel
@@ -128,9 +274,7 @@ export default function Media(props) {
             <button
               className="btn btn-primary mt-4"
               style={{ width: "60%" }}
-              onClick={() => {
-                history.push(`/media/${mediaId}`);
-              }}
+              onClick={handleWatchButtonClick}
             >
               Watch
             </button>

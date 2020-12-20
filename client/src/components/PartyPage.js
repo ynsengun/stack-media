@@ -20,6 +20,7 @@ export default function PartyPage() {
   const [participants, setParticipants] = useState([]);
   const [chat, setChat] = useState([]);
   const [participantText, setParticipantText] = useState("");
+  const [isCreator, setCreator] = useState(false);
 
   const history = useHistory();
 
@@ -40,7 +41,7 @@ export default function PartyPage() {
   }, []);
 
   useEffect(() => {
-    // TODO fetch
+    
     if ( partyId != "")
     {
         // fetch party participants
@@ -75,14 +76,24 @@ export default function PartyPage() {
 
   useEffect(() => {
     if (progress === 3) {
-      // TODO fetch, update progress
+      // TODO fetch, update progress when how movie will be set determined!
       setButtonActive({ watch: false, finish: true });
     }
     if (progress === 4) {
-      // TODO fetch, update finish
+      // TODO fetch, update finish when how movie will be set determined!
       setButtonActive({ watch: false, finish: false });
     }
   }, [progress]);
+
+  useEffect(() => {
+    for ( let i = 0; i < participants.length; i++)
+    {
+        if ( participants[i].username == getAuthName() && participants[i].role === "ROLE_CREATOR")
+        {
+            setCreator( true);
+        }
+    }
+  }, [participants]);
 
   const progressBar = (index) => {
     return (
@@ -239,10 +250,10 @@ export default function PartyPage() {
       <div className="col-3 p-4">
         <h1 className="h1">Participants</h1>
         <hr />
-        {participants.map((participant) => (
+        { participants.map((participant) => (
           <h3 className="h3 w-75">
             {participant.username}{" "}
-            { participant.role != "ROLE_CREATOR" && participant.username != getAuthName() && (<button
+            {  isCreator && participant.username !== getAuthName() && (<button
               className="btn btn-danger btn-sm float-right"
               onClick={() => {
                 handleDeleteParticipant(participant);
@@ -250,7 +261,7 @@ export default function PartyPage() {
             >
               x
             </button>)}
-            { participant.role == "ROLE_CREATOR" && (<label>Admin</label>)}
+            { participant.role == "ROLE_CREATOR" && (<label>Creator</label>)}
           </h3>
         ))}
         <input

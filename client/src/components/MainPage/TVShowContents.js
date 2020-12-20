@@ -4,13 +4,38 @@ import { useHistory } from "react-router-dom";
 import { Container, Divider } from "semantic-ui-react";
 
 import Media from "../Media/Media";
+import { checkResponse } from "../../util/ResponseUtil";
+import { getAuthName, getAuthToken } from "../../util/AuthenticationUtil";
 
 export default function TVShowContents() {
   const [tvShowInformation, setTVShowInformation] = useState([]);
 
   useEffect(() => {
-    // TODO fetch movies, then setTVShowInformation accordingly wait hakan for the new query! (cevat will do it next monday, if your not patient, you can do it urself)
-    setTVShowInformation(["Talha", "Hakan", "Cevat", "Yusuf"]);
+
+    // fetch TV SHOWS
+    fetch("http://localhost:4000/api/media/getSeries", {
+        method: "POST",
+        mode: "cors",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          token: getAuthToken(),
+          username: getAuthName(),
+        }),
+      })
+        .then((r) => checkResponse(r))
+        .then((r) => r.json())
+        .then((r) => {
+          let resArray = r.data;
+          console.log("FOUND TV SERIES:");
+          console.log( resArray);
+          setTVShowInformation( resArray);
+        })
+        .catch((err) => {
+          console.log(err);
+          toast.error("Error, could not get TV-shows!");
+        });
   }, []);
 
   return (
@@ -21,7 +46,7 @@ export default function TVShowContents() {
           <Media
             key={index}
             mediaType={1}
-            mediaName={tvShowArg}
+            mediaName={tvShowArg.TVSerieName}
             pageType={1}
           ></Media>
         ))}

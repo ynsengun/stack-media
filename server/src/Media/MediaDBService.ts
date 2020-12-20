@@ -18,7 +18,7 @@ export class MediaDBService {
 
     public async getMedia(media: Media): Promise<any> {
         let result = null;
-        let sqlQuery = "SELECT M.*, NULL, TV.episodeNumber, TV.seasonNumber, TV.emmyAward, 1 as type FROM Media M, TVSeriesEpisode TV WHERE M.mediaId = '" + media.mediaId + "' AND M.mediaId = TV.mediaId;";
+        let sqlQuery = "SELECT M.*, NULL, TV.*, 1 as type FROM Media M, TVSeriesEpisode TV WHERE M.mediaId = '" + media.mediaId + "' AND M.mediaId = TV.mediaId;";
         //let sqlQuery = "SELECT * FROM Media WHERE mediaId = '" + media.mediaId + "';";
 
         try {
@@ -52,8 +52,8 @@ export class MediaDBService {
     public async getSerie(user: User, media: Media): Promise<any> {
         let result = null;
 
-        let sqlQuery = "SELECT M.*, TV.*, W.* FROM TVSeriesEpisode TV, Media M, Watch W WHERE M.mediaId = TV.mediaId AND W.mediaId=M.mediaId AND TV.TVSerieName='" + media.TVSerieName + "' AND W.username='" + user.username + "'ORDER BY W.timeStamp DESC;";
-        
+        let sqlQuery = "SELECT M.*, TV.*, W.* FROM TVSeriesEpisode TV INNER JOIN Media M ON M.mediaId = TV.mediaId LEFT OUTER JOIN Watch W ON W.mediaId = M.mediaId WHERE TV.TVSerieName='" + media.TVSerieName + "' AND W.username='" + user.username + "' ORDER BY W.timeStamp DESC;";
+        //let sqlQuery = "SELECT M.*, TV.* FROM TVSeriesEpisode TV INNER JOIN Media M ON M.mediaId = TV.mediaId WHERE TV.TVSerieName='" + media.TVSerieName + "';";
         try {
             result = await this.db.sendQuery(sqlQuery);
         } 
@@ -81,8 +81,8 @@ export class MediaDBService {
         let result = null;
 
         //let sqlQuery = "SELECT DISTINCT TV.* FROM TVSeriesEpisode TV, MediaHasGenre MHG WHERE MHG.mediaId = TV.mediaId AND MHG.genreId = '" + genre.genreId + "';";
-        let sqlQuery = "SELECT M.*, TV.*, W.* FROM TVSeriesEpisode TV, Media M, Watch W WHERE M.mediaId = TV.mediaId AND W.mediaId=M.mediaId AND TV.TVSerieName='" + media.TVSerieName + "' AND W.username='" + user.username + "'ORDER BY W.timeStamp DESC;";
-
+        //let sqlQuery = "SELECT M.*, TV.*, W.* FROM TVSeriesEpisode TV, Media M, Watch W WHERE M.mediaId = TV.mediaId AND W.mediaId=M.mediaId AND TV.TVSerieName='" + media.TVSerieName + "' AND W.username='" + user.username + "'ORDER BY W.timeStamp DESC;";
+        let sqlQuery = "SELECT M.*, TV.* FROM TVSeriesEpisode TV INNER JOIN Media M ON M.mediaId = TV.mediaId WHERE TV.TVSerieName='" + media.TVSerieName + "' ORDER BY TV.seasonNumber ASC, TV.episodeNumber ASC;";
         try {
             result = await this.db.sendQuery(sqlQuery);
         } 

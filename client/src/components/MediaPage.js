@@ -16,6 +16,7 @@ export default function MediaPage() {
     finish: false,
   });
   const [mediaId, setmediaId] = useState("");
+  const [mediaName, setmediaName] = useState("");
   const [nextMedia, setNextMedia] = useState(null);
   const [suggestedMedias, setSuggestedMedias] = useState([{}]);
   const [rating, setRating] = useState(0);
@@ -119,8 +120,6 @@ export default function MediaPage() {
             .then((r) => r.json())
             .then((r) => {
                 let resArray = r.data;
-                // console.log( "Avg rating:");
-                // console.log( resArray);
                 if ( resArray.length === 0) // no rating has been done for the media
                 {
                     setAvgRating(0);
@@ -155,7 +154,10 @@ export default function MediaPage() {
                     let resArray = r.data;
                     // console.log( "Get user rating:");
                     // console.log( resArray);
-                    setRating( resArray[ 0].rate);
+                    if ( resArray.length > 0)
+                    {
+                        setRating( resArray[ 0].rate);
+                    }
                 })
                 .catch((err) => {
                 console.log(err);
@@ -164,12 +166,109 @@ export default function MediaPage() {
 
 
         // TODO fetch suggested and next(if series) media (cevat will do it next monday, if your not patient, you can do it urself)
+        // fetch("http://localhost:4000/api/media/getSuggestion", {
+        //     method: "POST",
+        //     mode: "cors",
+        //     headers: {
+        //       "Content-Type": "application/json",
+        //     },
+        //     body: JSON.stringify({
+        //       token: getAuthToken(),
+        //       username: getAuthName(),
+        //     }),
+        //   })
+        //     .then((r) => checkResponse(r))
+        //     .then((r) => r.json())
+        //     .then((r) => {
+        //       let resArray = r.data;
+        //       console.log("FOUND SUGGESTED MEDIA ARE:");
+        //       console.log( resArray);
+        //       //setTVShowInformation( resArray);
+        //     })
+        //     .catch((err) => {
+        //       console.log(err);
+        //       toast.error("Error, could not get TV-shows!");
+        //     });
+
+
+        //
+        fetch("http://localhost:4000/api/media/getMedia", {
+            method: "POST",
+            mode: "cors",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              token: getAuthToken(),
+              username: getAuthName(),
+
+              mediaId: mediaId,
+            }),
+          })
+            .then((r) => checkResponse(r))
+            .then((r) => r.json())
+            .then((r) => {
+              let resArray = r.data;
+              console.log("FOUND MEDIA IS:");
+              console.log( resArray);
+              setmediaName( resArray[0].name);
+              if ( resArray[0].type === 1) // TV SERIES, FIND NEXT EPISODE
+              {
+                let tvShowName = resArray[0].TVSerieName;
+                let lastEpisode = resArray[0];
+                console.log( tvShowName);
+                fetch("http://localhost:4000/api/media/getSeriesWithPreference", {
+                    method: "POST",
+                    mode: "cors",
+                    headers: {
+                    "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        token: getAuthToken(),
+                        username: getAuthName(),
+        
+                        TVSerieName: tvShowName,
+                    }),
+                })
+                    .then((r) => checkResponse(r))
+                    .then((r) => r.json())
+                    .then((r) => {
+                        let resArray = r.data;
+                        if ( resArray.length == 0)
+                        {
+                            toast.error( "No episode for the TV show could be found!");
+                        }
+                        else
+                        {
+                            for ( let i = 0; i < resArray.length; i++)
+                            {
+                                if ( (resArray[i].episodeNumber === lastEpisode.episodeNumber + 1 && resArray[i].seasonNumber === lastEpisode.seasonNumber) 
+                                    || resArray[i].seasonNumber === lastEpisode.seasonNumber + 1 && resArray[i].episodeNumber === 1 )
+                                    {
+                                        console.log("FOUND NEXT TV SERIE EPISODES");
+                                        console.log( resArray[i]);
+                                        setNextMedia( resArray[i]);
+                                        break;
+                                    }
+                            }
+                        }
+                    })
+                    .catch((err) => {
+                        setNextMedia( null);
+                    console.log(err);
+                    toast.error("Error, could not get TV-Serie specific topics!");
+                    });
+              }
+            })
+            .catch((err) => {
+              console.log(err);
+              toast.error("Error, could not get media!");
+            });
+
         setSuggestedMedias([
         { name: "aaa", type: 0 },
         { name: "bbb", type: 1 },
         ]);
-        setNextMedia({ name: "sss", type: 0 });
-
     }
   }, [mediaId]);
 
@@ -388,7 +487,7 @@ export default function MediaPage() {
       <div className="col-9" style={{ borderRight: "2px solid black" }}>
         <div style={{ paddingLeft: "50px", paddingRight: "50px" }}>
           <div className="card bg-secondary">
-            <h1 className="h1 text-center mt-5 text-white">{mediaId}</h1>
+            <h1 className="h1 text-center mt-5 text-white">{mediaName}</h1>
             <div
               style={{
                 height: "40vh",
@@ -483,7 +582,7 @@ export default function MediaPage() {
             <h3 className="h3" style={{ fontWeight: "700" }}>
               Next Episode
             </h3>
-            <MediaBox mediaType={nextMedia.type} mediaName={nextMedia.name} />
+            <MediaBox mediaType={nextMedia.type} mediaName={nextMedia.name} mediaId={nextMedia.mediaId} />
             <div className="mb-5"></div>
           </React.Fragment>
         )}
@@ -491,7 +590,7 @@ export default function MediaPage() {
           Suggestions
         </h3>
         {suggestedMedias.map((media, index) => (
-          <MediaBox key={index} mediaType={media.type} mediaName={media.name} />
+          <MediaBox key={index} mediaType={media.type} mediaName={media.name} mediaId={media.mediaId} />
         ))}
       </div>
     </div>

@@ -2,14 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="be2c9031-305c-4619-8534-d48bc6ee8f01" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/../client/src/components/MainPage/MediaBar.js" beforeDir="false" afterPath="$PROJECT_DIR$/../client/src/components/MainPage/MediaBar.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../client/src/components/PartyPage.js" beforeDir="false" afterPath="$PROJECT_DIR$/../client/src/components/PartyPage.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Netflix_DB/TableCreation.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Netflix_DB/TableCreation.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/TableCreation.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/TableCreation.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../server/src/Party/PartyBusiness.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../server/src/Party/PartyBusiness.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../server/src/Party/PartyDBService.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../server/src/Party/PartyDBService.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../server/src/Party/PartyEventController.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../server/src/Party/PartyEventController.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -75,7 +68,7 @@
       <option name="presentableId" value="Default" />
       <updated>1606255855185</updated>
       <workItem from="1607796574149" duration="144000" />
-      <workItem from="1608481167426" duration="83000" />
+      <workItem from="1608481167426" duration="584000" />
     </task>
     <servers />
   </component>
@@ -99,22 +92,22 @@
       <screen x="0" y="23" width="1920" height="1122" />
     </state>
     <state x="424" y="246" width="1071" height="724" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.23.1920.1122@0.23.1920.1122" timestamp="1608481185809" />
-    <state width="1878" height="311" key="GridCell.Tab.0.bottom" timestamp="1608481219412">
+    <state width="1878" height="311" key="GridCell.Tab.0.bottom" timestamp="1608485111474">
       <screen x="0" y="23" width="1920" height="1122" />
     </state>
-    <state width="1878" height="311" key="GridCell.Tab.0.bottom/0.23.1920.1122@0.23.1920.1122" timestamp="1608481219412" />
-    <state width="1878" height="311" key="GridCell.Tab.0.center" timestamp="1608481219411">
+    <state width="1878" height="311" key="GridCell.Tab.0.bottom/0.23.1920.1122@0.23.1920.1122" timestamp="1608485111474" />
+    <state width="1878" height="311" key="GridCell.Tab.0.center" timestamp="1608485111473">
       <screen x="0" y="23" width="1920" height="1122" />
     </state>
-    <state width="1878" height="311" key="GridCell.Tab.0.center/0.23.1920.1122@0.23.1920.1122" timestamp="1608481219411" />
-    <state width="1878" height="311" key="GridCell.Tab.0.left" timestamp="1608481219410">
+    <state width="1878" height="311" key="GridCell.Tab.0.center/0.23.1920.1122@0.23.1920.1122" timestamp="1608485111473" />
+    <state width="1878" height="311" key="GridCell.Tab.0.left" timestamp="1608485111472">
       <screen x="0" y="23" width="1920" height="1122" />
     </state>
-    <state width="1878" height="311" key="GridCell.Tab.0.left/0.23.1920.1122@0.23.1920.1122" timestamp="1608481219410" />
-    <state width="1878" height="311" key="GridCell.Tab.0.right" timestamp="1608481219411">
+    <state width="1878" height="311" key="GridCell.Tab.0.left/0.23.1920.1122@0.23.1920.1122" timestamp="1608485111472" />
+    <state width="1878" height="311" key="GridCell.Tab.0.right" timestamp="1608485111473">
       <screen x="0" y="23" width="1920" height="1122" />
     </state>
-    <state width="1878" height="311" key="GridCell.Tab.0.right/0.23.1920.1122@0.23.1920.1122" timestamp="1608481219411" />
+    <state width="1878" height="311" key="GridCell.Tab.0.right/0.23.1920.1122@0.23.1920.1122" timestamp="1608485111473" />
     <state x="461" y="223" key="SettingsEditor" timestamp="1608481252475">
       <screen x="0" y="23" width="1920" height="1122" />
     </state>
