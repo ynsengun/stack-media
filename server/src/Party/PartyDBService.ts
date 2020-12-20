@@ -18,12 +18,14 @@ export class PartyDBService {
         let partyId = id();
         let sqlQuery = "INSERT INTO Party VALUES('" + partyId + "', '" + party.username + "', '" + party.name + "', '" + party.description + "', ROLE_CREATOR);";
 
+        console.log( "Partu addition 1");
         try {
             await this.db.sendQuery(sqlQuery);
         } 
         catch(err){
             throw err;
         }
+        console.log( "Partu addition 2");
         return partyId;
     }
 

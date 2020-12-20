@@ -153,7 +153,7 @@ export class MediaDBService {
     public async createMedia(media: Media, mediaGenres: Genre[]): Promise<any> {
         let result = null;
         let mediaId = id();
-
+        console.log( "1");
         let sqlQuery = "INSERT INTO Media VALUES('" + mediaId + "','" + media.publishUsername + "','" + media.name + "','" + media.description + "','" + media.path + "','" + media.duration + "', null);";
 
         try {

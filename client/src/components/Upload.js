@@ -323,7 +323,7 @@ export default function Upload() {
         })
         .catch((err) => {
             console.log(err);
-            toast.error("error");
+            toast.error("Could not uplaod media!");
         });
     }
 

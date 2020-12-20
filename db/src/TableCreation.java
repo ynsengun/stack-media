@@ -75,13 +75,13 @@ public class TableCreation {
                 "'hakansivuk', 'hakansivuk@gmail.com', 'premium', 'hello')");
         done();
         statement.executeUpdate("CREATE TABLE IF NOT EXISTS Party (" +
-                "partyId VARCHAR(12) NOT NULL," +
+                "partyId VARCHAR(32) NOT NULL," +
                 "username VARCHAR(32) NOT NULL," +
                 "name VARCHAR(64) NOT NULL," +
                 "description VARCHAR(256)," +
-                "role VARCHAR(24) NOT NULL," +
+                "role VARCHAR(32) NOT NULL," +
                 "PRIMARY KEY (partyId, username)," +
-                "FOREIGN KEY(creatorUsername) REFERENCES User(username) on delete cascade )" +
+                "FOREIGN KEY(username) REFERENCES User(username) on delete cascade )" +
                 "ENGINE=INNODB;");
         done();
         statement.executeUpdate("CREATE TABLE IF NOT EXISTS Genre (" +
