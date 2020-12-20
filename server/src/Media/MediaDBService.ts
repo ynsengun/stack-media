@@ -153,11 +153,11 @@ export class MediaDBService {
     public async createMedia(media: Media, mediaGenres: Genre[]): Promise<any> {
         let result = null;
         let mediaId = id();
-        console.log( "1");
         let sqlQuery = "INSERT INTO Media VALUES('" + mediaId + "','" + media.publishUsername + "','" + media.name + "','" + media.description + "','" + media.path + "','" + media.duration + "', null);";
 
         try {
-            await this.db.sendQuery(sqlQuery);  
+            await this.db.sendQuery(sqlQuery);
+            console.log( "c await media ");  
             if(media.episodeNumber == null){ // it means it is a movie, then add to movie table
                 console.log( "Creating movie...");
                 sqlQuery = "INSERT INTO Movie VALUES('" + mediaId + "','" + media.oscarAward + "');";

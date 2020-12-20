@@ -112,7 +112,7 @@ public class TableCreation {
                 "description VARCHAR(256)," +
                 "path VARCHAR(256) NOT NULL," +
                 "duration INT(10) NOT NULL," +
-                "uploadDate DATE NOT NULL," +
+                "timeStamp TIMESTAMP," +
                 "PRIMARY KEY(mediaId)," +
                 "FOREIGN KEY(publishUsername) REFERENCES User(username) on delete set null )" +
                 "ENGINE=INNODB;");

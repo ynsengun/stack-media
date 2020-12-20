@@ -16,7 +16,7 @@ export class PartyDBService {
 
     public async addParty(party: Party): Promise<any> {
         let partyId = id();
-        let sqlQuery = "INSERT INTO Party VALUES('" + partyId + "', '" + party.username + "', '" + party.name + "', '" + party.description + "', ROLE_CREATOR);";
+        let sqlQuery = "INSERT INTO Party VALUES('" + partyId + "', '" + party.username + "', '" + party.name + "', '" + party.description + "', 'ROLE_CREATOR');";
 
         console.log( "Partu addition 1");
         try {

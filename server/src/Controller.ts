@@ -377,6 +377,7 @@ export class Controller{
     
     public async createMedia(request: Request, response: Response): Promise<void> {
         try{
+            console.log( "c1");
             this.validation.createMediaValidation(request);
             let genreList = [];
             let requestGenres = request.body.genres;
@@ -384,7 +385,9 @@ export class Controller{
             {
                 genreList.push(genreMapping.map(requestGenres[i]));
             }
+            console.log( "c2");
             let result = await this.mediaBusiness.createMedia(mediaMapping.map(request.body), genreList);
+            console.log( "c3");
             response.status(result.status).send(result);
         } catch(error){
             const errorResponse = new ErrorResponse(error);
