@@ -41,6 +41,7 @@ export default function Search() {
         .then((r) => r.json())
         .then((r) => {
           let resArray = r.data;
+          console.log( r.data);
           // console.log(resArray, " ---- ", resArray.length);
           setMediaList(resArray);
         })
@@ -103,6 +104,57 @@ export default function Search() {
       });
   }, []);
 
+  function handleOrder(e)
+  {
+      console.log( "test1" > "testtest1");
+    let sortAlgos = {
+        "Date Asc": orderByDateAsc,
+        "Date Desc": orderByDateDesc,
+        "Name Asc": orderByNameAsc,
+        "Name Desc": orderByNameDesc,
+    };
+
+    let sortedMediaList = [ ...mediaList];
+    sortedMediaList.sort( sortAlgos[e.target.value] );
+    setMediaList( sortedMediaList);
+  };
+
+  function orderByDateAsc(m1, m2)
+  {
+    if ( m1.timeStamp > m2.timeStamp)
+    {
+        return 1;
+    }
+    return -1;
+  };
+
+  function orderByDateDesc(m1, m2)
+  {
+    if ( m1.timeStamp < m2.timeStamp)
+    {
+        return 1;
+    }
+    return -1;
+  };
+
+  function orderByNameAsc(m1, m2)
+  {
+      if ( m1.name > m2.name)
+      {
+          return 1;
+      }
+      return -1;
+  };
+
+  function orderByNameDesc( m1, m2)
+  {
+    if ( m1.name < m2.name)
+    {
+        return 1;
+    }
+    return -1;
+  };
+
   const handleChange = (e) => {
     const { value, name } = e.currentTarget;
     setSearch({
@@ -122,11 +174,11 @@ export default function Search() {
       >
         <div className="mr-4">
           <label className="mr-1">Sort By:</label>
-          <select name="sortby" onChange={handleChange}>
-            <option value="Date ascending">Date Ascending</option>
-            <option value="Date desecending">Date Descending</option>
-            <option value="Name ascending">Name Ascending</option>
-            <option value="Name descending">Name Descending</option>
+          <select name="sortby" onChange={handleOrder}>
+            <option value="Date Asc">Date Ascending</option>
+            <option value="Date Desc">Date Descending</option>
+            <option value="Name Asc">Name Ascending</option>
+            <option value="Name Desc">Name Descending</option>
           </select>
         </div>
 

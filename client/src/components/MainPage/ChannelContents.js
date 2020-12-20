@@ -9,7 +9,7 @@ import { getAuthName, getAuthToken } from "../../util/AuthenticationUtil";
 
 export default function ChannelContents() {
   const [channelId, setChannelId] = useState("");
-
+  const [channelName, setChannelName] = useState("");   
   const [allGenres, setAllGenres] = useState([]);
   const [myGenres, setMyGenres] = useState([]);
   const [medias, setMedias] = useState([]);
@@ -34,6 +34,36 @@ export default function ChannelContents() {
     useEffect(() => {
         if ( channelId != "")
         {
+            // find and set channel name (I am sorry yusuf for failing you...)
+            fetch("http://localhost:4000/api/user/getChannels", {
+                method: "POST",
+                mode: "cors",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                  token: getAuthToken(),
+                  username: getAuthName(),
+                }),
+              })
+                .then((r) => checkResponse(r))
+                .then((r) => r.json())
+                .then((r) => {
+                  let resArray = r.data;
+                  for ( let i = 0; i < resArray.length; i++)
+                  {
+                      if ( resArray[ i].channelId === channelId)
+                      {
+                            setChannelName( resArray[i].channelName);
+                            break;
+                      }
+                  }
+                })
+                .catch((err) => {
+                  console.log(err);
+                  toast.error("Error, could not fetch your created channels!");
+                });
+
             // fetch all-genres
             fetch("http://localhost:4000/api/genre/getGenres", {
               method: "POST",
@@ -269,7 +299,7 @@ export default function ChannelContents() {
 
   return (
     <Container>
-      <h1 className="text-center">Channel {channelId}</h1>
+      <h1 className="text-center">Channel {channelName}</h1>
 
       <div className="my-4">
         <label className="mr-3">Genres:</label>

@@ -164,7 +164,7 @@ export default function MediaPage() {
                 });
 
 
-        // TODO fetch suggested and next(if series) media (cevat will do it next monday, if your not patient, you can do it urself)
+        // fetch suggested and next(if series) media
         fetch("http://localhost:4000/api/media/getSuggestion", {
             method: "POST",
             mode: "cors",

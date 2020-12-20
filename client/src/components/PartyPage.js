@@ -16,6 +16,7 @@ export default function PartyPage() {
     finish: false,
   });
   const [partyId, setpartyId] = useState("");
+  const [partyName, setpartyName] = useState("");
   const [commentText, setCommentText] = useState("");
   const [participants, setParticipants] = useState([]);
   const [chat, setChat] = useState([]);
@@ -44,6 +45,36 @@ export default function PartyPage() {
     
     if ( partyId != "")
     {
+        // fetch the party name
+        fetch("http://localhost:4000/api/party/getParties", {
+            method: "POST",
+            mode: "cors",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              token: getAuthToken(),
+              username: getAuthName(),
+            }),
+          })
+            .then((r) => checkResponse(r))
+            .then((r) => r.json())
+            .then((r) => {
+              let resArray = r.data;
+              for ( let i = 0; i < resArray.length; i++)
+              {
+                  if ( resArray[i].partyId === partyId)
+                  {
+                      setpartyName( resArray[i].name);
+                      break;
+                  }
+              }
+            })
+            .catch((err) => {
+              console.log(err);
+              toast.error("Error, could not fetch your created parties!");
+            });
+
         // fetch party participants
         fetch("http://localhost:4000/api/party/getParticipants", {
             method: "POST",
@@ -166,7 +197,7 @@ export default function PartyPage() {
       <div className="col-9" style={{ borderRight: "2px solid black" }}>
         <div style={{ paddingLeft: "50px", paddingRight: "50px" }}>
           <div className="card bg-secondary">
-            <h1 className="h1 text-center mt-5 text-white">{partyId}</h1>
+            <h1 className="h1 text-center mt-5 text-white">{partyName}</h1>
             <div
               style={{
                 height: "40vh",
