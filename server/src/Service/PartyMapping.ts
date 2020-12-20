@@ -5,10 +5,10 @@ class PartyMapping{
         if(!partyModel) return null;
         return {
             partyId: partyModel.partyId || null,
-            creatorUsername: partyModel.creatorUsername || null,
+            username: partyModel.username || null,
             name: partyModel.name || null,
             description: partyModel.description,
-            numberOfMembers: partyModel.numberOfMembers
+            role: partyModel.role
         };
     }
 }

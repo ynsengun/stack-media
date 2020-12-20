@@ -76,12 +76,11 @@ public class TableCreation {
         done();
         statement.executeUpdate("CREATE TABLE IF NOT EXISTS Party (" +
                 "partyId VARCHAR(12) NOT NULL," +
-                "creatorUsername VARCHAR(32) NOT NULL," +
+                "username VARCHAR(32) NOT NULL," +
                 "name VARCHAR(64) NOT NULL," +
                 "description VARCHAR(256)," +
-                "numberOfMembers INT(10)," +
-                "role VARCHAR(20) NOT NULL,"
-                "PRIMARY KEY (partyId)," +
+                "role VARCHAR(24) NOT NULL," +
+                "PRIMARY KEY (partyId, username)," +
                 "FOREIGN KEY(creatorUsername) REFERENCES User(username) on delete cascade )" +
                 "ENGINE=INNODB;");
         done();

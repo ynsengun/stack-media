@@ -75,6 +75,16 @@ export class PartyBusiness {
         }
     }
 
+    public async getPartyInvitations(user: User): Promise<ResponseModel>
+    {
+        try {
+            let result = await this.partyDBService.getPartyInvitations(user);
+            return new SuccessResponse(result);
+        } catch (error) {
+            return new ErrorResponse(error);
+        }
+    }
+
     public async getParticipants(party: Party): Promise<ResponseModel>
     {
         try {

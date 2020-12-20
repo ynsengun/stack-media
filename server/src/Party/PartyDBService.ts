@@ -15,9 +15,8 @@ export class PartyDBService {
     }
 
     public async addParty(party: Party): Promise<any> {
-        let result = null;
         let partyId = id();
-        let sqlQuery = "INSERT INTO Party VALUES('" + partyId + "', '" + party.creatorUsername + "', " + party.name + "', " + party.description + "', 1);";
+        let sqlQuery = "INSERT INTO Party VALUES('" + partyId + "', '" + party.username + "', " + party.name + "', " + party.description + "', ROLE_CREATOR);";
 
         try {
             await this.db.sendQuery(sqlQuery);
@@ -25,7 +24,7 @@ export class PartyDBService {
         catch(err){
             throw err;
         }
-        return result;
+        return partyId;
     }
 
     public async removeParty(party: Party): Promise<any> {
@@ -45,7 +44,7 @@ export class PartyDBService {
     public async getParties(user: User): Promise<any> {
         let result = null;
 
-        let sqlQuery = "SELECT * FROM Party WHERE creatorUsername = '" + user.username + "';";
+        let sqlQuery = "SELECT * FROM Party WHERE username = '" + user.username + "';";
 
         try {
             result = await this.db.sendQuery(sqlQuery);
@@ -59,25 +58,30 @@ export class PartyDBService {
     public async inviteParticipant(party: Party, user: User): Promise<any> {
         let result = null;
 
-        let sqlQuery = "INSERT INTO PartyInvitation VALUES('" + party.partyId + "', '" + user.username + "', null);";
-
+        let sqlQuery = "SELECT * FROM User WHERE username = '" + user.username + "';";
+        
         try {
-            await this.db.sendQuery(sqlQuery);
+            result = await this.db.sendQuery(sqlQuery);
+            if (result.length > 0)
+            {
+                sqlQuery = "INSERT INTO PartyInvitation VALUES('" + party.partyId + "', '" + user.username + "', null);";
+                await this.db.sendQuery(sqlQuery);
+            }
         } 
         catch(err){
             throw err;
         }
-        return result;
+        return null;
     }
 
     public async acceptPartyInvite(party: Party, user: User): Promise<any> {
         let result = null;
 
-        let sqlQuery = "REMOVE FROM PartyInvitation WHERE username = '" +  user.username + "' and partyId = '" + party.partyId + "';";
+        let sqlQuery = "DELETE FROM PartyInvitation WHERE username = '" +  user.username + "' and partyId = '" + party.partyId + "';";
 
         try {
             await this.db.sendQuery(sqlQuery);
-            sqlQuery = "INSERT INTO PartyParticipation VALUES('" + party.partyId + "', '" + user.username + "');";
+            sqlQuery = "INSERT INTO Party VALUES('" + party.partyId + "', '" + party.username + "', " + party.name + "', " + party.description + "', ROLE_PARTICIPANT);";
             await this.db.sendQuery(sqlQuery);
         } 
         catch(err){
@@ -88,7 +92,7 @@ export class PartyDBService {
 
     public async declinePartyInvite(party: Party, user: User): Promise<any> {
         let result = null;
-        let sqlQuery = "REMOVE FROM PartyInvitation WHERE username = '" +  user.username + "' and partyId = '" + party.partyId + "';";
+        let sqlQuery = "DELETE FROM PartyInvitation WHERE username = '" +  user.username + "' and partyId = '" + party.partyId + "';";
 
         try {
             await this.db.sendQuery(sqlQuery);
@@ -99,10 +103,23 @@ export class PartyDBService {
         return result;
     }
 
-    public async getParticipants(partyId: string): Promise<any> {
+    public async getPartyInvitations(user: User): Promise<any> {
+        let result = null;
+        let sqlQuery = "SELECT PI.username, P.name FROM PartyInvitation PI, Party P WHERE PI.partyId = P.PartyId AND PI.username = '" + user.username + "';";
+        
+        try {
+            result = await this.db.sendQuery(sqlQuery);
+        } 
+        catch(err){
+            throw err;
+        }
+        return result;
+    }
+
+    public async getParticipants(party: Party): Promise<any> {
         let result = null;
 
-        let sqlQuery = "SELECT * FROM PartyParticipation WHERE partyId = '" + partyId + "';";
+        let sqlQuery = "SELECT * FROM Party WHERE partyId = '" + party.partyId + "';";
         
         try {
             result = await this.db.sendQuery(sqlQuery);
@@ -114,10 +131,10 @@ export class PartyDBService {
     }
     
 
-    public async removeParticipant(party: s, user: User): Promise<any> {
+    public async removeParticipant(party: Party, user: User): Promise<any> {
         let result = null;
 
-        let sqlQuery = "REMOVE FROM PartyParticipation WHERE partyId = '" + party.partyId + "' AND username = '" + user.username + "';";
+        let sqlQuery = "DELETE FROM PartyParticipation WHERE partyId = '" + party.partyId + "' AND username = '" + user.username + "';";
 
         try {
             await this.db.sendQuery(sqlQuery);

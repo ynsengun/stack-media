@@ -40,13 +40,34 @@ export default function Notification() {
           toast.error("Error, could not get friend requests!");
         });
 
-    // TODO fetch party notifications
-
-    // setNotifications([
-    //   { isFriend: false, name: "discoksjd party", id: "" },
-    //   { isFriend: false, name: "disco party2", id: "" },
-    //   { isFriend: true, name: "friend2", id: "" },
-    // ]);
+    // TODO fetch party notifications => wait server
+    fetch("http://localhost:4000/api/party/getInvitations", {
+        method: "POST",
+        mode: "cors",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          token: getAuthToken(),
+          username: getAuthName(),
+        }),
+      })
+        .then((r) => checkResponse(r))
+        .then((r) => r.json())
+        .then((r) => {
+          let resArray = r.data;
+          console.log( r.data);
+          let newPartyNotifications = [ ...notifications ];
+          for ( let i = 0; i < resArray.length; i++)
+          {
+            newPartyNotifications.push( { isFriend: false, name: resArray[ i].partyId, id: resArray[ i].partyId } ); //TODO ask server to return party name :( => wait server
+          }
+          setNotifications( newPartyNotifications)
+        })
+        .catch((err) => {
+          console.log(err);
+          toast.error("Error, could not get patry requests!");
+        });
   }, []);
 
   const handleYes = (clickedNotification) => {
@@ -81,29 +102,31 @@ export default function Notification() {
               toast.error("Error, could not accept friend request!");
             });
     }
-    else // TODO add to party
+    else // TODO add to party => wait server
     {
-        // fetch("http://localhost:4000/api/user/getFriendshipInvitations", {
-        //     method: "POST",
-        //     mode: "cors",
-        //     headers: {
-        //       "Content-Type": "application/json",
-        //     },
-        //     body: JSON.stringify({
-        //       token: getAuthToken(),
-        //       username: getAuthName(),
-        //     }),
-        //   })
-        //     .then((r) => checkResponse(r))
-        //     .then((r) => r.json())
-        //     .then((r) => {
+        fetch("http://localhost:4000/api/party/acceptInvite", {
+            method: "POST",
+            mode: "cors",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              token: getAuthToken(),
+              username: getAuthName(),
 
-        //       setNotifications(temp);
-        //     })
-        //     .catch((err) => {
-        //       console.log(err);
-        //       toast.error("Error, could not accept party invitaion!");
-        //     });
+              partyId: clickedNotification.id,
+              invitedUsername: getAuthName(),
+            }),
+          })
+            .then((r) => checkResponse(r))
+            .then((r) => r.json())
+            .then((r) => {
+              setNotifications(temp);
+            })
+            .catch((err) => {
+              console.log(err);
+              toast.error("Error, could not accept party invitaion!");
+            });
     }
   };
 
@@ -141,32 +164,29 @@ export default function Notification() {
     }
     else // TODO reject party request
     {
-        // fetch("http://localhost:4000/api/user/getFriendshipInvitations", {
-        //     method: "POST",
-        //     mode: "cors",
-        //     headers: {
-        //       "Content-Type": "application/json",
-        //     },
-        //     body: JSON.stringify({
-        //       token: getAuthToken(),
-        //       username: getAuthName(),
-        //     }),
-        //   })
-        //     .then((r) => checkResponse(r))
-        //     .then((r) => r.json())
-        //     .then((r) => {
-        //       let resArray = r.data;
-        //       let newFriendNotifications = [];
-        //       for ( let i = 0; i < resArray.length; i++)
-        //       {
-        //         newFriendNotifications.append( { isFriend: true, name: resArray[ i], id: resArray[ i] } );
-        //       }
-        //       setNotifications(temp);
-        //     })
-        //     .catch((err) => {
-        //       console.log(err);
-        //       toast.error("Error, could not reject party request!");
-        //     });
+        fetch("http://localhost:4000/api/party/declineInvite", {
+            method: "POST",
+            mode: "cors",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              token: getAuthToken(),
+              username: getAuthName(),
+
+              partyId: clickedNotification.id,
+              invitedUsername: getAuthName(),
+            }),
+          })
+            .then((r) => checkResponse(r))
+            .then((r) => r.json())
+            .then((r) => {
+              setNotifications(temp);
+            })
+            .catch((err) => {
+              console.log(err);
+              toast.error("Error, could not reject party request!");
+            });
     }
   };
 

@@ -765,6 +765,16 @@ export class Controller{
         }
     }
 
+    public async getPartyInvitations(request: Request, response: Response): Promise<void> {
+        try{
+            let result = await this.partyBusiness.getPartyInvitations(userMapping.map(request.body));
+            response.status(result.status).send(result);
+        } catch(error){
+            const errorResponse = new ErrorResponse(error);
+            response.status(errorResponse.status).send(new ErrorResponse(error));
+        }
+    }
+
     public async declinePartyInvite(request: Request, response: Response): Promise<void> {
         try{
             this.validation.declinePartyInviteValidation(request);

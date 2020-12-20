@@ -265,6 +265,11 @@ export class Validation{
             throw new InvalidRequest();
     }
 
+    public getPartyInvitations(req: Request): void {
+        if(!req.body.username || !req.body.partyId)
+            throw new InvalidRequest();
+    }
+
     public getParticipantsValidation(req: Request): void {
         if(!req.body.username || !req.body.partyId)
             throw new InvalidRequest();

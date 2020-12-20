@@ -15,7 +15,7 @@ export default function MediaBar(props) {
   const [channels, setChannels] = useState([
     { channelName: "", channelId: "" },
   ]);
-  const [parties, setParties] = useState([{ name: "", id: "" }]);
+  const [parties, setParties] = useState([{ partyName: "", partyId: "" }]);
   const [textInput, setTextInput] = useState({ channel: "", party: "" });
 
   useEffect(() => {
@@ -42,13 +42,35 @@ export default function MediaBar(props) {
         toast.error("Error, could not fetch your created channels!");
       });
 
-    // TODO fetch parties
-    setParties([
-      { name: "S3L4M", id: "234" },
-      { name: "S52L4M", id: "3546346" },
-      { name: "SL4M", id: "345345ewr" },
-      { name: "SLAA4AM", id: "76tdgwe" },
-    ]);
+    // TODO fetch parties => wait server
+    fetch("http://localhost:4000/api/party/getParties", {
+      method: "POST",
+      mode: "cors",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        token: getAuthToken(),
+        username: getAuthName(),
+      }),
+    })
+      .then((r) => checkResponse(r))
+      .then((r) => r.json())
+      .then((r) => {
+        let resArray = r.data;
+        console.log( "My parties:");
+        console.log( resArray);
+        let myParties = [];
+        for ( let i = 0; i < resArray.length; i++)
+        {
+            parties.push( { partyName: resArray[i].name, partyId: resArray[i].partyId});
+        }
+        setParties( myParties);
+      })
+      .catch((err) => {
+        console.log(err);
+        toast.error("Error, could not fetch your created channels!");
+      });
   }, []);
 
   const handleChange = (e) => {
@@ -87,21 +109,26 @@ export default function MediaBar(props) {
           ...channels,
           { channelName: textInput.channel, channelId: r.data },
         ]);
-        console.log(channels);
+        //console.log(channels);
+        setTextInput({ ...textInput, channel: "" });
+        toast.success( "Successfully created channel!");
       })
       .catch((err) => {
         console.log(err);
         toast.error("Error, could not create channel!");
       });
-
-    setTextInput({ ...textInput, channel: "" });
   };
 
   const handleNewParty = () => {
-    // TODO fetch, post request to add textInput.party
-
-    /*
-    fetch("http://localhost:4000/api/channel/create", {
+    
+    if ( textInput.party === "")
+    {
+        toast.error( "Please specify a party name!");
+        return;
+    }
+    
+    // TODO fetch, post request to add textInput.party => wait server
+    fetch("http://localhost:4000/api/party/addParty", {
             method: "POST",
             mode: "cors",
             headers: {
@@ -112,32 +139,61 @@ export default function MediaBar(props) {
                 token: getAuthToken(),
                 username: getAuthName(),
                 
-                title: textInput.party,
-            
+                name: textInput.party,
+                creatorUsername: getAuthName(),
+                description: "LOL what do you need this info for?",
             }),
         })
         .then((r) => checkResponse(r))
         .then((r) => r.json())
         .then((r) => {
+            console.log( "New party:");
             console.log( r);
+            let resArray = r.data;
+            toast.success( "Successfuly created party!");
+            setParties([
+                ...parties,
+                { partyName: textInput.party, partyId: r.data[0].partyId },
+              ]);
+            setTextInput({ ...textInput, party: "" });
         })
         .catch((err) => {
             console.log(err);
-            toast.error("error");
-        });*/
-
-    setParties([...parties, { name: textInput.party, id: "" }]); // TODO fetch id need to be returned from post and set here
-    setTextInput({ ...textInput, party: "" });
+            toast.error("Error, party could not be created");
+        });
   };
 
   const handleDeleteParty = (partyId) => {
-    //TODO fetch delete party
 
     let temp = [];
     parties.forEach((party) => {
-      if (partyId != party.id) temp.push(party);
+      if (partyId != party.partyId) temp.push(party);
     });
-    setParties(temp);
+
+    //TODO fetch delete party => wait server
+    fetch("http://localhost:4000/api/party/removeParty", {
+      method: "DELETE",
+      mode: "cors",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        token: getAuthToken(),
+        username: getAuthName(),
+
+        partyId: partyId,
+      }),
+    })
+      .then((r) => checkResponse(r))
+      .then((r) => r.json())
+      .then((r) => {
+        setParties(temp);
+        toast.success("Successfully deleted party!");
+      })
+      .catch((err) => {
+        console.log(err);
+        toast.error("Error, could not delete party!");
+      });
   };
 
   const handleDeleteChannels = (channelId) => {
@@ -233,10 +289,10 @@ export default function MediaBar(props) {
           {parties.map((party, index) => (
             <RedirectLabel
               key={index}
-              labelName={party.name}
+              labelName={party.partyName}
               onClickEvent={changeContent}
               type={ContentType.PARTY}
-              labelId={party.id}
+              labelId={party.partyId}
               handleDelete={handleDeleteParty}
             ></RedirectLabel>
           ))}
