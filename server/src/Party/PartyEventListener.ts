@@ -16,13 +16,13 @@ export class PartyEventListener{
     }
 
     public listenEvents(client): void {
-        client.on('participate', data => {
-            console.log("new participation");
+        client.on('join', data => {
+            console.log("new join");
             try{
-                console.log("participate event begins");
+                console.log("join event begins");
                 this.tokenService.checkTokenForParty(data);
-                console.log("participate event token checked");
-                eventController.participate(client, data);
+                console.log("join event token checked");
+                eventController.join(client, data);
             }
             catch(error){
                 console.log("There is an " + error.name + "error!\n");

@@ -89,9 +89,9 @@ class PartyEventController{
         this.sendOthers(client, 'set-media', party, {mediaId: data.mediaId});
     }
 
-    public async participate(client, data){
+    public async join(client, data){
         if(!data.partyId || !data.username){
-            client.emit('participate-response', new ErrorResponse(new InvalidRequest()));
+            client.emit('join-response', new ErrorResponse(new InvalidRequest()));
             return;
         }
         let participantList = await this.partyDBService.getParticipants(partyMapping.map({partyId: data.partyId}));
@@ -103,21 +103,21 @@ class PartyEventController{
         }
         if(!isParticipant){
             console.log(data.username + " is not a participant");
-            client.emit('participate-response', new ErrorResponse(new NoAccess()));
+            client.emit('join-response', new ErrorResponse(new NoAccess()));
             return;
         }
-        console.log("participate controller method begins");
+        console.log("join controller method begins");
         let partyId: string = data.partyId;
         let party: Party = this.getPartyById(partyId);
         if(party == null) {
-            console.log("No party (participate)");
-            client.emit('participate-response', new ErrorResponse(new InvalidRequest()));
+            console.log("No party (join)");
+            client.emit('join-response', new ErrorResponse(new InvalidRequest()));
             return;
         }
-        console.log("participate controller checks finish");
+        console.log("join controller checks finish");
         party.participate(data.username, client.id);
         console.log("Ready to notify others!");
-        this.sendOthers(client, 'participate', party, {username: data.username});
+        this.sendOthers(client, 'join', party, {username: data.username});
     }
 
     public sendMessage(client, data){
