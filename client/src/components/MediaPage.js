@@ -83,7 +83,6 @@ export default function MediaPage() {
                         .then((r) => checkResponse(r))
                         .then((r) => r.json())
                         .then((r) => {
-                            toast.success( "First time starting to watch!");
                             setProgress(0);
                         })
                     .catch((err) => {
@@ -166,32 +165,34 @@ export default function MediaPage() {
 
 
         // TODO fetch suggested and next(if series) media (cevat will do it next monday, if your not patient, you can do it urself)
-        // fetch("http://localhost:4000/api/media/getSuggestion", {
-        //     method: "POST",
-        //     mode: "cors",
-        //     headers: {
-        //       "Content-Type": "application/json",
-        //     },
-        //     body: JSON.stringify({
-        //       token: getAuthToken(),
-        //       username: getAuthName(),
-        //     }),
-        //   })
-        //     .then((r) => checkResponse(r))
-        //     .then((r) => r.json())
-        //     .then((r) => {
-        //       let resArray = r.data;
-        //       console.log("FOUND SUGGESTED MEDIA ARE:");
-        //       console.log( resArray);
-        //       //setTVShowInformation( resArray);
-        //     })
-        //     .catch((err) => {
-        //       console.log(err);
-        //       toast.error("Error, could not get TV-shows!");
-        //     });
+        fetch("http://localhost:4000/api/media/getSuggestion", {
+            method: "POST",
+            mode: "cors",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              token: getAuthToken(),
+              username: getAuthName(),
+
+              mediaId: mediaId,
+            }),
+          })
+            .then((r) => checkResponse(r))
+            .then((r) => r.json())
+            .then((r) => {
+              let resArray = r.data;
+              console.log("FOUND SUGGESTED MEDIA ARE:");
+              console.log( resArray);
+              setSuggestedMedias( resArray);
+            })
+            .catch((err) => {
+              console.log(err);
+              toast.error("Error, could not get TV-shows!");
+            });
 
 
-        //
+        // sets the media name and also sets next episode if this media is series
         fetch("http://localhost:4000/api/media/getMedia", {
             method: "POST",
             mode: "cors",
@@ -264,11 +265,6 @@ export default function MediaPage() {
               console.log(err);
               toast.error("Error, could not get media!");
             });
-
-        setSuggestedMedias([
-        { name: "aaa", type: 0 },
-        { name: "bbb", type: 1 },
-        ]);
     }
   }, [mediaId]);
 
