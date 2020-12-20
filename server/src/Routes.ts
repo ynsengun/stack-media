@@ -315,27 +315,27 @@ export class Routes{
             });
 
         app.route('/api/party/addParty')
-            .delete(this.tokenService.checkToken, (req: Request, res: Response) => {
+            .post(this.tokenService.checkToken, (req: Request, res: Response) => {
                 this.controller.addParty(req, res);
             });
 
         app.route('/api/party/removeParty')
-            .delete(this.tokenService.checkToken, (req: Request, res: Response) => {
+            .post(this.tokenService.checkToken, (req: Request, res: Response) => {
                 this.controller.removeParty(req, res);
             });
 
         app.route('/api/party/getParties')
-            .delete(this.tokenService.checkToken, (req: Request, res: Response) => {
+            .post(this.tokenService.checkToken, (req: Request, res: Response) => {
                 this.controller.getParties(req, res);
             });
 
         app.route('/api/party/inviteParticipant')
-            .delete(this.tokenService.checkToken, (req: Request, res: Response) => {
+            .post(this.tokenService.checkToken, (req: Request, res: Response) => {
                 this.controller.inviteParticipant(req, res);
             });
 
         app.route('/api/party/acceptInvite')
-            .delete(this.tokenService.checkToken, (req: Request, res: Response) => {
+            .post(this.tokenService.checkToken, (req: Request, res: Response) => {
                 this.controller.acceptPartyInvite(req, res);
             });
 
@@ -345,12 +345,12 @@ export class Routes{
             });
 
         app.route('/api/party/getInvitations')
-            .delete(this.tokenService.checkToken, (req: Request, res: Response) => {
+            .post(this.tokenService.checkToken, (req: Request, res: Response) => {
                 this.controller.getPartyInvitations(req, res);
             });
 
         app.route('/api/party/getParticipants')
-            .delete(this.tokenService.checkToken, (req: Request, res: Response) => {
+            .post(this.tokenService.checkToken, (req: Request, res: Response) => {
                 this.controller.getParticipants(req, res);
             });
 

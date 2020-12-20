@@ -69,7 +69,7 @@ export default function MediaBar(props) {
       })
       .catch((err) => {
         console.log(err);
-        toast.error("Error, could not fetch your created channels!");
+        toast.error("Error, could not fetch your created parties!");
       });
   }, []);
 
