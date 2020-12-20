@@ -8,12 +8,13 @@ class Socket{
     constructor(){
         this.socket = require('socket.io')(server);
         this.partyEventListener = new PartyEventListener();
+        this.partyEventListener.setSocket(this.socket);
     }
 
     public listen(PORT: number): void {
         this.socket.on('connection', client => {
             console.log("connected");
-            this.partyEventListener.listenEvents(this.socket, client);
+            this.partyEventListener.listenEvents(client);
         })
 
         server.listen(PORT, () => {

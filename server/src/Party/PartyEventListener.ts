@@ -1,26 +1,95 @@
-import {PartyEventController} from "./PartyEventController";
+import eventController from "./PartyEventController";
 import { TokenService } from "../Service/TokenService";
 import { ErrorResponse } from "../Model/Response/ErrorResponse";
 import { NoAccess } from "../Model/Error/NoAccess";
 
 export class PartyEventListener{
 
-    private eventController: PartyEventController;
     private tokenService: TokenService;
 
     constructor(){
-        this.eventController = new PartyEventController();
         this.tokenService = new TokenService();
     }
 
-    public listenEvents(socket, client): void {
+    public setSocket(socket){
+        eventController.setSocket(socket);
+    }
+
+    public listenEvents(client): void {
         client.on('participate', data => {
             console.log("new participation");
             try{
+                console.log("participate event begins");
                 this.tokenService.checkTokenForParty(data);
-                this.eventController.participate(socket, client, data);
+                console.log("participate event token checked");
+                eventController.participate(client, data);
             }
             catch(error){
+                console.log("There is an " + error.name + "error!\n");
+                client.emit(new ErrorResponse(error));
+            }
+        });
+
+        client.on('disconnect', data => {
+            console.log(client.id + " disconnected");
+            try{
+                console.log("disconnection event begins");
+                eventController.leave(client);
+            }
+            catch(error){
+                console.log("There is an " + error.name + "error!\n");
+                client.emit(new ErrorResponse(error));
+            }
+        });
+
+        client.on('set-media', data => {
+            console.log("set media event");
+            try{
+                this.tokenService.checkTokenForParty(data);
+                console.log("set media event token checked");
+                eventController.setMedia(client, data);
+            }
+            catch(error){
+                console.log("There is an " + error.name + "error!\n");
+                client.emit(new ErrorResponse(error));
+            }
+        });
+
+        client.on('send-message', data => {
+            console.log("send message event");
+            try{
+                this.tokenService.checkTokenForParty(data);
+                console.log("send message event token checked");
+                eventController.sendMessage(client, data);
+            }
+            catch(error){
+                console.log("There is an " + error.name + "error!\n");
+                client.emit(new ErrorResponse(error));
+            }
+        });
+
+        client.on('watch', data => {
+            console.log("watch event");
+            try{
+                this.tokenService.checkTokenForParty(data);
+                console.log("watch event token checked");
+                eventController.watch(client, data);
+            }
+            catch(error){
+                console.log("There is an " + error.name + "error!\n");
+                client.emit(new ErrorResponse(error));
+            }
+        });
+
+        client.on('take-out', data => {
+            console.log("take out event");
+            try{
+                this.tokenService.checkTokenForParty(data);
+                console.log("take out event token checked");
+                eventController.takeOut(client, data);
+            }
+            catch(error){
+                console.log("There is an " + error.name + "error!\n");
                 client.emit(new ErrorResponse(error));
             }
         });

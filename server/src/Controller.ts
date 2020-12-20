@@ -2,7 +2,7 @@ import {Request, Response} from "express";
 import {UserBusiness} from "./User/UserBusiness";
 import {MediaBusiness} from "./Media/MediaBusiness";
 import {ChannelBusiness} from "./Channel/ChannelBusiness";
-import {PartyBusiness} from "Party/PartyBusiness";
+import {PartyBusiness} from "./Party/PartyBusiness";
 import {Validation} from "./Service/Validation";
 import {ErrorResponse} from "./Model/Response/ErrorResponse";
 import userMapping from "./Service/UserMapping";

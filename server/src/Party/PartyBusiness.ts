@@ -6,6 +6,7 @@ import { Party } from "../Model/Party/Party";
 import { User } from "../Model/User/User";
 import { Genre } from "../Model/Genre/Genre";
 import { Channel } from "../Model/Channel/Channel";
+import partyEventController from "./PartyEventController";
 
 export class PartyBusiness {
 
@@ -19,6 +20,7 @@ export class PartyBusiness {
     {
         try {
             let result = await this.partyDBService.addParty(party);
+            partyEventController.createParty(party.username, result);
             return new SuccessResponse(result);
         } catch (error) {
             return new ErrorResponse(error);
@@ -29,6 +31,7 @@ export class PartyBusiness {
     {
         try {
             let result = await this.partyDBService.removeParty(party);
+            partyEventController.remove({username: party.username, partyId: party.partyId});
             return new SuccessResponse(result);
         } catch (error) {
             return new ErrorResponse(error);

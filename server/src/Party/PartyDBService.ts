@@ -8,7 +8,7 @@ import {AlreadyExist} from "../Model/Error/AlreadyExist";
 import {v1 as id} from "uuid";
 
 export class PartyDBService {
-    db: Database;
+    private db: Database;
 
     constructor(){
         this.db = new Database();

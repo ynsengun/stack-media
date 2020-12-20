@@ -371,7 +371,7 @@ export class MediaDBService {
                 await this.db.sendQuery(sqlQuery);
             }
             else{
-                sqlQuery = "UPDATE Watch SET Progress = '" + progress + "', timeStamp = CURRENT_TIMESTAMP WHERE mediaId = '" + mediaId + "' AND username = '" + username + "';";
+                sqlQuery = "UPDATE Watch SET Progress = '" + progress + "', timeStamp = null WHERE mediaId = '" + mediaId + "' AND username = '" + username + "';";
                 await this.db.sendQuery(sqlQuery);
             }
         } 
