@@ -31,8 +31,8 @@ export class PartyDBService {
 
     public async removeParty(party: Party): Promise<any> {
         let result = null;
-
-        let sqlQuery = "REMOVE FROM Party WHERE partyId = '" + party.partyId + "';";
+        console.log( "Start delete");
+        let sqlQuery = "DELETE FROM Party WHERE partyId = '" + party.partyId + "';";
 
         try {
             await this.db.sendQuery(sqlQuery);
@@ -40,6 +40,7 @@ export class PartyDBService {
         catch(err){
             throw err;
         }
+        console.log( "End delete");
         return result;
     }
 

@@ -136,6 +136,10 @@ export default function ChannelContents() {
                 toast.error("Error, could not fetch suggested medias for the channel!");
             });
         }
+        else
+        {
+            setChannelId(history.location.pathname.substring(10));
+        }
     }, [channelId, myGenres]);
 
   const getButtonClass = (genre) => {

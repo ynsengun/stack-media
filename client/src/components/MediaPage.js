@@ -132,7 +132,7 @@ export default function MediaPage() {
             })
             .catch((err) => {
               console.log(err);
-              toast.error("Error, could not get rating for the media!");
+              toast.error("Error, could not get OVERALL rating for the media!");
             });
 
             // fetch my rating
@@ -159,7 +159,7 @@ export default function MediaPage() {
                 })
                 .catch((err) => {
                 console.log(err);
-                toast.error("Error, could not get rating for the media!");
+                toast.error("Error, could not get MY rating for the media! (can be ignored?)");
                 });
 
 

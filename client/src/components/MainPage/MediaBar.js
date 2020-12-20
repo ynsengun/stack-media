@@ -42,7 +42,7 @@ export default function MediaBar(props) {
         toast.error("Error, could not fetch your created channels!");
       });
 
-    // TODO fetch parties => wait server
+    // fetch parties
     fetch("http://localhost:4000/api/party/getParties", {
       method: "POST",
       mode: "cors",
@@ -63,7 +63,7 @@ export default function MediaBar(props) {
         let myParties = [];
         for ( let i = 0; i < resArray.length; i++)
         {
-            parties.push( { partyName: resArray[i].name, partyId: resArray[i].partyId});
+            myParties.push( { partyName: resArray[i].name, partyId: resArray[i].partyId});
         }
         setParties( myParties);
       })
@@ -127,7 +127,7 @@ export default function MediaBar(props) {
         return;
     }
     
-    // TODO fetch, post request to add textInput.party => wait server
+    // fetch, post request to add textInput.party
     fetch("http://localhost:4000/api/party/addParty", {
             method: "POST",
             mode: "cors",
@@ -172,7 +172,7 @@ export default function MediaBar(props) {
 
     //TODO fetch delete party => wait server
     fetch("http://localhost:4000/api/party/removeParty", {
-      method: "DELETE",
+      method: "POST",
       mode: "cors",
       headers: {
         "Content-Type": "application/json",
