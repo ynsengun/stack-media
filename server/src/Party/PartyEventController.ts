@@ -41,12 +41,16 @@ class PartyEventController{
     private sendOthers(client, event: string, party: Party, data){
         let participants = party.getMemberSocketIds();
         let cSocket = participants.creatorSocketId
+        console.log(cSocket, participants.participantSocketIds.length);
         if(cSocket != null && cSocket != client.id) this.socket.to(participants.creatorSocketId).emit(event + '-notification', new SuccessResponse(data));
         for(let i = 0 ; i < participants.participantSocketIds.length ; i++){
             let socketId: string = participants.participantSocketIds[i];
             if(socketId != client.id) this.socket.to(socketId).emit(event + '-notification', new SuccessResponse(data));
         }
-        client.emit(event + '-response', new SuccessResponse(null));
+        console.log(client == null, client.id);
+        this.socket.to(client.id).emit(event + '-response', new SuccessResponse(null));
+        this.socket.to(client.id).emit("hello-world", "1");
+        this.socket.emit("hello-world", "3");
     }
 
     private sendOthersWithParticipantList(event: string, participants, data){

@@ -46,6 +46,11 @@ export default function PartyPage() {
       window.scrollTo(0, 0);
     });
 
+    socket.on("hello-world", (data) => {
+      console.log("sockett", socket);
+      console.log("hellooooo", data);
+    });
+
     socket.on("watch-response", (data) => {
       console.log("watch-response", data);
       setProgress(data.progress);

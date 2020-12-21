@@ -16,6 +16,8 @@ export class PartyEventListener{
     }
 
     public listenEvents(client): void {
+      console.log("hadii ", client.id);
+      client.emit("hello-world", "2");
         client.on('join', data => {
             console.log("new join");
             try{
