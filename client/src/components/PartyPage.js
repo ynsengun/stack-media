@@ -46,16 +46,8 @@ export default function PartyPage() {
       window.scrollTo(0, 0);
     });
 
-    // socket.on("FromAPI", (data) => {
-    //   setResponse(data);
-    // });
-    socket.emit("join", {
-      partyId: partyId,
-      username: getAuthName(),
-    });
-
     socket.on("watch-response", (data) => {
-      console.log(data);
+      console.log("watch-response", data);
     });
 
     socket.on("join-response", (data) => {
@@ -63,12 +55,17 @@ export default function PartyPage() {
     });
 
     socket.on("set-media-response", (data) => {
-      console.log("hereeeeeeeeee");
+      console.log("set-media-response", data);
       setmediaId(data.mediaId);
     });
 
     socket.on("send-message-response", (data) => {
+      console.log("send-message-response", data);
       setChat([...chat, { name: data.username, text: data.message }]);
+    });
+
+    socket.on("take-out-response", (data) => {
+      console.log("take-out-response", data);
     });
 
     // return () => socket.disconnect();
@@ -132,8 +129,14 @@ export default function PartyPage() {
           toast.error("Error, could not get party members!");
         });
 
+      socket.emit("join", {
+        partyId: partyId,
+        username: getAuthName(),
+        token: getAuthToken(),
+      });
+
       // TODO fetch these when how movie will be set determined!
-      setProgress(0);
+      // setProgress(0);
       setButtonActive({ watch: true, finish: false });
     }
   }, [partyId]);
@@ -156,6 +159,12 @@ export default function PartyPage() {
         participants[i].role === "ROLE_CREATOR"
       ) {
         setCreator(true);
+        socket.emit("watch", {
+          token: getAuthToken(),
+          partyId: partyId,
+          username: getAuthName(),
+          progress: 0,
+        });
       }
     }
   }, [participants]);
@@ -189,6 +198,7 @@ export default function PartyPage() {
       partyId: partyId,
       username: getAuthName(),
       message: commentText,
+      token: getAuthToken(),
     });
     // setChat([...chat, { name: getAuthName(), text: commentText }]);
   };
@@ -224,12 +234,18 @@ export default function PartyPage() {
   const handleDeleteParticipant = (clicked) => {
     // TOOD fetch
     // TODO take-out when kick out
-
-    let temp = [];
-    participants.forEach((participant) => {
-      if (clicked != participant) temp.push(participant);
+    socket.emit("take-out", {
+      token: getAuthToken(),
+      partyId: partyId,
+      username: getAuthName(),
+      participantUsername: clicked,
     });
-    setParticipants(temp);
+
+    // let temp = [];
+    // participants.forEach((participant) => {
+    //   if (clicked != participant) temp.push(participant);
+    // });
+    // setParticipants(temp);
   };
 
   const handleMediaSelect = (mediaId, mediaName) => {
@@ -239,11 +255,12 @@ export default function PartyPage() {
       partyId: partyId,
       username: getAuthName(),
       mediaId: mediaId,
+      token: getAuthToken(),
     });
 
     setMediaSelectActive(false);
-    setmediaId(mediaId);
-    setmediaName(mediaName);
+    // setmediaId(mediaId);
+    // setmediaName(mediaName);
   };
 
   return (
@@ -252,7 +269,7 @@ export default function PartyPage() {
         <div style={{ paddingLeft: "50px", paddingRight: "50px" }}>
           <h1 className="h1 text-center mb-4 text-black">Party: {partyName}</h1>
           <div className="card bg-secondary">
-            <h1 className="h1 text-center mt-5 text-white">{mediaName}</h1>
+            <h1 className="h1 text-center mt-5 text-white">{mediaId}</h1>
             <div
               style={{
                 height: "40vh",
@@ -267,7 +284,13 @@ export default function PartyPage() {
                   !buttonActive.watch && "disabled"
                 }`}
                 onClick={() => {
-                  if (progress < 3) setProgress(progress + 1);
+                  if (isCreator && progress < 3)
+                    socket.emit("watch", {
+                      token: getAuthToken(),
+                      partyId: partyId,
+                      username: getAuthName(),
+                      progress: progress + 1,
+                    });
                 }}
               >
                 Watch
@@ -277,7 +300,13 @@ export default function PartyPage() {
                   !buttonActive.finish && "disabled"
                 }`}
                 onClick={() => {
-                  if (progress === 3) setProgress(progress + 1);
+                  if (isCreator && progress === 3)
+                    socket.emit("watch", {
+                      token: getAuthToken(),
+                      partyId: partyId,
+                      username: getAuthName(),
+                      progress: progress + 1,
+                    });
                 }}
               >
                 Finish

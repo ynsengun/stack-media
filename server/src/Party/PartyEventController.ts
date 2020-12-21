@@ -79,14 +79,17 @@ class PartyEventController{
     }
 
     public async setMedia(client, data){
+      console.log(data);
         if(!data.partyId || !data.username || !data.mediaId){
             client.emit('set-media-response', new ErrorResponse(new InvalidRequest()));
             return;
         }
+        console.log("jhsgdjhafkahsfda");
         let partyId: string = data.partyId;
         let party: Party = this.getPartyById(partyId);
         console.log("Set media controller begins!");
         if(party == null) {
+          console.log("party nullllllllllllllllllll");
             client.emit('set-media-response', new ErrorResponse(new InvalidRequest()));
             return;
         }
@@ -99,10 +102,12 @@ class PartyEventController{
     }
 
     public async join(client, data){
+      console.log(data);
         if(!data.partyId || !data.username){
             client.emit('join-response', new ErrorResponse(new InvalidRequest()));
             return;
         }
+        console.log("11111111");
         let participantList = await this.partyDBService.getParticipants(partyMapping.map({partyId: data.partyId}));
         let isParticipant = false;
         for(let i = 0 ; i < participantList.length; i++){
@@ -110,6 +115,7 @@ class PartyEventController{
                 isParticipant = true;
             }
         }
+        console.log("22222222");
         if(!isParticipant){
             console.log(data.username + " is not a participant");
             client.emit('join-response', new ErrorResponse(new NoAccess()));
