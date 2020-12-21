@@ -10,6 +10,10 @@ import Comment from "./Media/Comment";
 import MediaBox from "./MediaBox";
 import Search from "./Search";
 
+import socketIOClient from "socket.io-client";
+
+const ENDPOINT = "http://localhost:4000";
+
 export default function PartyPage() {
   const [progress, setProgress] = useState(0);
   const [buttonActive, setButtonActive] = useState({
@@ -29,6 +33,8 @@ export default function PartyPage() {
 
   const history = useHistory();
 
+  const socket = socketIOClient(ENDPOINT);
+
   useEffect(() => {
     let path = history.location.pathname.substring(7);
     setpartyId(path);
@@ -39,6 +45,33 @@ export default function PartyPage() {
 
       window.scrollTo(0, 0);
     });
+
+    // socket.on("FromAPI", (data) => {
+    //   setResponse(data);
+    // });
+    socket.emit("join", {
+      partyId: partyId,
+      username: getAuthName(),
+    });
+
+    socket.on("watch-response", (data) => {
+      console.log(data);
+    });
+
+    socket.on("join-response", (data) => {
+      console.log("join-response", data);
+    });
+
+    socket.on("set-media-response", (data) => {
+      console.log("hereeeeeeeeee");
+      setmediaId(data.mediaId);
+    });
+
+    socket.on("send-message-response", (data) => {
+      setChat([...chat, { name: data.username, text: data.message }]);
+    });
+
+    // return () => socket.disconnect();
 
     return () => {
       unListen();
@@ -152,7 +185,12 @@ export default function PartyPage() {
   };
 
   const handleCommentSend = () => {
-    setChat([...chat, { name: getAuthName(), text: commentText }]);
+    socket.emit("send-message", {
+      partyId: partyId,
+      username: getAuthName(),
+      message: commentText,
+    });
+    // setChat([...chat, { name: getAuthName(), text: commentText }]);
   };
 
   const handleNewParticipant = () => {
@@ -185,6 +223,7 @@ export default function PartyPage() {
 
   const handleDeleteParticipant = (clicked) => {
     // TOOD fetch
+    // TODO take-out when kick out
 
     let temp = [];
     participants.forEach((participant) => {
@@ -194,8 +233,14 @@ export default function PartyPage() {
   };
 
   const handleMediaSelect = (mediaId, mediaName) => {
-    // TODO
     console.log(mediaId);
+
+    socket.emit("set-media", {
+      partyId: partyId,
+      username: getAuthName(),
+      mediaId: mediaId,
+    });
+
     setMediaSelectActive(false);
     setmediaId(mediaId);
     setmediaName(mediaName);
@@ -245,20 +290,21 @@ export default function PartyPage() {
             </div>
           </div>
 
-          {mediaSelectActive ? (
-            <div className="mt-4">
-              <Search isParty={true} handleMediaSelect={handleMediaSelect} />
-            </div>
-          ) : (
-            <button
-              className="mt-4 btn btn-primary w-100"
-              onClick={() => {
-                setMediaSelectActive(true);
-              }}
-            >
-              Choose Media
-            </button>
-          )}
+          {isCreator &&
+            (mediaSelectActive ? (
+              <div className="mt-4">
+                <Search isParty={true} handleMediaSelect={handleMediaSelect} />
+              </div>
+            ) : (
+              <button
+                className="mt-4 btn btn-primary w-100"
+                onClick={() => {
+                  setMediaSelectActive(true);
+                }}
+              >
+                Choose Media
+              </button>
+            ))}
 
           <div className="mt-4">
             <div className="card bg-white p-5">

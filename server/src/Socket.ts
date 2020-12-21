@@ -6,7 +6,11 @@ class Socket{
     partyEventListener: PartyEventListener;
 
     constructor(){
-        this.socket = require('socket.io')(server);
+        this.socket = require('socket.io')(server,  {
+          cors: {
+            origin: '*',
+          }
+        });
         this.partyEventListener = new PartyEventListener();
         this.partyEventListener.setSocket(this.socket);
     }
