@@ -48,6 +48,7 @@ export default function PartyPage() {
 
     socket.on("watch-response", (data) => {
       console.log("watch-response", data);
+      setProgress(data.progress);
     });
 
     socket.on("join-response", (data) => {
@@ -66,6 +67,7 @@ export default function PartyPage() {
 
     socket.on("take-out-response", (data) => {
       console.log("take-out-response", data);
+      // TODO
     });
 
     // return () => socket.disconnect();
@@ -258,7 +260,7 @@ export default function PartyPage() {
       token: getAuthToken(),
     });
 
-    setMediaSelectActive(false);
+    // setMediaSelectActive(false); // TODO
     // setmediaId(mediaId);
     // setmediaName(mediaName);
   };

@@ -29,7 +29,9 @@ class PartyEventController{
     private checkCreator(client, event: string, party: Party, data){
         let creatorUsername: string = party.getCreatorUsername();
         let creatorSocketId: string = party.getCreatorSocketId();
-        if(creatorUsername != data.username || (client != null && creatorSocketId != client.id)){
+        console.log("---->>> ", data, creatorUsername, creatorSocketId, client);
+        if(creatorUsername != data.username){
+          console.log("creator rejected");
             if(client != null) client.emit(event + '-response', new ErrorResponse(new NoAccess()));
             return false;
         }
@@ -63,14 +65,15 @@ class PartyEventController{
     }
 
     private getPartyById(partyId: string): Party{
+      // console.log(this.parties);
         for(let i = 0 ; i < this.parties.length; i++){
-            console.log( "Get party id:");
-            console.log(this.parties[i].getPartyId() );
-            console.log( "PArty ID arg");
-            console.log( partyId);
+            // console.log( "Get party id:");
+            // console.log(this.parties[i].getPartyId() );
+            // console.log( "PArty ID arg");
+            // console.log( partyId);
             if(this.parties[i].getPartyId() === partyId)
             {
-                console.log( this.parties[i]);
+                // console.log( this.parties[i]);
                 return this.parties[i];
             }
         }
