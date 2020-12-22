@@ -30,6 +30,7 @@ export default function PartyPage() {
   const [mediaSelectActive, setMediaSelectActive] = useState(false);
   const [mediaId, setmediaId] = useState("");
   const [mediaName, setmediaName] = useState("");
+  const [msg, setNewMsg] = useState(null);
 
   const history = useHistory();
 
@@ -127,12 +128,13 @@ export default function PartyPage() {
         if (data.response.status == 200 && data.partyId == partyId) {
           console.log("join-response", data);
           // TODO welcome message
-          let temp = [...chat];
-          temp.push({
-            name: "",
-            text: `${data.response.data.username} joined party`,
-          });
-          setChat(temp);
+          setNewMsg( { name: "", text: `${data.response.data.username} joined party`, } );
+        //   let temp = [...chat];
+        //   temp.push({
+        //     name: "",
+        //     text: `${data.response.data.username} joined party`,
+        //   });
+        //   setChat(temp);
         }
       });
 
@@ -148,24 +150,29 @@ export default function PartyPage() {
         if (data.response.status == 200 && data.partyId == partyId) {
           console.log("send-message-response", data);
           console.log("chattttt ", chat);
-          let temp = [...chat];
+          
+          setNewMsg( { name: data.response.data.username, text: data.response.data.message, } );
+          /*let temp = [...chat];
           temp.push({
             name: data.response.data.username,
             text: data.response.data.message,
           });
-          setChat(temp);
+          setChat(temp);*/
         }
       });
 
       socket.on("take-out-response", (data) => {
         console.log("take-out-response", data);
         if (data.response.status == 200 && data.partyId == partyId) {
-          let temp = [...chat];
+            
+            setNewMsg( { name: "", text: `${data.response.data.otherUsername} has been kicked out`, } );
+            //setNewMsg( data.response.data);
+            /*let temp = [...chat];
           temp.push({
             name: "",
             text: `${data.response.data.otherUsername} has been kicked out`,
           });
-          setChat(temp);
+          setChat(temp);*/
         }
       });
 
@@ -177,6 +184,16 @@ export default function PartyPage() {
   useEffect(() => {
     console.log("chchchchhchchhch", chat); // ?????????
   }, [chat]);
+
+  useEffect(() => {
+      if ( msg !== null)
+      {
+        let temp = [...chat];
+        temp.push( msg );
+        setChat(temp);
+      }
+  }, [msg]);
+
 
   useEffect(() => {
     if (progress === 3) {
