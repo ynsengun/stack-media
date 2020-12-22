@@ -127,6 +127,12 @@ export default function PartyPage() {
         if (data.response.status == 200 && data.partyId == partyId) {
           console.log("join-response", data);
           // TODO welcome message
+          let temp = [...chat];
+          temp.push({
+            name: "",
+            text: `${data.response.data.username} joined party`,
+          });
+          setChat(temp);
         }
       });
 
@@ -368,7 +374,9 @@ export default function PartyPage() {
               >
                 {chat.map((entry) => (
                   <div className="mt-1">
-                    <span className="h5">{entry.name + ": "}</span>
+                    <span className="h5">
+                      {entry.name == "" ? "" : entry.name + ": "}
+                    </span>
                     <span>{entry.text}</span>
                     <br />
                   </div>
