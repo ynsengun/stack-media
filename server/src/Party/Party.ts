@@ -67,6 +67,7 @@ export class Party{
     }
 
     public takeOut(username: string){
+      console.log(this.participantUsernames, username);
         let found = false;
         for(let i = 0 ; i < this.participantUsernames.length ; i++){
             if(this.participantUsernames[i] == username){

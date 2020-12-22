@@ -269,7 +269,7 @@ class PartyEventController{
         }
         console.log("There is a party (take out)");
         if(!this.checkCreator(client, 'take-out', party, data)) return;
-        console.log("it is the creator (take out)");
+        console.log("it is the creator (take out)", data.participantUsername);
         if(!party.takeOut(data.participantUsername)){
             //client.emit('take-out-response', new ErrorResponse(new InvalidRequest()));
             this.sendOthers('take-out', {username: data.username, partyId: data.partyId}, new InvalidRequest());

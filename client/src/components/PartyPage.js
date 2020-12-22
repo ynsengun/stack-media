@@ -159,7 +159,14 @@ export default function PartyPage() {
 
       socket.on("take-out-response", (data) => {
         console.log("take-out-response", data);
-        // TODO
+        if (data.response.status == 200 && data.partyId == partyId) {
+          let temp = [...chat];
+          temp.push({
+            name: "",
+            text: `${data.response.data.otherUsername} has been kicked out`,
+          });
+          setChat(temp);
+        }
       });
 
       // setProgress(0);
@@ -264,11 +271,12 @@ export default function PartyPage() {
   const handleDeleteParticipant = (clicked) => {
     // TOOD fetch
     // TODO take-out when kick out
+    console.log(clicked);
     socket.emit("take-out", {
       token: getAuthToken(),
       partyId: partyId,
       username: getAuthName(),
-      participantUsername: clicked,
+      participantUsername: clicked.username,
     });
 
     // let temp = [];
