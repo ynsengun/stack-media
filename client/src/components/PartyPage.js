@@ -286,7 +286,6 @@ export default function PartyPage() {
   };
 
   const handleDeleteParticipant = (clicked) => {
-    // TOOD fetch
     // TODO take-out when kick out
     console.log(clicked);
     socket.emit("take-out", {

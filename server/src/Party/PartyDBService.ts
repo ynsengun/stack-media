@@ -155,7 +155,7 @@ export class PartyDBService {
     public async removeParticipant(party: Party, user: User): Promise<any> {
         let result = null;
 
-        let sqlQuery = "DELETE FROM PartyParticipation WHERE partyId = '" + party.partyId + "' AND username = '" + user.username + "';";
+        let sqlQuery = "DELETE FROM Party WHERE partyId = '" + party.partyId + "' AND username = '" + user.username + "';";
 
         try {
             await this.db.sendQuery(sqlQuery);
