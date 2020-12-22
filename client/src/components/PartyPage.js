@@ -223,6 +223,40 @@ export default function PartyPage() {
     }
   }, [participants]);
 
+  useEffect(() => {
+      // fetch media name
+    if ( mediaId !== null && mediaId !== "")
+    {
+        // sets the media name
+        fetch("http://localhost:4000/api/media/getMedia", {
+            method: "POST",
+            mode: "cors",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              token: getAuthToken(),
+              username: getAuthName(),
+
+              mediaId: mediaId,
+            }),
+          })
+            .then((r) => checkResponse(r))
+            .then((r) => r.json())
+            .then((r) => {
+              let resArray = r.data;
+            //   console.log("FOUND MEDIA IS:");
+            //   console.log( resArray);
+              setmediaName( resArray[0].name);
+            })
+            .catch((err) => {
+              console.log(err);
+              toast.error("Error, could not get media!");
+            });
+    }
+  }, [mediaId]);
+
+
   const progressBar = (index) => {
     return (
       <div
@@ -323,7 +357,7 @@ export default function PartyPage() {
         <div style={{ paddingLeft: "50px", paddingRight: "50px" }}>
           <h1 className="h1 text-center mb-4 text-black">Party: {partyName}</h1>
           <div className="card bg-secondary">
-            <h1 className="h1 text-center mt-5 text-white">{mediaId}</h1>
+            <h1 className="h1 text-center mt-5 text-white">{mediaName}</h1>
             <div
               style={{
                 height: "40vh",
