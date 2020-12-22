@@ -178,6 +178,7 @@ class PartyEventController{
         }
         let partyId: string = data.partyId;
         let party: Party = this.getPartyById(partyId);
+        console.log("1111111");
         if(party == null) { // No party
             console.log("No party " + partyId + " (send message)");
             //client.emit('send-message-response', new ErrorResponse(new InvalidRequest()));
@@ -185,13 +186,14 @@ class PartyEventController{
             this.sendOthers('send-message', {username: data.username, partyId: data.partyId}, new InvalidRequest());
             return;
         }
-        if(!party.checkParticipant(data.username, client.id)){ // It is not a participant
-            console.log(data.username + "is not a participant for party " + data.partyId + " (send message)");
+        console.log("2222222");
+        // if(!party.checkParticipant(data.username, client.id)){ // It is not a participant
+        //     console.log(data.username + "is not a participant for party " + data.partyId + " (send message)");
             //client.emit('send-message-response', new ErrorResponse(new NoAccess()));
             // this.socket.emit('send-message-response', {username: data.username, error: new ErrorResponse(new NoAccess())});
-            this.sendOthers('send-message', {username: data.username, partyId: data.partyId}, new NoAccess());
-            return;
-        }
+        //     this.sendOthers('send-message', {username: data.username, partyId: data.partyId}, new NoAccess());
+        //     return;
+        // }
         console.log("Send message ready to notify others!");
         this.sendOthers('send-message', {username: data.username, message: data.message, partyId: data.partyId}, null);
     }

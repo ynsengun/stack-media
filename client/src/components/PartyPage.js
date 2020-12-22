@@ -46,37 +46,6 @@ export default function PartyPage() {
       window.scrollTo(0, 0);
     });
 
-    socket.on("hello-world", (data) => {
-      console.log("sockett", socket);
-      console.log("hellooooo", data);
-    });
-
-    socket.on("watch-response", (data) => {
-      console.log("watch-response", data);
-      setProgress(data.progress);
-    });
-
-    socket.on("join-response", (data) => {
-      console.log("join-response", data);
-    });
-
-    socket.on("set-media-response", (data) => {
-      console.log("set-media-response", data);
-      setmediaId(data.mediaId);
-    });
-
-    socket.on("send-message-response", (data) => {
-      console.log("send-message-response", data);
-      setChat([...chat, { name: data.username, text: data.message }]);
-    });
-
-    socket.on("take-out-response", (data) => {
-      console.log("take-out-response", data);
-      // TODO
-    });
-
-    // return () => socket.disconnect();
-
     return () => {
       unListen();
     };
@@ -142,11 +111,59 @@ export default function PartyPage() {
         token: getAuthToken(),
       });
 
-      // TODO fetch these when how movie will be set determined!
+      socket.on("hello-world", (data) => {
+        console.log("sockett", socket);
+        console.log("hellooooo", data);
+      });
+
+      socket.on("watch-response", (data) => {
+        if (data.response.status == 200 && data.partyId == partyId) {
+          console.log("watch-response", data);
+          setProgress(data.response.data.progress);
+        }
+      });
+
+      socket.on("join-response", (data) => {
+        if (data.response.status == 200 && data.partyId == partyId) {
+          console.log("join-response", data);
+          // TODO welcome message
+        }
+      });
+
+      socket.on("set-media-response", (data) => {
+        if (data.response.status == 200 && data.partyId == partyId) {
+          console.log("set-media-response", data);
+          setmediaId(data.response.data.mediaId);
+        }
+      });
+
+      socket.on("send-message-response", (data) => {
+        console.log("send-message-response", data);
+        if (data.response.status == 200 && data.partyId == partyId) {
+          console.log("send-message-response", data);
+          console.log("chattttt ", chat);
+          let temp = [...chat];
+          temp.push({
+            name: data.response.data.username,
+            text: data.response.data.message,
+          });
+          setChat(temp);
+        }
+      });
+
+      socket.on("take-out-response", (data) => {
+        console.log("take-out-response", data);
+        // TODO
+      });
+
       // setProgress(0);
       setButtonActive({ watch: true, finish: false });
     }
   }, [partyId]);
+
+  useEffect(() => {
+    console.log("chchchchhchchhch", chat); // ?????????
+  }, [chat]);
 
   useEffect(() => {
     if (progress === 3) {
@@ -265,7 +282,7 @@ export default function PartyPage() {
       token: getAuthToken(),
     });
 
-    // setMediaSelectActive(false); // TODO
+    setMediaSelectActive(false); // TODO
     // setmediaId(mediaId);
     // setmediaName(mediaName);
   };
@@ -350,11 +367,11 @@ export default function PartyPage() {
                 style={{ height: "25vh", overflowY: "scroll" }}
               >
                 {chat.map((entry) => (
-                  <React.Fragment className="mt-1">
+                  <div className="mt-1">
                     <span className="h5">{entry.name + ": "}</span>
                     <span>{entry.text}</span>
                     <br />
-                  </React.Fragment>
+                  </div>
                 ))}
               </div>
               <div>

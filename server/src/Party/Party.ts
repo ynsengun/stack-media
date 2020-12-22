@@ -31,7 +31,7 @@ export class Party{
     public checkParticipant(username: string, socketId: string): boolean{
         if(username == this.creatorUsername) return this.creatorSocketId == socketId;
         for(let  i = 0 ; i < this.participantUsernames.length ; i++){
-            if(this.participantUsernames[i] == username && this.participantSocketIds[i] == socketId) return true;
+            if(this.participantUsernames[i] == username) return true;
         }
         return false;
     }
