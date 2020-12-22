@@ -7,6 +7,7 @@ import { MediaDBService } from "../Media/MediaDBService";
 import { PartyDBService } from "./PartyDBService";
 import { InvalidRequest } from "../Model/Error/InvalidRequest";
 import userMapping from "../Service/UserMapping";
+import {ErrorModel} from "../Model/Error/Error";
 
 class PartyEventController{
 
@@ -20,29 +21,45 @@ class PartyEventController{
         this.mediaDBService = new MediaDBService();
         this.parties = [];
         this.socket = null;
+        this.initializeParties();
     }
 
     public setSocket(socket){
         this.socket = socket;
     }
 
+    private async initializeParties(){
+        let parties = await this.partyDBService.getAllParties();
+        for(let i = 0 ; i < parties.length ; i++){
+            this.createParty(parties[i].username, parties[i].partyId);
+        }
+    }
+
     private checkCreator(client, event: string, party: Party, data){
         let creatorUsername: string = party.getCreatorUsername();
-        let creatorSocketId: string = party.getCreatorSocketId();
-        console.log("---->>> ", data, creatorUsername, creatorSocketId, client);
+        //let creatorSocketId: string = party.getCreatorSocketId();
+        //console.log("---->>> ", data, creatorUsername, creatorSocketId, client);
+        let partyId = party.getPartyId();
         if(creatorUsername != data.username){
           console.log("creator rejected");
-            if(client != null) client.emit(event + '-response', new ErrorResponse(new NoAccess()));
+            //if(client != null) this.socket.emit(event + '-response', new ErrorResponse(new NoAccess()));
+            this.sendOthers(event, {username: data.username, partyId: data.partyId}, new NoAccess());
             return false;
         }
         return true;
     }
 
-    private sendOthers(client, event: string, party: Party, data){
-        let participants = party.getMemberSocketIds();
-        let cSocket = participants.creatorSocketId
-        console.log(cSocket, participants.participantSocketIds.length);
-        if(cSocket != null && cSocket != client.id) this.socket.to(participants.creatorSocketId).emit(event + '-notification', new SuccessResponse(data));
+    private sendOthers(event: string, data, error: ErrorModel){
+        //let participants = party.getMemberSocketIds();
+        //let cSocket = participants.creatorSocketId
+        //console.log(cSocket, participants.participantSocketIds.length);
+        if(error == null){
+            this.socket.emit(event + '-response', {username: data.username, partyId: data.partyId, response: new SuccessResponse(data)});
+        }
+        else{
+            this.socket.emit(event + '-response', {username: data.username, partyId: data.partyId, response: new ErrorResponse(error)});
+        }
+        /*if(cSocket != null && cSocket != client.id) this.socket.to(participants.creatorSocketId).emit(event + '-notification', new SuccessResponse(data));
         for(let i = 0 ; i < participants.participantSocketIds.length ; i++){
             let socketId: string = participants.participantSocketIds[i];
             if(socketId != client.id) this.socket.to(socketId).emit(event + '-notification', new SuccessResponse(data));
@@ -50,17 +67,17 @@ class PartyEventController{
         console.log(client == null, client.id);
         this.socket.to(client.id).emit(event + '-response', new SuccessResponse(null));
         this.socket.to(client.id).emit("hello-world", "1");
-        this.socket.emit("hello-world", "3");
+        this.socket.emit("hello-world", "3");*/
     }
 
-    private sendOthersWithParticipantList(event: string, participants, data){
+    /*private sendOthersWithParticipantList(event: string, participants, data){
         let cSocket = participants.creatorSocketId
         if(cSocket != null) this.socket.to(participants.creatorSocketId).emit(event + '-notification', new SuccessResponse(data));
         for(let i = 0 ; i < participants.participantSocketIds.length ; i++){
             let socketId: string = participants.participantSocketIds[i];
             this.socket.to(socketId).emit(event + '-notification', new SuccessResponse(data));
         }
-    }
+    }*/
 
     public createParty(creatorUsername: string, partyId: string){
         console.log(this.parties.length + " is the length before!");
@@ -88,7 +105,9 @@ class PartyEventController{
     public async setMedia(client, data){
       console.log(data);
         if(!data.partyId || !data.username || !data.mediaId){
-            client.emit('set-media-response', new ErrorResponse(new InvalidRequest()));
+            //client.emit('set-media-response', new ErrorResponse(new InvalidRequest()));
+            //this.socket.emit('set-media-response', {username: data.username, error: new ErrorResponse(new InvalidRequest())});
+            this.sendOthers('set-media', {username: data.username, partyId: data.partyId}, new InvalidRequest());
             return;
         }
         console.log("jhsgdjhafkahsfda");
@@ -97,7 +116,9 @@ class PartyEventController{
         console.log("Set media controller begins!");
         if(party == null) {
           console.log("party nullllllllllllllllllll");
-            client.emit('set-media-response', new ErrorResponse(new InvalidRequest()));
+            //client.emit('set-media-response', new ErrorResponse(new InvalidRequest()));
+            //this.socket.emit('set-media-response', {username: data.username, error: new ErrorResponse(new InvalidRequest())});
+            this.sendOthers('set-media', {username: data.username, partyId: data.partyId}, new InvalidRequest());
             return;
         }
         console.log("There is a party (set media)");
@@ -105,13 +126,15 @@ class PartyEventController{
         console.log("It is the creator (se tmedia)");
         party.setMedia(data.mediaId);
         console.log("It is ready to notify others");
-        this.sendOthers(client, 'set-media', party, {mediaId: data.mediaId});
+        this.sendOthers('set-media', {username: data.username, mediaId: data.mediaId, partyId: data.partyId}, null);
     }
 
     public async join(client, data){
       console.log(data);
         if(!data.partyId || !data.username){
-            client.emit('join-response', new ErrorResponse(new InvalidRequest()));
+            //client.emit('join-response', new ErrorResponse(new InvalidRequest()));
+            //this.socket.emit('join-response', {data: data.username, error: new ErrorResponse(new InvalidRequest())});
+            this.sendOthers('join', {username: data.username, partyId: data.partyId}, new InvalidRequest());
             return;
         }
         console.log("11111111");
@@ -125,7 +148,9 @@ class PartyEventController{
         console.log("22222222");
         if(!isParticipant){
             console.log(data.username + " is not a participant");
-            client.emit('join-response', new ErrorResponse(new NoAccess()));
+            //client.emit('join-response', new ErrorResponse(new NoAccess()));
+            //this.socket.emit('join-response', {data: data.username, error: new ErrorResponse(new NoAccess())});
+            this.sendOthers('join', {username: data.username, partyId: data.partyId}, new NoAccess());
             return;
         }
         console.log("join controller method begins");
@@ -133,46 +158,58 @@ class PartyEventController{
         let party: Party = this.getPartyById(partyId);
         if(party == null) {
             console.log("No party (join)");
-            client.emit('join-response', new ErrorResponse(new InvalidRequest()));
+            //client.emit('join-response', new ErrorResponse(new InvalidRequest()));
+            //this.socket.emit('join-response', {data: data.username, error: new ErrorResponse(new InvalidRequest())});
+            this.sendOthers('join', {username: data.username, partyId: data.partyId}, new InvalidRequest());
             return;
         }
         console.log("join controller checks finish");
         party.participate(data.username, client.id);
         console.log("Ready to notify others!");
-        this.sendOthers(client, 'join', party, {username: data.username});
+        this.sendOthers('join', {username: data.username, partyId: data.partyId}, null);
     }
 
     public sendMessage(client, data){
         if(!data.partyId || !data.username || !data.message){
-            client.emit('send-message-response', new ErrorResponse(new InvalidRequest()));
+            //client.emit('send-message-response', new ErrorResponse(new InvalidRequest()));
+            //this.socket.emit('send-message-response', {username: data.username, error: new ErrorResponse(new InvalidRequest())});
+            this.sendOthers('send-message', {username: data.username, partyId: data.partyId}, new InvalidRequest());
             return;
         }
         let partyId: string = data.partyId;
         let party: Party = this.getPartyById(partyId);
         if(party == null) { // No party
             console.log("No party " + partyId + " (send message)");
-            client.emit('send-message-response', new ErrorResponse(new InvalidRequest()));
+            //client.emit('send-message-response', new ErrorResponse(new InvalidRequest()));
+            //this.socket.emit('send-message-response', {username: data.username, error: new ErrorResponse(new InvalidRequest())});
+            this.sendOthers('send-message', {username: data.username, partyId: data.partyId}, new InvalidRequest());
             return;
         }
         if(!party.checkParticipant(data.username, client.id)){ // It is not a participant
             console.log(data.username + "is not a participant for party " + data.partyId + " (send message)");
-            client.emit('send-message-response', new ErrorResponse(new NoAccess()));
+            //client.emit('send-message-response', new ErrorResponse(new NoAccess()));
+            // this.socket.emit('send-message-response', {username: data.username, error: new ErrorResponse(new NoAccess())});
+            this.sendOthers('send-message', {username: data.username, partyId: data.partyId}, new NoAccess());
             return;
         }
         console.log("Send message ready to notify others!");
-        this.sendOthers(client, 'send-message', party, {username: data.username, message: data.message});
+        this.sendOthers('send-message', {username: data.username, message: data.message, partyId: data.partyId}, null);
     }
 
     public async watch(client, data){
         if(!data.partyId || !data.username || !data.progress){
-            client.emit('watch-response', new ErrorResponse(new InvalidRequest()));
+            //client.emit('watch-response', new ErrorResponse(new InvalidRequest()));
+            //this.socket.emit('watch-response', {username: data.username, error: new ErrorResponse(new InvalidRequest())});
+            this.sendOthers('watch', {username: data.username, partyId: data.partyId}, new InvalidRequest());
             return;
         }
         let partyId: string = data.partyId;
         let party: Party = this.getPartyById(partyId);
         if(party == null) {
             console.log("No party (watch)");
-            client.emit('watch-response', new ErrorResponse(new InvalidRequest()));
+            //client.emit('watch-response', new ErrorResponse(new InvalidRequest()));
+            //this.socket.emit('watch-response', {username: data.username, error: new ErrorResponse(new InvalidRequest())});
+            this.sendOthers('watch', {username: data.username, partyId: data.partyId}, new InvalidRequest());
             return;
         }
         if(!this.checkCreator(client, 'watch', party, data)) return;
@@ -188,7 +225,7 @@ class PartyEventController{
             await this.mediaDBService.partyWatch(username, curMedia, data.progress);
         }
         console.log("Watch for participants is ok and ready to notify others!");
-        this.sendOthers(client, 'watch', party, {progress: data.progress});
+        this.sendOthers('watch', {progress: data.progress, username: data.username, partyId: data.partyId}, null);
     }
 
     // it should be checked. I remove all connections that have this socket id 
@@ -205,37 +242,41 @@ class PartyEventController{
         }
         if(results.length == 0){
             console.log("No participants with this socket id (leave)");
-            client.emit('leave-response', new ErrorResponse(new InvalidRequest()));
+            //client.emit('leave-response', new ErrorResponse(new InvalidRequest()));
+            //this.sendOthers('leave', {username: data.username, })
             return;
         }
         console.log("Ready to notify others (leave)");
         console.log(results.length + " is the number of parties that socket id participates!");
-        this.sendOthers(client, 'leave', this.getPartyById(results[0].partyId), {username: results[0].username});
+        this.sendOthers('leave', {username: results[0].username, partyId: results[0].partyId}, null);
     }
 
     public async takeOut(client, data){
         if(!data.partyId || !data.username || !data.participantUsername){
-            client.emit('take-out-response', new ErrorResponse(new InvalidRequest()));
+            //client.emit('take-out-response', new ErrorResponse(new InvalidRequest()));
+            this.sendOthers('take-out', {username: data.username, partyId: data.partyId}, new InvalidRequest());
             return;
         }
         let partyId: string = data.partyId;
         let party: Party = this.getPartyById(partyId);
         console.log("Take out (controller) begins");
         if(party == null) {
-            client.emit('take-out-response', new ErrorResponse(new InvalidRequest()));
+            //client.emit('take-out-response', new ErrorResponse(new InvalidRequest()));
+            this.sendOthers('take-out', {username: data.username, partyId: data.partyId}, new InvalidRequest());
             return;
         }
         console.log("There is a party (take out)");
         if(!this.checkCreator(client, 'take-out', party, data)) return;
         console.log("it is the creator (take out)");
         if(!party.takeOut(data.participantUsername)){
-            client.emit('take-out-response', new ErrorResponse(new InvalidRequest()));
+            //client.emit('take-out-response', new ErrorResponse(new InvalidRequest()));
+            this.sendOthers('take-out', {username: data.username, partyId: data.partyId}, new InvalidRequest());
             return;
         }
         console.log("It is ready to take out him from db");
         await this.partyDBService.removeParticipant(partyMapping.map({partyId: data.partyId}), userMapping.map({username: data.participantUsername}));
         console.log("it is ready to notify others (take out)");
-        this.sendOthers(client, 'take-out', party, {username: data.participantUsername});
+        this.sendOthers('take-out', {username: data.username, otherUsername: data.participantUsername, partyId: data.partyId}, null);
     }
 
     public remove(data){ // it is called by party business, not by the client socket
@@ -258,7 +299,7 @@ class PartyEventController{
             if(this.parties[i].getPartyId() == partyId) this.parties.splice(i, 1);
         }
         console.log("It is ready to notify others! (remove)");
-        this.sendOthersWithParticipantList('remove', participants, {username: data.username});
+        this.sendOthers('remove', {username: data.username, partyId: partyId}, null);
     }
 
     

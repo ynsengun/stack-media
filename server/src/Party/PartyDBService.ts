@@ -60,6 +60,20 @@ export class PartyDBService {
         return result;
     }
 
+    public async getAllParties(): Promise<any> {
+        let result = null;
+
+        let sqlQuery = "SELECT * FROM Party WHERE role = 'ROLE_CREATOR';";
+
+        try {
+            result = await this.db.sendQuery(sqlQuery);
+        } 
+        catch(err){
+            throw err;
+        }
+        return result;
+    }
+
     public async inviteParticipant(party: Party, invitedUserName: string): Promise<any> {
         let result = null;
 
