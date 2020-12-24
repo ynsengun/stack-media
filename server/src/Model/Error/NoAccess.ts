@@ -10,6 +10,6 @@ export class NoAccess implements ErrorModel, Error {
         this.code = 1001;
         this.message = "Access denied";
         this.name = 'Access Denied';
-        this.status = 400; //?
+        this.status = 401; //?
     }
 }

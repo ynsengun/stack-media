@@ -5,8 +5,7 @@ class GenreMapping{
         if(!genreModel) return null;
         return {
             genreId: genreModel.genreId || null,
-            title: genreModel.title || null,
-            description: genreModel.description || null
+            title: genreModel.title || null
         };
     }
 }

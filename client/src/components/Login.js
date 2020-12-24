@@ -5,8 +5,18 @@ import { Container } from "semantic-ui-react";
 import "../css/Login.css";
 
 import { checkResponse } from "../util/ResponseUtil";
+import { saveAuth, isAdmin } from "../util/AuthenticationUtil";
 
 export default function Login() {
+  const history = useHistory();
+  const loadMainPage = () => {
+    if (isAdmin()) history.push("/upload");
+    else history.push("/movies");
+  };
+
+  const [allGenres, setAllGenres] = useState([]);
+  const [myGenres, setMyGenres] = useState([]);
+
   // states for login
   const [loginUsername, setLoginUsername] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
@@ -18,8 +28,28 @@ export default function Login() {
   const [registerPasswordCheck, setRegisterPassswordCheck] = useState("");
   const [registerUserType, setRegisterUserType] = useState(false);
 
+  useEffect(() => {
+    // fetch all genres
+    fetch("http://localhost:4000/api/genre/getGenres", {
+      method: "POST",
+      mode: "cors",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({}),
+    })
+      .then((r) => checkResponse(r))
+      .then((r) => r.json())
+      .then((r) => {
+        let resArray = r.data;
+        setAllGenres(resArray);
+      })
+      .catch((err) => {
+        toast.error("Error on fetching genre for register page!");
+      });
+  }, []);
+
   function handleLoginButtonPress(event) {
-    //TODO: validation of input
     if (loginUsername === "") {
       toast.error("Please write your login username");
       return;
@@ -32,7 +62,6 @@ export default function Login() {
   }
 
   function handleRegisterButtonPress(event) {
-    //TODO: validation of input
     if (registerEmail === "") {
       toast.error("Please write down your email");
       return;
@@ -49,12 +78,16 @@ export default function Login() {
       toast.error("Check your password! Your passwords do not match...");
       return;
     }
+
+    if (!registerUserType && myGenres.length == 0) {
+      toast.error("You must specify at least one genre!");
+      return;
+    }
     register();
   }
 
   function login(nameArg, passArg) {
     console.log(loginUsername + " " + loginPassword);
-    //TODO: send login request
     fetch("http://localhost:4000/api/user/login", {
       method: "POST",
       mode: "cors",
@@ -69,8 +102,14 @@ export default function Login() {
       .then((r) => checkResponse(r))
       .then((r) => r.json())
       .then((r) => {
-        console.log(r);
-        console.log("Hello!");
+        let res = {
+          username: r.data.username,
+          userType: r.data.userType,
+          token: r.data.token,
+        };
+        saveAuth(res);
+        console.log(res.token);
+        loadMainPage();
       })
       .catch((err) => {
         console.log(err);
@@ -79,7 +118,6 @@ export default function Login() {
   }
 
   function register() {
-    //TODO: send register request
     fetch("http://localhost:4000/api/user/register", {
       method: "POST",
       mode: "cors",
@@ -91,18 +129,61 @@ export default function Login() {
         password: registerPassword,
         email: registerEmail,
         userType: registerUserType ? "ROLE_ADMIN" : "ROLE_USER",
+
+        genres: allGenres.filter(filterBySelection),
       }),
     })
       .then((r) => checkResponse(r))
       .then((r) => r.json())
       .then((r) => {
-        console.log("asdasdasdasd");
-        // login( registerUsername, registerPassword);
+        login(registerUsername, registerPassword);
       })
       .catch((err) => {
         console.log(err);
         toast.error("error");
       });
+  }
+
+  const getButtonClass = (genre) => {
+    let match = false;
+    myGenres.forEach((x) => {
+      if (x.genreId === genre.genreId) {
+        match = true;
+      }
+    });
+    return match ? "btn btn-sm btn-success mr-1" : "btn btn-sm btn-danger mr-1";
+  };
+
+  const handleGenreClick = (genre) => {
+    let match = false;
+    myGenres.forEach((x) => {
+      if (x.genreId === genre.genreId) {
+        match = true;
+      }
+    });
+
+    if (match) {
+      let temp = [];
+      myGenres.forEach((g) => {
+        if (g.genreId !== genre.genreId) temp.push(g);
+      });
+
+      setMyGenres(temp);
+    } else {
+      setMyGenres([...myGenres, genre]);
+    }
+  };
+
+  function filterBySelection(genre) {
+    for (let i = 0; i < myGenres.length; i++) {
+      if (genre.genreId === myGenres[i].genreId) {
+        console.log(
+          "Genre title: " + genre.title + " selected genre: " + myGenres[i]
+        );
+        return true;
+      }
+    }
+    return false;
   }
 
   return (
@@ -115,7 +196,7 @@ export default function Login() {
           </div>
           <div>
             <input
-              className="TextInput"
+              className="w-100"
               type="text"
               id="usernameLoginInputID"
               onInput={(e) => setLoginUsername(e.target.value)}
@@ -127,7 +208,7 @@ export default function Login() {
           </div>
           <div>
             <input
-              className="TextInput"
+              className="w-100"
               type="password"
               id="passwordLoginInputID"
               onInput={(e) => setLoginPassword(e.target.value)}
@@ -146,7 +227,7 @@ export default function Login() {
           </div>
           <div>
             <input
-              className="TextInput"
+              className="w-100"
               type="text"
               id="emailRegisterInputID"
               onInput={(e) => setRegisterEmail(e.target.value)}
@@ -158,7 +239,7 @@ export default function Login() {
           </div>
           <div>
             <input
-              className="TextInput"
+              className="w-100"
               type="text"
               id="usernameRegisterInputID"
               onInput={(e) => setRegisterUsername(e.target.value)}
@@ -170,7 +251,7 @@ export default function Login() {
           </div>
           <div>
             <input
-              className="TextInput"
+              className="w-100"
               type="password"
               id="passwordRegisterInputID"
               onInput={(e) => setRegisterPassword(e.target.value)}
@@ -182,12 +263,27 @@ export default function Login() {
           </div>
           <div>
             <input
-              className="TextInput"
+              className="w-100"
               type="password"
               id="passwordRegisterInput2ID"
               onInput={(e) => setRegisterPassswordCheck(e.target.value)}
               required
             ></input>
+          </div>
+          <div>
+            <label className="mt-2">Genres:</label>
+            <br />
+            {allGenres.map((genre) => (
+              <button
+                className={getButtonClass(genre)}
+                onClick={() => {
+                  handleGenreClick(genre);
+                }}
+              >
+                {genre.title}
+              </button>
+            ))}
+            <div className="mt-2" />
           </div>
           <div>
             <input

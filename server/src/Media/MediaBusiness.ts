@@ -5,6 +5,7 @@ import {MediaDBService} from "./MediaDBService";
 import { User } from "../Model/User/User";
 import { Media } from "../Model/Media/Media";
 import { Genre } from "../Model/Genre/Genre";
+import { Channel } from "../Model/Channel/Channel";
 
 export class MediaBusiness {
 
@@ -25,10 +26,20 @@ export class MediaBusiness {
     }
 
 
-    public async getSeries(): Promise<ResponseModel>
+    public async getSeries(user: User): Promise<ResponseModel>
     {
         try {
-            let result = await this.mediaDBService.getSeries();
+            let result = await this.mediaDBService.getSeries(user);
+            return new SuccessResponse(result);
+        } catch (error) {
+            return new ErrorResponse(error);
+        }
+    }
+
+    public async getSerie(user: User, media: Media): Promise<ResponseModel>
+    {
+        try {
+            let result = await this.mediaDBService.getSerie(user, media);
             return new SuccessResponse(result);
         } catch (error) {
             return new ErrorResponse(error);
@@ -45,20 +56,88 @@ export class MediaBusiness {
         }
     }
 
-    public async getRating(media: Media): Promise<ResponseModel>
+    public async getSeriesWithGenrePreference(user: User, media: Media): Promise<ResponseModel>
     {
         try {
-            let result = await this.mediaDBService.getRating(media);
+            let result = await this.mediaDBService.getSeriesWithGenrePreference(user, media);
             return new SuccessResponse(result);
         } catch (error) {
             return new ErrorResponse(error);
         }
     }
 
-    public async createMedia(media: Media): Promise<ResponseModel>
+    public async getMoviesWithGenrePreference(user: User): Promise<ResponseModel>
     {
         try {
-            let result = await this.mediaDBService.createMedia(media);
+            let result = await this.mediaDBService.getMoviesWithGenrePreference(user);
+            return new SuccessResponse(result);
+        } catch (error) {
+            return new ErrorResponse(error);
+        }
+    }
+
+    public async addGenreToMedia(media: Media, genre: Genre): Promise<ResponseModel>{
+        try {
+            let result = await this.mediaDBService.addGenreToMedia(media, genre);
+            return new SuccessResponse(result);
+        } catch (error) {
+            return new ErrorResponse(error);
+        }
+    }
+
+    public async deleteGenreFromMedia(media: Media, genre: Genre): Promise<ResponseModel>{
+        try {
+            let result = await this.mediaDBService.deleteGenreFromMedia(media, genre);
+            return new SuccessResponse(result);
+        } catch (error) {
+            return new ErrorResponse(error);
+        }
+    }
+
+    public async getAverageRating(media: Media): Promise<ResponseModel>
+    {
+        try {
+            let result = await this.mediaDBService.getAverageRating(media);
+            return new SuccessResponse(result);
+        } catch (error) {
+            return new ErrorResponse(error);
+        }
+    }
+
+    public async getUserRating(media: Media, user: User): Promise<ResponseModel>
+    {
+        try {
+            let result = await this.mediaDBService.getUserRating(media, user);
+            return new SuccessResponse(result);
+        } catch (error) {
+            return new ErrorResponse(error);
+        }
+    }
+
+    public async createMedia(media: Media, mediaGenres: Genre[]): Promise<ResponseModel>
+    {
+        try {
+            let result = await this.mediaDBService.createMedia(media, mediaGenres);
+            return new SuccessResponse(result);
+        } catch (error) {
+            return new ErrorResponse(error);
+        }
+    }
+
+    public async updateMedia(media: Media): Promise<ResponseModel>
+    {
+        try {
+            let result = await this.mediaDBService.updateMedia(media);
+            return new SuccessResponse(result);
+        } catch (error) {
+            return new ErrorResponse(error);
+        }
+    }
+
+    public async getMediaComments(media: Media): Promise<ResponseModel>
+    {
+        try {
+            let result = await this.mediaDBService.getMediaComments(media);
             return new SuccessResponse(result);
         } catch (error) {
             return new ErrorResponse(error);
@@ -95,7 +174,17 @@ export class MediaBusiness {
        }
    }
 
-   public async watch(media: Media, user: User): Promise<ResponseModel>
+   public async initializeWatch(media: Media, user: User): Promise<ResponseModel>
+   {
+       try {
+           let result = await this.mediaDBService.initializeWatch(media, user);
+           return new SuccessResponse(result);
+       } catch (error) {
+           return new ErrorResponse(error);
+       }
+   }
+
+    public async watch(media: Media, user: User): Promise<ResponseModel>
     {
         try {
             let result = await this.mediaDBService.watch(media, user);
@@ -105,10 +194,30 @@ export class MediaBusiness {
         }
     }
 
-    public async getSuggestionForMedia(media: Media, user: User): Promise<ResponseModel>
+    public async rate(media: Media, user: User, rate: number): Promise<ResponseModel>
     {
         try {
-            let result = await this.mediaDBService.getSuggestionForMedia(media, user);
+            let result = await this.mediaDBService.rate(media, user, rate);
+            return new SuccessResponse(result);
+        } catch (error) {
+            return new ErrorResponse(error);
+        }
+    }
+
+    public async getSuggestionForMedia(media: Media): Promise<ResponseModel>
+    {
+        try {
+            let result = await this.mediaDBService.getSuggestionForMedia(media);
+            return new SuccessResponse(result);
+        } catch (error) {
+            return new ErrorResponse(error);
+        }
+    }
+
+    public async getSuggestionForChannel(channel: Channel): Promise<ResponseModel>
+    {
+        try {
+            let result = await this.mediaDBService.getSuggestionForChannel(channel);
             return new SuccessResponse(result);
         } catch (error) {
             return new ErrorResponse(error);
@@ -167,4 +276,24 @@ export class MediaBusiness {
             return new ErrorResponse(error);
         }
     }*/
+
+    public async getMediaGenres( media: Media): Promise<any>
+    {
+        try {
+            let result = await this.mediaDBService.getMediaGenres( media);
+            return new SuccessResponse(result);
+        } catch (error) {
+            return new ErrorResponse(error);
+        }
+    }
+
+    public async getGenres(): Promise<any>
+    {
+        try {
+            let result = await this.mediaDBService.getGenres();
+            return new SuccessResponse(result);
+        } catch (error) {
+            return new ErrorResponse(error);
+        }
+    }
 }

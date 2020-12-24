@@ -1,22 +1,24 @@
 import server from "./App";
-//import {GameEventListener} from "./Game/GameEventListener";
-//import { GameEventController } from "./Game/GameEventController";
+import {PartyEventListener} from "./Party/PartyEventListener";
 
 class Socket{
     socket = null;
-    //gameEventListener: GameEventListener;
-    //gameEventController: GameEventController;
+    partyEventListener: PartyEventListener;
 
     constructor(){
-        this.socket = require('socket.io')(server);
-        //this.gameEventListener = new GameEventListener();
-        //this.gameEventController = new GameEventController();
+        this.socket = require('socket.io')(server,  {
+          cors: {
+            origin: '*',
+          }
+        });
+        this.partyEventListener = new PartyEventListener();
+        this.partyEventListener.setSocket(this.socket);
     }
 
     public listen(PORT: number): void {
         this.socket.on('connection', client => {
             console.log("connected");
-            //this.gameEventListener.listenEvents(this.socket, client);
+            this.partyEventListener.listenEvents(client);
         })
 
         server.listen(PORT, () => {

@@ -24,13 +24,14 @@ import TVShowContents from "./MainPage/TVShowContents";
 export default function Home() {
   const history = useHistory();
 
-  const changeContent = (type, name) => {
-    console.log(type, name);
+  const changeContent = (type, id) => {
+    console.log(type, id);
 
     let path = "";
     if (type == ContentType.MOVIE) path = "/movies";
     else if (type == ContentType.TVSHOW) path = "/series";
-    else if (type == ContentType.CHANNEL) path = `/channels/${name}`;
+    else if (type == ContentType.CHANNEL) path = `/channels/${id}`;
+    else if (type == ContentType.PARTY) path = `/party/${id}`;
     history.push(path);
   };
 
@@ -46,14 +47,9 @@ export default function Home() {
           <Switch>
             <Route exact path="/movies"><MovieContents /></Route>
             <Route exact path="/series"><TVShowContents /></Route>
-            <Route exact path="/channels/:name"><ChannelContents></ChannelContents></Route>
+            <Route exact path="/channels/:channelId"><ChannelContents></ChannelContents></Route>
             <Route path="*"><NotFound /></Route>
           </Switch>
-          {/* {content.type === ContentType.MOVIE && <MovieContents />}
-          {content.type === ContentType.TVSHOW && <TVShowContents />}
-          {content.type === ContentType.CHANNEL && (
-            <ChannelContents channelName={content.name}></ChannelContents>
-          )} */}
         </Grid.Column>
 
         <Grid.Column width={3} style={{ padding: "0px", marginTop: "-29px" }}>

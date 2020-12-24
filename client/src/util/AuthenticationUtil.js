@@ -1,17 +1,17 @@
 export function saveAuth(info) {
-  const { id, username } = info;
-
-  let isUser = false,
-    isAdmin = false;
-  if (info.roles[0].name === "ROLE_USER") {
-    isUser = true;
-  } else {
+    const { username, userType, token } = info;
+  
+    let isUser = true,
     isAdmin = true;
-  }
+    if ( userType === "ROLE_ADMIN") {
+        isUser = false;
+    } else {
+        isAdmin = false;
+    }
 
-  const authJson = { id, username, isUser, isAdmin };
+    const authJson = { username, isUser, isAdmin, token };
 
-  localStorage.setItem("authInfo", JSON.stringify(authJson));
+    localStorage.setItem("authInfo", JSON.stringify(authJson));
 }
 
 export function cleanAuth() {
@@ -33,35 +33,53 @@ export function isExpired() {
 }
 
 export function isAuthenticated() {
-  return true;
+  //return true;
   let auth = localStorage.getItem("authInfo");
   return auth != null;
 }
 
+/* DEPRECIATED
 export function getAuthId() {
-  return true;
+  //return true;
   let auth = localStorage.getItem("authInfo");
   let authJson = JSON.parse(auth);
   return authJson.id;
-}
+}*/
 
 export function getAuthName() {
-  return true;
-  let auth = localStorage.getItem("authInfo");
-  let authJson = JSON.parse(auth);
-  return authJson.username;
+    //return true;
+    let auth = localStorage.getItem("authInfo");
+    let authJson = JSON.parse(auth);
+    if ( authJson != null)
+    {
+        return authJson.username;
+    }
+    return false;
+  }
+
+export function getAuthToken() {
+    //return true;
+    let auth = localStorage.getItem("authInfo");
+    let authJson = JSON.parse(auth);
+    if ( authJson != null)
+        return authJson.token;
+    return false;
 }
 
 export function isAdmin() {
-  return true;
-  let auth = localStorage.getItem("authInfo");
-  let authJson = JSON.parse(auth);
-  return authJson.isAdmin;
+    //return true;
+    let auth = localStorage.getItem("authInfo");
+    let authJson = JSON.parse(auth);
+    if ( authJson != null)
+        return authJson.isAdmin;
+    return false;
 }
 
 export function isUser() {
-  return true;
-  let auth = localStorage.getItem("authInfo");
-  let authJson = JSON.parse(auth);
-  return authJson.isUser;
+    //return true;
+    let auth = localStorage.getItem("authInfo");
+    let authJson = JSON.parse(auth);
+    if ( authJson != null)
+        return authJson.isUser;
+    return false;
 }

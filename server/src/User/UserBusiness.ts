@@ -26,18 +26,9 @@ export class UserBusiness {
         }
     }
     
-    public async register(user: User): Promise<ResponseModel> {
+    public async register(user: User, genres: Genre[]): Promise<ResponseModel> {
         try {
-            let result = await this.userDBService.register(user);
-            return new SuccessResponse(result);
-        } catch (error) {
-            return new ErrorResponse(error);
-        }
-    }
-
-    public async getParties(user: User): Promise<ResponseModel> {
-        try {
-            let result = await this.userDBService.getParties(user);
+            let result = await this.userDBService.register(user, genres);
             return new SuccessResponse(result);
         } catch (error) {
             return new ErrorResponse(error);
@@ -98,6 +89,16 @@ export class UserBusiness {
         }
     }
 
+    public async getUserGenres(user: User): Promise<ResponseModel>
+    {
+        try {
+            let result = await this.userDBService.getUserGenres(user);
+            return new SuccessResponse(result);
+        } catch (error) {
+            return new ErrorResponse(error);
+        }
+    }
+
     public async deleteGenre(user: User, genre: Genre): Promise<ResponseModel> {
         try {
             let result = await this.userDBService.deleteGenre(user, genre);
@@ -119,6 +120,51 @@ export class UserBusiness {
     public async changeInfo(user: User, newUsername: string, newEmail: string, newUserType: string): Promise<ResponseModel> {
         try {
             let result = await this.userDBService.changeInfo(user, newUsername, newEmail, newUserType);
+            return new SuccessResponse(result);
+        } catch (error) {
+            return new ErrorResponse(error);
+        }
+    }
+
+    public async getFriendshipInvitations(user: User): Promise<ResponseModel> {
+        try {
+            let result = await this.userDBService.getFriendshipInvitations(user);
+            return new SuccessResponse(result);
+        } catch (error) {
+            return new ErrorResponse(error);
+        }
+    }
+
+    public async acceptFriendshipInvitation(user: User, inviter: string): Promise<ResponseModel> {
+        try {
+            let result = await this.userDBService.acceptFriendshipInvitation(user, inviter);
+            return new SuccessResponse(result);
+        } catch (error) {
+            return new ErrorResponse(error);
+        }
+    }
+
+    public async refuseFriendshipInvitation(user: User, inviter: string): Promise<ResponseModel> {
+        try {
+            let result = await this.userDBService.refuseFriendshipInvitation(user, inviter);
+            return new SuccessResponse(result);
+        } catch (error) {
+            return new ErrorResponse(error);
+        }
+    }
+
+    public async removeFriend(user: User, friend: string): Promise<ResponseModel> {
+        try {
+            let result = await this.userDBService.removeFriend(user, friend);
+            return new SuccessResponse(result);
+        } catch (error) {
+            return new ErrorResponse(error);
+        }
+    }
+
+    public async sendFriendshipInvitation(user: User, invited: string): Promise<ResponseModel> {
+        try {
+            let result = await this.userDBService.sendFriendshipInvitation(user, invited);
             return new SuccessResponse(result);
         } catch (error) {
             return new ErrorResponse(error);

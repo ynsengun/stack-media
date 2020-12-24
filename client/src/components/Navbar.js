@@ -5,12 +5,12 @@ import { toast } from "react-toastify";
 import Notification from "./Notification";
 
 import {
-  cleanAuth,
   isAuthenticated,
   isUser,
   isAdmin,
   getAuthName,
   isExpired,
+  expireAuth,
 } from "../util/AuthenticationUtil";
 
 export default function Navbar() {
@@ -21,6 +21,10 @@ export default function Navbar() {
   const history = useHistory();
 
   useEffect(() => {
+    if ("" === history.location.pathname.substring(1)) {
+      if (isAdmin()) history.push("/upload");
+      else history.push("/movies");
+    }
     const unListen = history.listen(() => {
       // aranges the navbar active when url is changed
       let active = history.location.pathname.substring(1).replace("-", " ");
@@ -46,7 +50,8 @@ export default function Navbar() {
 
   const handleItemClick = (e, { name }) => {
     if (name === "home") {
-      history.push("/movies");
+      if (isAdmin()) history.push("/upload");
+      else history.push("/movies");
     } else {
       history.push(`/${name.replace(" ", "-")}`);
     }
@@ -57,7 +62,13 @@ export default function Navbar() {
   };
 
   const handleLogout = () => {
-    fetch("http://localhost:8080/logout", {
+    expireAuth();
+    toast.success("Logout is successful... Redirecting to login page...");
+    setTimeout(() => {
+      history.push("/login");
+    }, 1000);
+
+    /*fetch("http://localhost:8080/logout", {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -78,7 +89,7 @@ export default function Navbar() {
       })
       .catch(() => {
         toast.error("Logout is failed");
-      });
+      });*/
   };
 
   return (

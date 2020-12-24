@@ -8,7 +8,9 @@ class CommentMapping{
             username: commentModel.username || null,
             mediaId: commentModel.mediaId || null,
             timeStamp: commentModel.timeStamp || null,
-            text: commentModel.text || null
+            text: commentModel.text || null,
+            subComments: commentModel.subComments || null,
+            parentId: commentModel.parentId || null
         };
     }
 }

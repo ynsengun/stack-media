@@ -14,7 +14,8 @@ class MediaMapping{
             seasonNumber: mediaModel.seasonNumber || null,
             episodeNumber: mediaModel.episodeNumber || null,
             emmyAward: mediaModel.emmyAward || null,
-            oscarAward: mediaModel.oscarAward || null
+            oscarAward: mediaModel.oscarAward || null,
+            TVSerieName: mediaModel.TVSerieName || null
         };
     }
 }

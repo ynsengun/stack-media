@@ -19,7 +19,11 @@ export class Database{
     }
 
     public async sendQuery(sqlQuery){
-        this.openConnection();
+        if( this.con == null) 
+        {
+            console.log( "Opening db connection...");
+            this.openConnection();
+        }   
         const query = util.promisify(this.con.query).bind(this.con);
         try {
             const rows = await query(sqlQuery);
@@ -28,7 +32,7 @@ export class Database{
         catch(err){
             throw err;
         }finally {
-            this.closeConnection();
+            //this.closeConnection();
         }
     }
 

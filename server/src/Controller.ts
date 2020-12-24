@@ -2,6 +2,7 @@ import {Request, Response} from "express";
 import {UserBusiness} from "./User/UserBusiness";
 import {MediaBusiness} from "./Media/MediaBusiness";
 import {ChannelBusiness} from "./Channel/ChannelBusiness";
+import {PartyBusiness} from "./Party/PartyBusiness";
 import {Validation} from "./Service/Validation";
 import {ErrorResponse} from "./Model/Response/ErrorResponse";
 import userMapping from "./Service/UserMapping";
@@ -9,21 +10,23 @@ import mediaMapping from "./Service/MediaMapping";
 import commentMapping from "./Service/CommentMapping";
 import channelMapping from "./Service/ChannelMapping";
 import genreMapping from "./Service/GenreMapping";
+import partyMapping from "./Service/PartyMapping";
 
 export class Controller{
 
     private userBusiness: UserBusiness;
     private channelBusiness: ChannelBusiness;
     private mediaBusiness: MediaBusiness;
+    private partyBusiness: PartyBusiness;
     private validation: Validation;
 
     constructor() {
         this.userBusiness = new UserBusiness();
         this.channelBusiness = new ChannelBusiness();
         this.mediaBusiness = new MediaBusiness();
+        this.partyBusiness = new PartyBusiness();
         this.validation = new Validation();
     }
-
 
     // user functions
     public async login(request: Request, response: Response): Promise<void> {
@@ -35,23 +38,18 @@ export class Controller{
             const errorResponse = new ErrorResponse(error);
             response.status(errorResponse.status).send(new ErrorResponse(error));
         }
-
     }
 
     public async register(request: Request, response: Response): Promise<void> {
         try{
             this.validation.registerValidation(request);
-            let result = await this.userBusiness.register(userMapping.map(request.body));
-            response.status(result.status).send(result);
-        } catch(error){
-            const errorResponse = new ErrorResponse(error);
-            response.status(errorResponse.status).send(new ErrorResponse(error));
-        }
-    }
-
-    public async getParties(request: Request, response: Response): Promise<void> {
-        try{
-            let result = await this.userBusiness.getParties(userMapping.map(request.body));
+            let genreList = [];
+            let requestGenres = request.body.genres;
+            for (var i = 0; i < requestGenres.length; i++)
+            {
+                genreList.push(genreMapping.map(requestGenres[i]));
+            }
+            let result = await this.userBusiness.register(userMapping.map(request.body), genreList);
             response.status(result.status).send(result);
         } catch(error){
             const errorResponse = new ErrorResponse(error);
@@ -126,7 +124,7 @@ export class Controller{
     public async deleteGenre(request: Request, response: Response): Promise<void> {
         try{
             this.validation.deleteGenreValidation(request);
-            let result = await this.userBusiness.addGenre(userMapping.map(request.body), genreMapping.map(request.body));
+            let result = await this.userBusiness.deleteGenre(userMapping.map(request.body), genreMapping.map(request.body));
             response.status(result.status).send(result);
         } catch(error){
             const errorResponse = new ErrorResponse(error);
@@ -149,6 +147,70 @@ export class Controller{
         try{
             this.validation.changeInfoValidation(request);
             let result = await this.userBusiness.changeInfo(userMapping.map(request.body), request.body.newUsername, request.body.newEmail, request.body.newUserType);
+            response.status(result.status).send(result);
+        } catch(error){
+            const errorResponse = new ErrorResponse(error);
+            response.status(errorResponse.status).send(new ErrorResponse(error));
+        }
+    }
+    
+    public async getFriendshipInvitations(request: Request, response: Response): Promise<void> {
+        try{
+            let result = await this.userBusiness.getFriendshipInvitations(userMapping.map(request.body));
+            response.status(result.status).send(result);
+        } catch(error){
+            const errorResponse = new ErrorResponse(error);
+            response.status(errorResponse.status).send(new ErrorResponse(error));
+        }
+    }
+
+    public async acceptFriendshipInvitation(request: Request, response: Response): Promise<void> {
+        try{
+            this.validation.acceptFriendshipInvitationValidation(request);
+            let result = await this.userBusiness.acceptFriendshipInvitation(userMapping.map(request.body), request.body.inviterUsername);
+            response.status(result.status).send(result);
+        } catch(error){
+            const errorResponse = new ErrorResponse(error);
+            response.status(errorResponse.status).send(new ErrorResponse(error));
+        }
+    }
+
+    public async refuseFriendshipInvitation(request: Request, response: Response): Promise<void> {
+        try{
+            this.validation.refuseFriendshipInvitationValidation(request);
+            let result = await this.userBusiness.refuseFriendshipInvitation(userMapping.map(request.body), request.body.inviterUsername);
+            response.status(result.status).send(result);
+        } catch(error){
+            const errorResponse = new ErrorResponse(error);
+            response.status(errorResponse.status).send(new ErrorResponse(error));
+        }
+    }
+
+    public async removeFriend(request: Request, response: Response): Promise<void> {
+        try{
+            this.validation.removeFriendValidation(request);
+            let result = await this.userBusiness.removeFriend(userMapping.map(request.body), request.body.friendUsername);
+            response.status(result.status).send(result);
+        } catch(error){
+            const errorResponse = new ErrorResponse(error);
+            response.status(errorResponse.status).send(new ErrorResponse(error));
+        }
+    }
+    
+    public async sendFriendshipInvitation(request: Request, response: Response): Promise<void> {
+        try{
+            this.validation.sendFriendshipInvitationValidation(request);
+            let result = await this.userBusiness.sendFriendshipInvitation(userMapping.map(request.body), request.body.invitedUsername);
+            response.status(result.status).send(result);
+        } catch(error){
+            const errorResponse = new ErrorResponse(error);
+            response.status(errorResponse.status).send(new ErrorResponse(error));
+        }
+    }
+
+    public async getUserGenres(request: Request, response: Response): Promise<void> {
+        try{
+            let result = await this.userBusiness.getUserGenres(userMapping.map(request.body));
             response.status(result.status).send(result);
         } catch(error){
             const errorResponse = new ErrorResponse(error);
@@ -220,7 +282,7 @@ export class Controller{
 
     public async getSeries(request: Request, response: Response): Promise<void> {
         try{
-            let result = await this.mediaBusiness.getSeries();
+            let result = await this.mediaBusiness.getSeries(userMapping.map(request.body));
             response.status(result.status).send(result);
         } catch(error){
             const errorResponse = new ErrorResponse(error);
@@ -228,10 +290,74 @@ export class Controller{
         }
     }
 
-    public async getRating(request: Request, response: Response): Promise<void> {
+    public async getSerie(request: Request, response: Response): Promise<void> {
         try{
-            this.validation.getRatingValidation(request);
-            let result = await this.mediaBusiness.getRating(mediaMapping.map(request.body));
+            this.validation.getSerieValidation(request);
+            let result = await this.mediaBusiness.getSerie(userMapping.map(request.body), mediaMapping.map(request.body));
+            response.status(result.status).send(result);
+        } catch(error){
+            const errorResponse = new ErrorResponse(error);
+            response.status(errorResponse.status).send(new ErrorResponse(error));
+        }
+    }
+
+    public async getMoviesWithGenrePreference(request: Request, response: Response): Promise<void> {
+        try{
+            this.validation.getMoviesWithGenrePreferenceValidation(request);
+            let result = await this.mediaBusiness.getMoviesWithGenrePreference(userMapping.map(request.body));
+            response.status(result.status).send(result);
+        } catch(error){
+            const errorResponse = new ErrorResponse(error);
+            response.status(errorResponse.status).send(new ErrorResponse(error));
+        }
+    }
+
+    public async getSeriesWithGenrePreference(request: Request, response: Response): Promise<void> {
+        try{
+            this.validation.getSeriesWithGenrePreferenceValidation(request);
+            let result = await this.mediaBusiness.getSeriesWithGenrePreference(userMapping.map(request.body), mediaMapping.map(request.body));
+            response.status(result.status).send(result);
+        } catch(error){
+            const errorResponse = new ErrorResponse(error);
+            response.status(errorResponse.status).send(new ErrorResponse(error));
+        }
+    }
+
+    public async getAverageRating(request: Request, response: Response): Promise<void> {
+        try{
+            this.validation.getAverageRatingValidation(request);
+            let result = await this.mediaBusiness.getAverageRating(mediaMapping.map(request.body));
+            response.status(result.status).send(result);
+        } catch(error){
+            const errorResponse = new ErrorResponse(error);
+            response.status(errorResponse.status).send(new ErrorResponse(error));
+        }
+    }
+
+    public async getUserRating(request: Request, response: Response): Promise<void> {
+        try{
+            this.validation.getUserRatingValidation(request);
+            let result = await this.mediaBusiness.getUserRating(mediaMapping.map(request.body), userMapping.map(request.body));
+            response.status(result.status).send(result);
+        } catch(error){
+            const errorResponse = new ErrorResponse(error);
+            response.status(errorResponse.status).send(new ErrorResponse(error));
+        }
+    }
+
+    public async getGenres(request: Request, response: Response): Promise<void> {
+        try{
+            let result = await this.mediaBusiness.getGenres();
+            response.status(result.status).send(result);
+        } catch(error){
+            const errorResponse = new ErrorResponse(error);
+            response.status(errorResponse.status).send(new ErrorResponse(error));
+        }
+    }
+
+    public async getMediaGenres(request: Request, response: Response): Promise<void> {
+        try{
+            let result = await this.mediaBusiness.getMediaGenres( mediaMapping.map(request.body) );
             response.status(result.status).send(result);
         } catch(error){
             const errorResponse = new ErrorResponse(error);
@@ -251,8 +377,39 @@ export class Controller{
     
     public async createMedia(request: Request, response: Response): Promise<void> {
         try{
+            console.log( "c1");
             this.validation.createMediaValidation(request);
-            let result = await this.mediaBusiness.createMedia(mediaMapping.map(request.body));
+            let genreList = [];
+            let requestGenres = request.body.genres;
+            for (var i = 0; i < requestGenres.length; i++)
+            {
+                genreList.push(genreMapping.map(requestGenres[i]));
+            }
+            console.log( "c2");
+            let result = await this.mediaBusiness.createMedia(mediaMapping.map(request.body), genreList);
+            console.log( "c3");
+            response.status(result.status).send(result);
+        } catch(error){
+            const errorResponse = new ErrorResponse(error);
+            response.status(errorResponse.status).send(new ErrorResponse(error));
+        }
+    }
+
+    public async updateMedia(request: Request, response: Response): Promise<void> {
+        try{
+            this.validation.updateMediaValidation(request);
+            let result = await this.mediaBusiness.updateMedia(mediaMapping.map(request.body));
+            response.status(result.status).send(result);
+        } catch(error){
+            const errorResponse = new ErrorResponse(error);
+            response.status(errorResponse.status).send(new ErrorResponse(error));
+        }
+    }
+
+    public async getMediaComments(request: Request, response: Response): Promise<void> {
+        try{
+            this.validation.getMediaCommentsValidation(request);
+            let result = await this.mediaBusiness.getMediaComments(mediaMapping.map(request.body));
             response.status(result.status).send(result);
         } catch(error){
             const errorResponse = new ErrorResponse(error);
@@ -271,6 +428,29 @@ export class Controller{
         }
     }
 
+    public async addGenreToMedia(request: Request, response: Response): Promise<void> {
+        try{
+            this.validation.addGenreToMediaValidation(request);
+            let result = await this.mediaBusiness.addGenreToMedia(mediaMapping.map(request.body), genreMapping.map(request.body));
+            response.status(result.status).send(result);
+        } catch(error){
+            const errorResponse = new ErrorResponse(error);
+            response.status(errorResponse.status).send(new ErrorResponse(error));
+        }
+    }
+
+    public async deleteGenreFromMedia(request: Request, response: Response): Promise<void> {
+        try{
+            this.validation.deleteGenreFromMediaValidation(request);
+            let result = await this.mediaBusiness.deleteGenreFromMedia(mediaMapping.map(request.body), genreMapping.map(request.body));
+            response.status(result.status).send(result);
+        } catch(error){
+            const errorResponse = new ErrorResponse(error);
+            response.status(errorResponse.status).send(new ErrorResponse(error));
+        }
+    }
+
+
     public async search(request: Request, response: Response): Promise<void> {
         try{
             this.validation.searchValidation(request);
@@ -286,8 +466,23 @@ export class Controller{
     public async getWatch(request: Request, response: Response): Promise<void> {
         try{
             this.validation.getWatchValidation(request);
-            let result = await this.mediaBusiness.getWatch(mediaMapping.map(request.body), userMapping.map(request));
+            let result = await this.mediaBusiness.getWatch(mediaMapping.map(request.body), userMapping.map(request.body));
             response.status(result.status).send(result);
+        } catch(error){
+            const errorResponse = new ErrorResponse(error);
+            response.status(errorResponse.status).send(new ErrorResponse(error));
+        }
+    }
+
+    public async initializeWatch(request: Request, response: Response): Promise<void> {
+        try{
+            console.log( "1");
+            this.validation.initializeWatchValidation(request);
+            console.log( "2");
+            let result = await this.mediaBusiness.initializeWatch(mediaMapping.map(request.body), userMapping.map(request.body));
+            console.log( "3");
+            response.status(result.status).send(result);
+            console.log( "4");
         } catch(error){
             const errorResponse = new ErrorResponse(error);
             response.status(errorResponse.status).send(new ErrorResponse(error));
@@ -297,7 +492,18 @@ export class Controller{
     public async watch(request: Request, response: Response): Promise<void> {
         try{
             this.validation.watchValidation(request);
-            let result = await this.mediaBusiness.watch(mediaMapping.map(request.body), userMapping.map(request));
+            let result = await this.mediaBusiness.watch(mediaMapping.map(request.body), userMapping.map(request.body));
+            response.status(result.status).send(result);
+        } catch(error){
+            const errorResponse = new ErrorResponse(error);
+            response.status(errorResponse.status).send(new ErrorResponse(error));
+        }
+    }
+
+    public async rate(request: Request, response: Response): Promise<void> {
+        try{
+            this.validation.rateValidation(request);
+            let result = await this.mediaBusiness.rate(mediaMapping.map(request.body), userMapping.map(request.body), request.body.rate);
             response.status(result.status).send(result);
         } catch(error){
             const errorResponse = new ErrorResponse(error);
@@ -308,7 +514,18 @@ export class Controller{
     public async getSuggestionForMedia(request: Request, response: Response): Promise<void> {
         try{
             this.validation.getSuggestionForMediaValidation(request);
-            let result = await this.mediaBusiness.getSuggestionForMedia(mediaMapping.map(request.body), userMapping.map(request.body));
+            let result = await this.mediaBusiness.getSuggestionForMedia(mediaMapping.map(request.body));
+            response.status(result.status).send(result);
+        } catch(error){
+            const errorResponse = new ErrorResponse(error);
+            response.status(errorResponse.status).send(new ErrorResponse(error));
+        }
+    }
+    
+    public async getSuggestionForChannel(request: Request, response: Response): Promise<void> {
+        try{
+            this.validation.getSuggestionForChannelValidation(request);
+            let result = await this.mediaBusiness.getSuggestionForChannel(channelMapping.map(request.body));
             response.status(result.status).send(result);
         } catch(error){
             const errorResponse = new ErrorResponse(error);
@@ -363,6 +580,17 @@ export class Controller{
     }*/
 
     // channel functions
+
+    public async getMediasFromChannel(request: Request, response: Response): Promise<void> {
+        try{
+            this.validation.getMediasFromChannelValidation(request);
+            let result = await this.channelBusiness.getMediasFromChannel(channelMapping.map(request.body));
+            response.status(result.status).send(result);
+        } catch(error){
+            const errorResponse = new ErrorResponse(error);
+            response.status(errorResponse.status).send(new ErrorResponse(error));
+        }
+    }
 
     public async getMoviesFromChannel(request: Request, response: Response): Promise<void> {
         try{
@@ -429,6 +657,16 @@ export class Controller{
             response.status(errorResponse.status).send(new ErrorResponse(error));
         }
     }
+
+    public async getGenresFromChannel(request: Request, response: Response): Promise<void> {
+        try{
+            let result = await this.channelBusiness.getGenresFromChannel(channelMapping.map(request.body));
+            response.status(result.status).send(result);
+        } catch(error){
+            const errorResponse = new ErrorResponse(error);
+            response.status(errorResponse.status).send(new ErrorResponse(error));
+        }
+    }
     
     public async addMediaToChannel(request: Request, response: Response): Promise<void> {
         try{
@@ -467,6 +705,108 @@ export class Controller{
         try{
             this.validation.deleteChannelValidation(request);
             let result = await this.channelBusiness.deleteChannel(channelMapping.map(request.body));
+            response.status(result.status).send(result);
+        } catch(error){
+            const errorResponse = new ErrorResponse(error);
+            response.status(errorResponse.status).send(new ErrorResponse(error));
+        }
+    }
+
+    // party functions
+    public async addParty(request: Request, response: Response): Promise<void> {
+        try{
+            this.validation.addPartyValidation(request);
+            let result = await this.partyBusiness.addParty(partyMapping.map(request.body));
+            response.status(result.status).send(result);
+        } catch(error){
+            const errorResponse = new ErrorResponse(error);
+            response.status(errorResponse.status).send(new ErrorResponse(error));
+        }
+    }
+
+    public async removeParty(request: Request, response: Response): Promise<void> {
+        try{
+            this.validation.removePartyValidation(request);
+            let result = await this.partyBusiness.removeParty(partyMapping.map(request.body));
+            response.status(result.status).send(result);
+        } catch(error){
+            const errorResponse = new ErrorResponse(error);
+            response.status(errorResponse.status).send(new ErrorResponse(error));
+        }
+    }
+
+    public async getParties(request: Request, response: Response): Promise<void> {
+        try{
+            this.validation.getPartiesValidation(request);
+            let result = await this.partyBusiness.getParties(userMapping.map(request.body));
+            response.status(result.status).send(result);
+        } catch(error){
+            const errorResponse = new ErrorResponse(error);
+            response.status(errorResponse.status).send(new ErrorResponse(error));
+        }
+    }
+
+    public async inviteParticipant(request: Request, response: Response): Promise<void> {
+        try{
+            this.validation.inviteParticipantValidation(request);
+            let result = await this.partyBusiness.inviteParticipant(partyMapping.map(request.body), request.body.invitedUsername);
+            response.status(result.status).send(result);
+        } catch(error){
+            const errorResponse = new ErrorResponse(error);
+            response.status(errorResponse.status).send(new ErrorResponse(error));
+        }
+    }
+
+    public async acceptPartyInvite(request: Request, response: Response): Promise<void> {
+        try{
+            this.validation.acceptPartyInviteValidation(request);
+            let result = await this.partyBusiness.acceptPartyInvite(partyMapping.map(request.body), request.body.invitedUsername);
+            response.status(result.status).send(result);
+        } catch(error){
+            const errorResponse = new ErrorResponse(error);
+            response.status(errorResponse.status).send(new ErrorResponse(error));
+        }
+    }
+
+    public async getPartyInvitations(request: Request, response: Response): Promise<void> {
+        try{
+            let result = await this.partyBusiness.getPartyInvitations(userMapping.map(request.body));
+            response.status(result.status).send(result);
+        } catch(error){
+            const errorResponse = new ErrorResponse(error);
+            response.status(errorResponse.status).send(new ErrorResponse(error));
+        }
+    }
+
+    public async declinePartyInvite(request: Request, response: Response): Promise<void> {
+        try{
+            console.log( "d0");
+            this.validation.declinePartyInviteValidation(request);
+            console.log( "d1");
+            let result = await this.partyBusiness.declinePartyInvite(partyMapping.map(request.body), request.body.invitedUsername);
+            console.log( "d2");
+            response.status(result.status).send(result);
+        } catch(error){
+            const errorResponse = new ErrorResponse(error);
+            response.status(errorResponse.status).send(new ErrorResponse(error));
+        }
+    }
+
+    public async getParticipants(request: Request, response: Response): Promise<void> {
+        try{
+            this.validation.getParticipantsValidation(request);
+            let result = await this.partyBusiness.getParticipants(partyMapping.map(request.body));
+            response.status(result.status).send(result);
+        } catch(error){
+            const errorResponse = new ErrorResponse(error);
+            response.status(errorResponse.status).send(new ErrorResponse(error));
+        }
+    }
+
+    public async removeParticipant(request: Request, response: Response): Promise<void> {
+        try{
+            this.validation.removeParticipantValidation(request);
+            let result = await this.partyBusiness.removeParticipant(partyMapping.map(request.body), request.body.removedUsername);
             response.status(result.status).send(result);
         } catch(error){
             const errorResponse = new ErrorResponse(error);

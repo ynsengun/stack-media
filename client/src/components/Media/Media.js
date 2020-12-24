@@ -5,21 +5,34 @@ import TVShowLogo from "../../images/TVShowIcon.png";
 
 import "../../css/Media.css";
 import { useHistory } from "react-router-dom";
+import { toast } from "react-toastify";
+
+import { checkResponse } from "../../util/ResponseUtil";
+import { getAuthName, getAuthToken } from "../../util/AuthenticationUtil";
 
 export default function Media(props) {
-  // pageType 0 = search page, 1 = only watch button, 2 = edit button
-  const { mediaType, mediaName, pageType } = props;
+  // pageType 0 = search page, 1 = only watch button, 2 = edit button, 4 = channelContents, 5 = party
+  const {
+    mediaId,
+    mediaType,
+    mediaName,
+    channelList,
+    pageType,
+    deleteFromChannel,
+    handleMediaSelect,
+  } = props;
 
-  const [channels, setChannels] = useState([]);
   const [selectedChannel, setSelectedChannel] = useState("");
 
   const history = useHistory();
 
   useEffect(() => {
+    console.log("pageType:   ", pageType);
     if (pageType === 0) {
-      // TODO fetch channels
-      setChannels(["channel1", "channel2"]);
-      setSelectedChannel("channel2");
+      // Set default channel
+      setSelectedChannel(
+        channelList.length > 0 ? channelList[0].channelName : ""
+      );
     }
   }, []);
 
@@ -32,9 +45,170 @@ export default function Media(props) {
     }
   };
 
+  const handleWatchButtonClick = () => {
+    // if tv serie, fetch information, find episode id, than load next page!
+    if (mediaType != 0) {
+      // run shitty algorithm to find last episode mediaName = tv show name
+      foundAndLoadLastWatchedEpisode();
+    } else {
+      history.push(`/media/${mediaId}`);
+    }
+  };
+
+  function foundAndLoadLastWatchedEpisode() {
+    // fetch TV SHOWS
+    fetch("http://localhost:4000/api/media/getSerie", {
+      method: "POST",
+      mode: "cors",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        token: getAuthToken(),
+        username: getAuthName(),
+
+        TVSerieName: mediaName,
+      }),
+    })
+      .then((r) => checkResponse(r))
+      .then((r) => r.json())
+      .then((r) => {
+        let resArray = r.data;
+        console.log("FOUND TV SERIE EPISODES WATCHED:");
+        console.log(resArray);
+
+        if (resArray.length == 0) {
+          loadFirstTimeTvSerie();
+        } else {
+          loadLastWatchedEpisode(resArray);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        toast.error("Error, could not get TV-Serie specific topics!");
+      });
+  }
+
+  function loadFirstTimeTvSerie() {
+    // load the first episode of the tv serie
+    // fetch TV SHOWS
+    fetch("http://localhost:4000/api/media/getSeriesWithPreference", {
+      method: "POST",
+      mode: "cors",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        token: getAuthToken(),
+        username: getAuthName(),
+
+        TVSerieName: mediaName,
+      }),
+    })
+      .then((r) => checkResponse(r))
+      .then((r) => r.json())
+      .then((r) => {
+        let resArray = r.data;
+        console.log("FOUND TV SERIE EPISODES WITHOUT WATCHED:");
+        console.log(resArray);
+        if (resArray.length == 0) {
+          toast.error("No episode for the TV show could be found!");
+        } else {
+          history.push(`/media/${resArray[0].mediaId}`);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        toast.error("Error, could not get TV-Serie specific topics!");
+      });
+  }
+
+  function loadLastWatchedEpisode(resArray) {
+    let lastWatchedEpisode = resArray[0];
+    if (
+      lastWatchedEpisode.Progress < 4 ||
+      lastWatchedEpisode.Progress % 4 != 0
+    ) {
+      // this is the last watched and not finished
+      history.push(`/media/${lastWatchedEpisode.mediaId}`);
+    } // find the next episode as this is last watched but finished
+    else {
+      loadNextEpisode(lastWatchedEpisode);
+    }
+  }
+
+  function loadNextEpisode(lastEpisode) {
+    fetch("http://localhost:4000/api/media/getSeriesWithPreference", {
+      method: "POST",
+      mode: "cors",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        token: getAuthToken(),
+        username: getAuthName(),
+
+        TVSerieName: mediaName,
+      }),
+    })
+      .then((r) => checkResponse(r))
+      .then((r) => r.json())
+      .then((r) => {
+        let resArray = r.data;
+        console.log("FOUND TV SERIE EPISODES WITHOUT WATCHED:");
+        console.log(resArray);
+        if (resArray.length == 0) {
+          toast.error("No episode for the TV show could be found!");
+        } else {
+          for (let i = 0; i < resArray.length; i++) {
+            if (
+              (resArray[i].episodeNumber === lastEpisode.episodeNumber + 1 &&
+                resArray[i].seasonNumber === lastEpisode.seasonNumber) ||
+              (resArray[i].seasonNumber === lastEpisode.seasonNumber + 1 &&
+                resArray[i].episodeNumber === 1)
+            ) {
+              history.push(`/media/${resArray[i].mediaId}`);
+            }
+          }
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        toast.error("Error, could not get TV-Serie specific topics!");
+      });
+  }
+
   const handleChannelButton = () => {
-    // TODO fetch, add media to channel
-    console.log(mediaName, selectedChannel);
+    // Find the selected channel
+    let channel = channelList.filter((x) => x.channelName === selectedChannel);
+    if (channel != null && channel.length === 1) {
+      // add media to channel
+      fetch("http://localhost:4000/api/channel/addMedia", {
+        method: "POST",
+        mode: "cors",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          token: getAuthToken(),
+          username: getAuthName(),
+
+          channelId: channel[0].channelId,
+          mediaId: mediaId,
+        }),
+      })
+        .then((r) => checkResponse(r))
+        .then((r) => r.json())
+        .then((r) => {
+          toast.success("Successfully added media to the channel!");
+        })
+        .catch((err) => {
+          console.log(err);
+          toast.error("Error, could not add media to the channel!");
+        });
+    } else {
+      toast.error("There is not any channel selected that you can add media!");
+    }
   };
 
   const option = (name, index) => {
@@ -81,7 +255,9 @@ export default function Media(props) {
                   }}
                   onChange={handleChange}
                 >
-                  {channels.map((channel, index) => option(channel, index))}
+                  {channelList.map((channel, index) =>
+                    option(channel.channelName, index)
+                  )}
                 </select>
                 <br style={{ height: "0px" }} />
               </div>
@@ -92,17 +268,51 @@ export default function Media(props) {
             <button
               className="btn btn-primary mt-4"
               style={{ width: "60%" }}
-              onClick={() => {
-                history.push(`/media/${mediaName}`);
-              }}
+              onClick={handleWatchButtonClick}
             >
               Watch
             </button>
           )}
+          {pageType === 4 && ( // channel contents page
+            <div>
+              <button // watch button
+                className="btn btn-primary mt-4"
+                style={{ width: "60%" }}
+                onClick={() => {
+                  history.push(`/media/${mediaId}`);
+                }}
+              >
+                Watch
+              </button>
+              <button // delete button
+                className="btn btn-danger mt-4"
+                style={{ width: "60%" }}
+                onClick={() => deleteFromChannel(mediaId)}
+              >
+                Delete
+              </button>
+            </div>
+          )}
           {pageType === 2 && ( // eddit button
-            // TODO button onClick
-            <button className="btn btn-warning mt-5" style={{ width: "60%" }}>
+            <button
+              className="btn btn-warning mt-5"
+              style={{ width: "60%" }}
+              onClick={() => {
+                history.push(`/edit/${mediaId}`);
+              }}
+            >
               Edit
+            </button>
+          )}
+          {pageType === 5 && (
+            <button
+              className="btn btn-primary mt-5"
+              style={{ width: "60%" }}
+              onClick={() => {
+                handleMediaSelect(mediaId, mediaName);
+              }}
+            >
+              Watch
             </button>
           )}
         </div>

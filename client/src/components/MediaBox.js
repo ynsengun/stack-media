@@ -5,7 +5,7 @@ import MovieLogo from "../images/MovieIcon.png";
 import TVShowLogo from "../images/TVShowIcon.png";
 
 export default function MediaBox(props) {
-  const { mediaType, mediaName } = props;
+  const { mediaType, mediaName, mediaId } = props;
 
   const history = useHistory();
 
@@ -13,7 +13,7 @@ export default function MediaBox(props) {
     <div className="card p-3 mr-4 mt-4">
       <a
         onClick={() => {
-          history.push(`/media/${mediaName}`);
+          history.push(`/media/${mediaId}`);
         }}
       >
         <img

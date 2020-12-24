@@ -10,4 +10,5 @@ export interface Media{
     seasonNumber: number
     emmyAward: string
     oscarAward: string
+    TVSerieName: string
 }
