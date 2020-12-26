@@ -176,7 +176,7 @@ export class ChannelDBService {
 
     public async createChannel(channel: Channel): Promise<any> {
         let channelId = id();
-        let sqlQuery = "INSERT INTO Channel VALUES('" + channelId + "', '" + channel.username + "', '" + channel.title + "');";
+        let sqlQuery = "INSERT INTO Channel VALUES('" + channelId + "', '" + channel.username + "', '" + channel.title + "', '0');";
 
         try {
             await this.db.sendQuery(sqlQuery);

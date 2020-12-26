@@ -272,14 +272,25 @@ export class MediaDBService {
 
     public async search(media: Media, genre: Genre): Promise<any> {
         let result = null;
-
-        let sqlQuery = "SELECT M.*, NULL, TV.episodeNumber, TV.seasonNumber, TV.emmyAward, 1 as type FROM Media M, TVSeriesEpisode TV WHERE M.name LIKE '" + media.name + "%' AND M.mediaId = TV.mediaId AND '" + genre.title + "' IN " 
-        + "(SELECT Genre.title FROM MediaHasGenre INNER JOIN Genre ON MediaHasGenre.genreId = Genre.genreId WHERE TV.mediaId = MediaHasGenre.mediaId);";
-
+        let sqlQuery = null;
+        if(media.timeStamp == null){
+            sqlQuery = "SELECT M.*, NULL, TV.episodeNumber, TV.seasonNumber, TV.emmyAward, 1 as type FROM Media M, TVSeriesEpisode TV WHERE M.name LIKE '" + media.name + "%' AND M.mediaId = TV.mediaId AND '" + genre.title + "' IN " 
+            + "(SELECT Genre.title FROM MediaHasGenre INNER JOIN Genre ON MediaHasGenre.genreId = Genre.genreId WHERE TV.mediaId = MediaHasGenre.mediaId);";
+        }
+        else{
+            sqlQuery = "SELECT M.*, NULL, TV.episodeNumber, TV.seasonNumber, TV.emmyAward, 1 as type FROM Media M, TVSeriesEpisode TV WHERE M.name LIKE '" + media.name + "%' AND M.timeStamp>'" + media.timeStamp + "' AND M.mediaId = TV.mediaId AND '" + genre.title + "' IN " 
+            + "(SELECT Genre.title FROM MediaHasGenre INNER JOIN Genre ON MediaHasGenre.genreId = Genre.genreId WHERE TV.mediaId = MediaHasGenre.mediaId);";
+        }
         try {
             result = await this.db.sendQuery(sqlQuery);
-            sqlQuery = "SELECT M.*, MO.oscarAward, NULL, NULL, NULL, 0 as type FROM Media M, Movie MO WHERE M.name LIKE '" + media.name + "%' AND M.mediaId = MO.mediaId AND '" + genre.title + "' IN " 
-            + "(SELECT Genre.title FROM MediaHasGenre INNER JOIN Genre ON MediaHasGenre.genreId = Genre.genreId WHERE MO.mediaId = MediaHasGenre.mediaId);";
+            if(media.timeStamp == null){
+                sqlQuery = "SELECT M.*, MO.oscarAward, NULL, NULL, NULL, 0 as type FROM Media M, Movie MO WHERE M.name LIKE '" + media.name + "%' AND M.timeStamp>'" + media.timeStamp + "' AND M.mediaId = MO.mediaId AND '" + genre.title + "' IN " 
+                + "(SELECT Genre.title FROM MediaHasGenre INNER JOIN Genre ON MediaHasGenre.genreId = Genre.genreId WHERE MO.mediaId = MediaHasGenre.mediaId);";
+            }
+            else{
+                sqlQuery = "SELECT M.*, MO.oscarAward, NULL, NULL, NULL, 0 as type FROM Media M, Movie MO WHERE M.name LIKE '" + media.name + "%' AND M.mediaId = MO.mediaId AND '" + genre.title + "' IN " 
+                + "(SELECT Genre.title FROM MediaHasGenre INNER JOIN Genre ON MediaHasGenre.genreId = Genre.genreId WHERE MO.mediaId = MediaHasGenre.mediaId);";
+            }
             let movieResult = await this.db.sendQuery(sqlQuery);
             for(let i = 0 ; i < movieResult.length ; i++){
                 result.push(movieResult[i]);
