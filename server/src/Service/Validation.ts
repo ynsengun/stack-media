@@ -50,7 +50,7 @@ export class Validation{
     }
 
     public searchValidation(req: Request): void {
-        if(!req.body.name || !req.body.title || !req.body.timeStamp)
+        if(!req.body.name || !req.body.title)
             throw new InvalidRequest();
     }
 

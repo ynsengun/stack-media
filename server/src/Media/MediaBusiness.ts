@@ -154,10 +154,10 @@ export class MediaBusiness {
         }
     }
 
-    public async search(media: Media, genre: Genre): Promise<ResponseModel>
+    public async search(media: Media, genre: Genre, endDate: Date): Promise<ResponseModel>
    {
        try {
-           let result = await this.mediaDBService.search(media, genre);
+           let result = await this.mediaDBService.search(media, genre, endDate);
            return new SuccessResponse(result);
        } catch (error) {
            return new ErrorResponse(error);

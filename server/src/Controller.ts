@@ -454,7 +454,7 @@ export class Controller{
     public async search(request: Request, response: Response): Promise<void> {
         try{
             this.validation.searchValidation(request);
-            let result = await this.mediaBusiness.search(mediaMapping.map(request.body), genreMapping.map(request.body));
+            let result = await this.mediaBusiness.search(mediaMapping.map(request.body), genreMapping.map(request.body), request.body.endDate);
             response.status(result.status).send(result);
         } catch(error){
             const errorResponse = new ErrorResponse(error);
