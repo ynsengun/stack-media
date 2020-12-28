@@ -17,6 +17,8 @@ export default function Search(props) {
     text: "",
     genre: "Action",
     sortby: "",
+    startDate: null,
+    endDate: null,
   });
   const [mediaList, setMediaList] = useState([]);
   const [allGenres, setAllGenres] = useState([]);
@@ -24,6 +26,7 @@ export default function Search(props) {
 
   useEffect(() => {
     // fetch medias according to the search state
+    console.log( search);
     if (search.text !== "") {
       fetch("http://localhost:4000/api/media/search", {
         method: "POST",
@@ -37,6 +40,8 @@ export default function Search(props) {
 
           name: search.text,
           title: search.genre,
+          timeStamp: search.startDate,
+          endDate: search.endDate,
         }),
       })
         .then((r) => checkResponse(r))
@@ -185,6 +190,13 @@ export default function Search(props) {
           </select>
         </div>
 
+        <div className="mr-4">
+          <label className="mr-1">From:</label>
+          <input type="date" id="date1" name="startDate" onChange={handleChange}></input>
+          <label className="mr-1">To:</label>
+          <input type="date" id="date2" name="endDate" onChange={handleChange}></input>
+        </div>
+
         <div>
           <label className="mr-1">Media Name: </label>
           <input
@@ -206,6 +218,7 @@ export default function Search(props) {
           channelList={channels}
           pageType={isParty === true ? 5 : isAdmin() ? 2 : 0}
           handleMediaSelect={handleMediaSelect}
+          tvshowname={media.TVSerieName}
         />
       ))}
     </Container>

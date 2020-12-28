@@ -20,6 +20,7 @@ export default function Media(props) {
     pageType,
     deleteFromChannel,
     handleMediaSelect,
+    tvshowname,
   } = props;
 
   const [selectedChannel, setSelectedChannel] = useState("");
@@ -48,14 +49,26 @@ export default function Media(props) {
   const handleWatchButtonClick = () => {
     // if tv serie, fetch information, find episode id, than load next page!
     if (mediaType != 0) {
+
+        if ( mediaId != null && mediaId != undefined && mediaId != "")
+        {
+            history.push(`/media/${mediaId}`);
+            return;
+        }
+
+        var mediaNameToUse = mediaName;
       // run shitty algorithm to find last episode mediaName = tv show name
-      foundAndLoadLastWatchedEpisode();
+      if ( tvshowname !== null && tvshowname !== undefined && tvshowname != "")
+      {
+          mediaNameToUse = tvshowname;
+      }
+      foundAndLoadLastWatchedEpisode( mediaNameToUse);
     } else {
       history.push(`/media/${mediaId}`);
     }
   };
 
-  function foundAndLoadLastWatchedEpisode() {
+  function foundAndLoadLastWatchedEpisode( mediaNameToUse) {
     // fetch TV SHOWS
     fetch("http://localhost:4000/api/media/getSerie", {
       method: "POST",
@@ -67,7 +80,7 @@ export default function Media(props) {
         token: getAuthToken(),
         username: getAuthName(),
 
-        TVSerieName: mediaName,
+        TVSerieName: mediaNameToUse,
       }),
     })
       .then((r) => checkResponse(r))
@@ -78,9 +91,9 @@ export default function Media(props) {
         console.log(resArray);
 
         if (resArray.length == 0) {
-          loadFirstTimeTvSerie();
+          loadFirstTimeTvSerie(mediaNameToUse);
         } else {
-          loadLastWatchedEpisode(resArray);
+          loadLastWatchedEpisode(resArray, mediaNameToUse);
         }
       })
       .catch((err) => {
@@ -89,7 +102,7 @@ export default function Media(props) {
       });
   }
 
-  function loadFirstTimeTvSerie() {
+  function loadFirstTimeTvSerie(mediaNameToUse) {
     // load the first episode of the tv serie
     // fetch TV SHOWS
     fetch("http://localhost:4000/api/media/getSeriesWithPreference", {
@@ -102,7 +115,7 @@ export default function Media(props) {
         token: getAuthToken(),
         username: getAuthName(),
 
-        TVSerieName: mediaName,
+        TVSerieName: mediaNameToUse,
       }),
     })
       .then((r) => checkResponse(r))
@@ -123,7 +136,7 @@ export default function Media(props) {
       });
   }
 
-  function loadLastWatchedEpisode(resArray) {
+  function loadLastWatchedEpisode(resArray, mediaNameToUse) {
     let lastWatchedEpisode = resArray[0];
     if (
       lastWatchedEpisode.Progress < 4 ||
@@ -133,11 +146,11 @@ export default function Media(props) {
       history.push(`/media/${lastWatchedEpisode.mediaId}`);
     } // find the next episode as this is last watched but finished
     else {
-      loadNextEpisode(lastWatchedEpisode);
+      loadNextEpisode(lastWatchedEpisode, mediaNameToUse);
     }
   }
 
-  function loadNextEpisode(lastEpisode) {
+  function loadNextEpisode(lastEpisode, mediaNameToUse) {
     fetch("http://localhost:4000/api/media/getSeriesWithPreference", {
       method: "POST",
       mode: "cors",
@@ -148,7 +161,7 @@ export default function Media(props) {
         token: getAuthToken(),
         username: getAuthName(),
 
-        TVSerieName: mediaName,
+        TVSerieName: mediaNameToUse,
       }),
     })
       .then((r) => checkResponse(r))

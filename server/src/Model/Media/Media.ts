@@ -11,4 +11,5 @@ export interface Media{
     emmyAward: string
     oscarAward: string
     TVSerieName: string
+    timeStamp: string
 }
