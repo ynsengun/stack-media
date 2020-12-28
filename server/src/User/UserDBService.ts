@@ -75,7 +75,10 @@ export class UserDBService {
 
     public async addComment(user: User, media: Media, comment: Comment): Promise<any> {
         let commentId = id();
-
+        console.log( commentId);
+        console.log( user.username);
+        console.log( media.mediaId);
+        console.log( comment.text);
         let sqlQuery = "INSERT INTO Comment VALUES('" + commentId + "', '" + user.username + "', '" + media.mediaId + "', '" + comment.text + "', null);";
 
         try {
@@ -87,6 +90,7 @@ export class UserDBService {
             return null;
         } 
         catch(err){
+            console.log( err);
             if(err.code == "ER_DUP_ENTRY"){
                 throw new AlreadyExist();
             }

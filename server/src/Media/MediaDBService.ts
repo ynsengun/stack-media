@@ -189,7 +189,8 @@ export class MediaDBService {
     public async updateMedia(media: Media): Promise<any> {
         let result = null;
 
-        let sqlQuery = "UPDATE Media SET mediaId = '" + media.mediaId + "', publishUsername = '" +  media.publishUsername + "', name = '" + media.name + "', description = '" + media.description + "', path = '" + media.path + "', duration = '" + media.duration + "', null WHERE mediaId = '" + media.mediaId + "';";
+        console.log( "star1");
+        let sqlQuery = "UPDATE Media SET mediaId = '" + media.mediaId + "', publishUsername = '" +  media.publishUsername + "', name = '" + media.name + "', description = '" + media.description + "', path = '" + media.path + "', duration = '" + media.duration + "', timeStamp = NULL WHERE mediaId = '" + media.mediaId + "';";
         try {
             await this.db.sendQuery(sqlQuery);  
             if(media.episodeNumber == null){ // it means it is a movie, then add to movie table
@@ -201,9 +202,13 @@ export class MediaDBService {
                 console.log( "Updating tv show...");
                 sqlQuery = "UPDATE TVSeriesEpisode SET mediaId = '" + media.mediaId + "', TVSerieName = '" +  media.TVSerieName + "', episodeNumber = '" + media.episodeNumber + "', seasonNumber = '" + media.seasonNumber + "', emmyAward = '" + media.emmyAward + "' WHERE mediaId = '" + media.mediaId + "';";
             }
+            console.log( "star2");
             await this.db.sendQuery(sqlQuery);
+            console.log( "star3");
         } 
         catch(err){
+            console.log( err);
+            console.log( "UNSUCCESSFULL");
             if(err.code == "ER_DUP_ENTRY"){
                 throw new AlreadyExist();
             }

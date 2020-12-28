@@ -397,13 +397,18 @@ export class Controller{
 
     public async updateMedia(request: Request, response: Response): Promise<void> {
         try{
+            console.log( "U1");
             this.validation.updateMediaValidation(request);
+            console.log( "U2");
             let result = await this.mediaBusiness.updateMedia(mediaMapping.map(request.body));
+            console.log( "U3");
             response.status(result.status).send(result);
+            console.log( "U4");
         } catch(error){
             const errorResponse = new ErrorResponse(error);
             response.status(errorResponse.status).send(new ErrorResponse(error));
         }
+        console.log( "U5");
     }
 
     public async getMediaComments(request: Request, response: Response): Promise<void> {

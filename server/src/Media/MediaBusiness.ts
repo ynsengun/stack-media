@@ -128,6 +128,7 @@ export class MediaBusiness {
     {
         try {
             let result = await this.mediaDBService.updateMedia(media);
+            console.log( "E YO!");
             return new SuccessResponse(result);
         } catch (error) {
             return new ErrorResponse(error);

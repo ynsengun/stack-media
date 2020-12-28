@@ -384,6 +384,7 @@ export default function Upload() {
     function handleEditButtonPress( event)
     {
         // make update request for the edited media!
+        console.log( media);
         fetch("http://localhost:4000/api/media/updateMedia", {
         method: "POST",
         mode: "cors",
@@ -397,7 +398,7 @@ export default function Upload() {
             mediaId: media.mediaId,
             name: media.name,
             description: media.description,
-            path: "https://www.youtube.com/channel/UC-lHJZR3Gqxm24_Vd_AJ5Yw",
+            path: "ignoreThis",
             uploadDate: Date.now(),
             duration: -1,
             oscarAward: null,
