@@ -31,6 +31,7 @@ export default function PartyPage() {
   const [mediaId, setmediaId] = useState("");
   const [mediaName, setmediaName] = useState("");
   const [msg, setNewMsg] = useState(null);
+  const [disappear, setDisappear] = useState(false);
 
   const history = useHistory();
 
@@ -347,6 +348,7 @@ export default function PartyPage() {
     });
 
     setMediaSelectActive(false); // TODO
+    setDisappear(true);
     // setmediaId(mediaId);
     // setmediaName(mediaName);
   };
@@ -407,7 +409,7 @@ export default function PartyPage() {
             </div>
           </div>
 
-          {isCreator &&
+          {isCreator && disappear == false &&
             (mediaSelectActive ? (
               <div className="mt-4">
                 <Search isParty={true} handleMediaSelect={handleMediaSelect} />
