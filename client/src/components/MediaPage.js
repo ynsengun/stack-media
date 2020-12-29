@@ -498,7 +498,10 @@ export default function MediaPage() {
                   !buttonActive.watch && "disabled"
                 }`}
                 onClick={() => {
-                    handleProgressBarPress();
+                    if ( !(progress % 4 === 3 && progress !== 0))
+                    {
+                        handleProgressBarPress();
+                    }
                   //if (progress < 3) setProgress(progress + 1);
                 }}
               >
@@ -509,7 +512,11 @@ export default function MediaPage() {
                   !buttonActive.finish && "disabled"
                 }`}
                 onClick={() => {
-                    handleProgressBarPress();
+                    if ( (progress % 4 === 3 && progress !== 0))
+                    {
+                        handleProgressBarPress();
+                    }
+                    //handleProgressBarPress();
                   //if (progress === 3) setProgress(progress + 1);
                 }}
               >
